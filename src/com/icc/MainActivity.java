@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			protected void onPostExecute(final String result) {
-				final TextView view = (TextView) MainActivity.this.findViewById(R.id.text);
+				final TextView view = (TextView) MainActivity.this.findViewById(R.id.editText2);
 				view.setText(result);
 			}
 		}.execute();
