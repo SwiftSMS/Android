@@ -22,4 +22,5 @@ local.properties
 # Intellij project files
 *.iml
 .idea/
+out/
 
