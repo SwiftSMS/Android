@@ -43,7 +43,12 @@ public class Meteor {
 	 * 		  POST (i think)
 	 * 			ajaxRequest=sendSMS
 	 * 			messageText=MESSAGE
-	 * 
+	 * 		- Form to replicate the adding
+	 *			<form action="https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&func=sendSMS&CFID=35626768&CFTOKEN=13595949" method="POST">
+	 *				<input name="ajaxRequest" value="sendSMS" />
+	 *				<input name="messageText" value="My Text Message :-)" />
+	 *				<input type="submit" />
+	 *			</form> 
 	 */
 
 	public String login(final String username, final String password) {
