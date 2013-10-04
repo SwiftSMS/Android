@@ -22,12 +22,22 @@ public class Meteor {
 	 * 			login=
 	 * 			returnTo=/
 	 * 		- Session cookie should be in the returned headers
+	 * 		  Example
+	 * 			CFID=35626768
+	 * 			CFTOKEN=13595949
 	 * 	2. Add recipients
 	 * 		- https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=35626768&CFTOKEN=13595949&func=addEnteredMsisdns
 	 * 		  POST (i think)
 	 * 			ajaxRequest=addEnteredMSISDNs
 	 * 			remove=-
 	 * 			add=NUMBER
+	 * 		- Form to replicate the adding
+	 * 			<form action="https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=35626768&CFTOKEN=13595949&func=addEnteredMsisdns" method="POST">
+	 *				<input name="ajaxRequest" value="addEnteredMSISDNs" />
+	 *				<input name="remove" value="-" />
+	 *				<input name="add" value="0871234567" />
+	 *				<input type="submit" />
+	 *			</form>
 	 * 	3. Send message
 	 * 		- https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=35626768&CFTOKEN=13595949&func=sendSMS
 	 * 		  POST (i think)
