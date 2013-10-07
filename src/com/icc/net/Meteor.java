@@ -11,8 +11,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Meteor {
-	
-	/*
+
+	/**
+	 * <pre>
 	 * Steps to send
 	 * 	1. Get session cookie
 	 * 		- https://www.mymeteor.ie/go/mymeteor-login-manager
@@ -32,23 +33,15 @@ public class Meteor {
 	 * 			remove=-
 	 * 			add=NUMBER
 	 * 		- Form to replicate the adding
-	 * 			<form action="https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=35626768&CFTOKEN=13595949&func=addEnteredMsisdns" method="POST">
-	 *				<input name="ajaxRequest" value="addEnteredMSISDNs" />
-	 *				<input name="remove" value="-" />
-	 *				<input name="add" value="0871234567" />
-	 *				<input type="submit" />
-	 *			</form>
+	 * 			forms/meteor_addrecipient.html
 	 * 	3. Send message
 	 * 		- https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=35626768&CFTOKEN=13595949&func=sendSMS
 	 * 		  POST (i think)
 	 * 			ajaxRequest=sendSMS
 	 * 			messageText=MESSAGE
 	 * 		- Form to replicate the adding
-	 *			<form action="https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&func=sendSMS&CFID=35626768&CFTOKEN=13595949" method="POST">
-	 *				<input name="ajaxRequest" value="sendSMS" />
-	 *				<input name="messageText" value="My Text Message :-)" />
-	 *				<input type="submit" />
-	 *			</form> 
+	 * 			forms/meteor_send.html
+	 * </pre>
 	 */
 
 	public String login(final String username, final String password) {
