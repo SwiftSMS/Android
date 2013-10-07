@@ -1,13 +1,19 @@
 package com.icc.net;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+
 public class Vodafone {
 
 	private final String username;
 	private final String password;
+	private final CookieManager cookieManager;
 
 	public Vodafone(final String username, final String password) {
 		this.username = username;
 		this.password = password;
+		this.cookieManager = new CookieManager();
+		CookieHandler.setDefault(this.cookieManager);
 	}
 
 	/**
@@ -43,7 +49,7 @@ public class Vodafone {
 		loginManager.addRequestHeader("password", this.password);
 		loginManager.doConnection();
 
-		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/index.jsp");
+		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/");
 		return manager.doConnection();
 	}
 

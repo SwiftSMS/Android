@@ -1,6 +1,7 @@
 package com.icc.net;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,8 +27,9 @@ public class ConnectionManager {
 		try {
 			final URL url = new URL(this.webpageUrl);
 			this.connection = (HttpURLConnection) url.openConnection();
-			this.connection.setDoOutput(true);
+			this.connection.setChunkedStreamingMode(0);
 			this.connection.setRequestMethod("POST");
+			this.connection.setDoOutput(true);
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,7 +43,7 @@ public class ConnectionManager {
 	public String doConnection() {
 		final StringBuilder result = new StringBuilder();
 		try {
-			final Writer writer = new OutputStreamWriter(this.connection.getOutputStream());
+			final Writer writer = new BufferedWriter(new OutputStreamWriter(this.connection.getOutputStream()));
 			boolean firstHeader = true;
 			for (final String key : this.requestHeaders.keySet()) {
 				if (!firstHeader) {
@@ -52,6 +54,15 @@ public class ConnectionManager {
 			}
 			writer.close();
 
+			// result.append(this.connection.getContent());
+			// result.append(this.connection.getResponseCode());
+			// result.append("\n");
+			// for (final String key : this.connection.getHeaderFields().keySet()) {
+			// result.append(key);
+			// result.append("=");
+			// result.append(this.connection.getHeaderFields().get(key));
+			// result.append("\n");
+			// }
 			result.append(this.readStream(this.connection.getInputStream()));
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
@@ -59,14 +70,6 @@ public class ConnectionManager {
 		}
 
 		return result.toString();
-		// result.append(connection.getResponseCode());
-		// result.append("\n");
-		// for (final String key : connection.getHeaderFields().keySet()) {
-		// result.append(key);
-		// result.append("=");
-		// result.append(connection.getHeaderFields().get(key));
-		// result.append("\n");
-		// }
 	}
 
 	private String readStream(final InputStream is) throws IOException {

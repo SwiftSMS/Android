@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.TextView;
 
-import com.icc.net.Meteor;
+import com.icc.net.Vodafone;
 
 public class MainActivity extends Activity {
 
@@ -18,8 +18,8 @@ public class MainActivity extends Activity {
 		new AsyncTask<String, Integer, String>() {
 			@Override
 			protected String doInBackground(final String... params) {
-				final Meteor m = new Meteor();
-				return m.login("user", "pass");
+				final Vodafone m = new Vodafone("user", "pass");
+				return m.login();
 			}
 
 			@Override
