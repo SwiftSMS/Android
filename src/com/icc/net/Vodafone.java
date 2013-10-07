@@ -1,13 +1,14 @@
 package com.icc.net;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 public class Vodafone {
+
+	private final String username;
+	private final String password;
+
+	public Vodafone(final String username, final String password) {
+		this.username = username;
+		this.password = password;
+	}
 
 	/**
 	 * <pre>
@@ -36,32 +37,23 @@ public class Vodafone {
 	 * </pre>
 	 */
 
-	public String login(final String username, final String password) {
-		final StringBuilder result = new StringBuilder();
-		try {
-			final URL url = new URL("https://www.vodafone.ie/myv/services/login/Login.shtml");
-			final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setDoOutput(true);
-			connection.setRequestMethod("POST");
+	public String login() {
+		final ConnectionManager loginManager = new ConnectionManager("https://www.vodafone.ie/myv/services/login/Login.shtml");
+		loginManager.addRequestHeader("username", this.username);
+		loginManager.addRequestHeader("password", this.password);
+		loginManager.doConnection();
 
-			final Writer writer = new OutputStreamWriter(connection.getOutputStream());
-			writer.write("username=" + username);
-			writer.write("&password=" + password);
-			writer.close();
+		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/index.jsp");
+		return manager.doConnection();
+	}
 
-			result.append(connection.getResponseCode());
-			result.append(connection.getHeaderFields().toString());
-			// result.append(this.readStream(connection.getErrorStream()));
-			// result.append(this.readStream(connection.getInputStream()));
+	public String send(final String recipient, final String message) {
+		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/Process.shtml");
+		manager.addRequestHeader("org.apache.struts.taglib.html.TOKEN", "MY TOKEN");
+		manager.addRequestHeader("message", message);
+		manager.addRequestHeader("recipients[0]", recipient);
+		manager.addRequestHeader("&jcaptcha_response", "MY CAPTCHA");
 
-		} catch (final MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return result.toString();
+		return manager.doConnection();
 	}
 }
