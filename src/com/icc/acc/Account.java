@@ -1,29 +1,46 @@
 package com.icc.acc;
 
 /**
- * Created by Rob Powell on 04/10/13.
+ * Account Object used for the ICC user's account details
+ * @author Rob Powell
+ * @version 1.0
  */
 public class Account {
 
-    private String username;
+    private int id;
+    private String accountName;
     private String password;
-    private AccountType accountType;
+    private String mobileNumber;
+    private Operator operator;
 
-    public Account(final String username, final String pwd, final AccountType accType) {
-        this.username = username;
+    public Account(final String mobileNumber, final String accountName, final String pwd, final Operator operator) {
+        this.accountName = accountName;
+        this.mobileNumber = mobileNumber;
         this.password = pwd;
-        this.accountType = accType;
+        this.operator = operator;
     }
 
-    public String getUsername() {
-        return username;
+    public String getAccountName() {
+        return accountName;
     }
 
     public String getPassword() {
         return password;
     }
 
-    public AccountType getAccountType() {
-        return accountType;
+    public Operator getOperator() {
+        return operator;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

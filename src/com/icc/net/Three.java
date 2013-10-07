@@ -64,7 +64,7 @@ public class Three {
             connection.setRequestMethod("POST");
 
             final Writer writer = new OutputStreamWriter(connection.getOutputStream());
-            writer.write("username=" + account.getUsername());
+            writer.write("username=" + account.getAccountName());
             writer.write("&userpass=" + account.getPassword());
             writer.write("&login=");
             writer.write("&returnTo=/");
