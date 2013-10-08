@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 import com.icc.R;
 import com.icc.acc.Account;
+import com.icc.acc.Operator;
 import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
 import java.util.List;
@@ -29,12 +30,17 @@ public class AddAccountActivity extends Activity {
 
     @Override
     protected void onResume() {
-        
+
         accountDatabase = AccountDataSource.getInstance(this);
 
-        final List<Account> accountList = accountDatabase.getAllAccounts();
+        final Account account = new Account("00353862101112","My O2 Account","hello", Operator.O2);
 
-        textView.setText(""+accountList.size());
+        final boolean addedSuccessfully = accountDatabase.addAccount(account);
+
+        if(addedSuccessfully) {
+            final List<Account> accountList = accountDatabase.getAllAccounts();
+            textView.setText(accountList.get(0).getAccountName());
+        }
 
         super.onResume();
     }

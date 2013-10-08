@@ -13,6 +13,13 @@ public class Account {
     private String mobileNumber;
     private Operator operator;
 
+    /**
+     *
+     * @param mobileNumber Mobile Number of the user, used to login to the Operator's service
+     * @param accountName ICC specific account name, to identify different account's within ICC
+     * @param pwd Password of the user's operator account
+     * @param operator The user's Telecoms Operator
+     */
     public Account(final String mobileNumber, final String accountName, final String pwd, final Operator operator) {
         this.accountName = accountName;
         this.mobileNumber = mobileNumber;
