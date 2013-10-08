@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.TextView;
 
-import com.icc.net.Vodafone;
+import com.icc.acc.Account;
+import com.icc.acc.Network;
+import com.icc.net.Meteor;
+import com.icc.net.Operator;
 
 public class MainActivity extends Activity {
 
@@ -18,8 +21,9 @@ public class MainActivity extends Activity {
 		new AsyncTask<String, Integer, String>() {
 			@Override
 			protected String doInBackground(final String... params) {
-				final Vodafone m = new Vodafone("user", "pass");
-				return m.login();
+				final Account vodaAccount = new Account("0873791476", "Work", "H@VjgDLi0pfU!J40", Network.VODAFONE);
+				final Operator operator = new Meteor(vodaAccount);
+				return operator.login();
 			}
 
 			@Override

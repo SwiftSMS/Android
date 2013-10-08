@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.icc.acc.Account;
-import com.icc.acc.Operator;
+import com.icc.acc.Network;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class AccountDataSource implements IAccountDatabase {
 
     private Account cursorToAccount(final Cursor cursor) {
 
-        final Account account = new Account(cursor.getString(1),cursor.getString(2),cursor.getString(3), Operator.valueOf(cursor.getString(4)));
+        final Account account = new Account(cursor.getString(1),cursor.getString(2),cursor.getString(3), Network.valueOf(cursor.getString(4)));
         account.setId(cursor.getInt(0));
 
         return account;

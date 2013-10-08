@@ -27,7 +27,7 @@ public class ConnectionManager {
 		try {
 			final URL url = new URL(this.webpageUrl);
 			this.connection = (HttpURLConnection) url.openConnection();
-			this.connection.setChunkedStreamingMode(0);
+			// this.connection.setChunkedStreamingMode(0);
 			this.connection.setRequestMethod("POST");
 			this.connection.setDoOutput(true);
 		} catch (final IOException e) {
@@ -63,6 +63,7 @@ public class ConnectionManager {
 			// result.append(this.connection.getHeaderFields().get(key));
 			// result.append("\n");
 			// }
+			// result.append(this.readStream(this.connection.getErrorStream()));
 			result.append(this.readStream(this.connection.getInputStream()));
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block

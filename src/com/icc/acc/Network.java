@@ -6,6 +6,6 @@ package com.icc.acc;
  * @author Rob Powell
  * @version 1.0
  */
-public enum Operator {
+public enum Network {
     O2, METEOR, VODAFONE, TESCO, EMOBILE, THREE,
 }

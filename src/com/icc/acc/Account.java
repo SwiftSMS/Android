@@ -11,9 +11,9 @@ public class Account {
     private String accountName;
     private String password;
     private String mobileNumber;
-    private Operator operator;
+    private Network operator;
 
-    public Account(final String mobileNumber, final String accountName, final String pwd, final Operator operator) {
+    public Account(final String mobileNumber, final String accountName, final String pwd, final Network operator) {
         this.accountName = accountName;
         this.mobileNumber = mobileNumber;
         this.password = pwd;
@@ -28,7 +28,7 @@ public class Account {
         return password;
     }
 
-    public Operator getOperator() {
+    public Network getOperator() {
         return operator;
     }
 

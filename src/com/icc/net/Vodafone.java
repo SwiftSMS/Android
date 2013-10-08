@@ -1,19 +1,11 @@
 package com.icc.net;
 
-import java.net.CookieHandler;
-import java.net.CookieManager;
+import com.icc.acc.Account;
 
-public class Vodafone {
+public class Vodafone extends Operator {
 
-	private final String username;
-	private final String password;
-	private final CookieManager cookieManager;
-
-	public Vodafone(final String username, final String password) {
-		this.username = username;
-		this.password = password;
-		this.cookieManager = new CookieManager();
-		CookieHandler.setDefault(this.cookieManager);
+	public Vodafone(final Account account) {
+		super(account);
 	}
 
 	/**
@@ -43,16 +35,18 @@ public class Vodafone {
 	 * </pre>
 	 */
 
+	@Override
 	public String login() {
 		final ConnectionManager loginManager = new ConnectionManager("https://www.vodafone.ie/myv/services/login/Login.shtml");
-		loginManager.addRequestHeader("username", this.username);
-		loginManager.addRequestHeader("password", this.password);
+		loginManager.addRequestHeader("username", this.getAccount().getMobileNumber());
+		loginManager.addRequestHeader("password", this.getAccount().getPassword());
 		loginManager.doConnection();
 
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/");
 		return manager.doConnection();
 	}
 
+	@Override
 	public String send(final String recipient, final String message) {
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/Process.shtml");
 		manager.addRequestHeader("org.apache.struts.taglib.html.TOKEN", "MY TOKEN");
