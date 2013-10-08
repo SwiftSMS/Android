@@ -4,6 +4,9 @@ import com.icc.acc.Account;
 
 public class Meteor extends Operator {
 
+	private String cfId;
+	private String cfToken;
+
 	public Meteor(final Account account) {
 		super(account);
 	}
@@ -47,12 +50,22 @@ public class Meteor extends Operator {
 		loginManager.addRequestHeader("userpass", this.getAccount().getPassword());
 		loginManager.addRequestHeader("login", "");
 		loginManager.addRequestHeader("returnTo", "/");
-		return loginManager.doConnection();
+		loginManager.doConnection();
+
+		final ConnectionManager messageManager = new ConnectionManager("https://www.mymeteor.ie/go/freewebtext");
+		final String htmlWithIds = messageManager.doConnection();
+		this.cfId = this.extractSessionVar("var CFID = ", ";", htmlWithIds);
+		this.cfToken = this.extractSessionVar("var CFTOKEN = ", ";", htmlWithIds);
+		return String.format("CFID=%s%nCFTOKEN=%s", this.cfId, this.cfToken);
+	}
+
+	private String extractSessionVar(final String startChars, final String endChars, final String text) {
+		final int start = text.indexOf(startChars) + startChars.length();
+		return text.substring(start, text.indexOf(endChars, start));
 	}
 
 	@Override
 	public String send(final String recipient, final String message) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
