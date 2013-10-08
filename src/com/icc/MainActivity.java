@@ -1,15 +1,18 @@
 package com.icc;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.icc.acc.Account;
 import com.icc.acc.Network;
 import com.icc.net.Meteor;
 import com.icc.net.Operator;
+import com.icc.view.acc.AddAccountActivity;
 
 public class MainActivity extends Activity {
 
@@ -36,9 +39,15 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		this.getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
 
+	@Override
+	public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
+		if (item.getItemId() == R.id.action_add_account) {
+			this.startActivity(new Intent(this, AddAccountActivity.class));
+		}
+		return super.onMenuItemSelected(featureId, item);
+	}
 }
