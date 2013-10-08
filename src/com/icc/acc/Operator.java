@@ -7,5 +7,5 @@ package com.icc.acc;
  * @version 1.0
  */
 public enum Operator {
-    O2, METEOR, VODAFONE, TESCO, EMOBILE, THREE,
+    O2, METEOR, VODAFONE, TESCO, EMOBILE, THREE
 }

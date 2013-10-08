@@ -1,12 +1,15 @@
 package com.icc;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.icc.net.Vodafone;
+import com.icc.view.acc.AddAccountActivity;
 
 public class MainActivity extends Activity {
 
@@ -37,4 +40,11 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        if(item.getItemId() == R.id.action_add_account) {
+            startActivity(new Intent(this, AddAccountActivity.class));
+        }
+        return super.onMenuItemSelected(featureId, item);
+    }
 }
