@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:onClick="sendMessage"
             android:contentDescription="@string/app_name"
             android:src="@android:drawable/ic_menu_send" />
 
