@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
 		new AsyncTask<String, Integer, String>() {
 			@Override
 			protected String doInBackground(final String... params) {
-				final Account vodaAccount = new Account("0873791476", "Work", "H@VjgDLi0pfU!J40", Network.VODAFONE);
+				final Account vodaAccount = new Account("user", "Work", "pass", Network.VODAFONE);
 				final Operator operator = new Meteor(vodaAccount);
 				return operator.login();
 			}
