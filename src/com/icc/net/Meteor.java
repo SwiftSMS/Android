@@ -56,7 +56,7 @@ public class Meteor extends Operator {
 		final String htmlWithIds = messageManager.doConnection();
 		this.cfId = this.extractSessionVar("var CFID = ", ";", htmlWithIds);
 		this.cfToken = this.extractSessionVar("var CFTOKEN = ", ";", htmlWithIds);
-		return String.format("CFID=%s%nCFTOKEN=%s", this.cfId, this.cfToken);
+		return String.format("CFID = %s%nCFTOKEN = %s", this.cfId, this.cfToken);
 	}
 
 	private String extractSessionVar(final String startChars, final String endChars, final String text) {
@@ -66,6 +66,21 @@ public class Meteor extends Operator {
 
 	@Override
 	public String send(final String recipient, final String message) {
-		return null;
+		final String addUrl = String.format(
+				"https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=%s&CFTOKEN=%s&func=addEnteredMsisdns",
+				this.cfId, this.cfToken);
+		final ConnectionManager addManager = new ConnectionManager(addUrl);
+		addManager.addRequestHeader("ajaxRequest", "addEnteredMSISDNs");
+		addManager.addRequestHeader("remove", "-");
+		addManager.addRequestHeader("add", "0%7C" + recipient);
+		addManager.doConnection();
+
+		final String sendUrl = String.format(
+				"https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=%s&CFTOKEN=%s&func=sendSMS", this.cfId,
+				this.cfToken);
+		final ConnectionManager sendManager = new ConnectionManager(sendUrl);
+		sendManager.addRequestHeader("ajaxRequest", "sendSMS");
+		sendManager.addRequestHeader("messageText", message);
+		return sendManager.doConnection();
 	}
 }
