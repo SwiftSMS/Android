@@ -46,14 +46,15 @@ public class Meteor extends Operator {
 	@Override
 	public String login() {
 		final ConnectionManager loginManager = new ConnectionManager("https://www.mymeteor.ie/go/mymeteor-login-manager");
-		loginManager.addRequestHeader("username", this.getAccount().getMobileNumber());
-		loginManager.addRequestHeader("userpass", this.getAccount().getPassword());
-		loginManager.addRequestHeader("login", "");
-		loginManager.addRequestHeader("returnTo", "/");
+		loginManager.addPostHeader("username", this.getAccount().getMobileNumber());
+		loginManager.addPostHeader("userpass", this.getAccount().getPassword());
+		loginManager.addPostHeader("login", "");
+		loginManager.addPostHeader("returnTo", "/");
 		loginManager.doConnection();
 
 		final ConnectionManager messageManager = new ConnectionManager("https://www.mymeteor.ie/go/freewebtext");
-		final String htmlWithIds = messageManager.doConnection();
+		messageManager.doConnection();
+		final String htmlWithIds = messageManager.getResponseOutput();
 		this.cfId = this.extractSessionVar("var CFID = ", ";", htmlWithIds);
 		this.cfToken = this.extractSessionVar("var CFTOKEN = ", ";", htmlWithIds);
 		return String.format("CFID = %s%nCFTOKEN = %s", this.cfId, this.cfToken);
@@ -70,17 +71,18 @@ public class Meteor extends Operator {
 				"https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=%s&CFTOKEN=%s&func=addEnteredMsisdns",
 				this.cfId, this.cfToken);
 		final ConnectionManager addManager = new ConnectionManager(addUrl);
-		addManager.addRequestHeader("ajaxRequest", "addEnteredMSISDNs");
-		addManager.addRequestHeader("remove", "-");
-		addManager.addRequestHeader("add", "0%7C" + recipient);
+		addManager.addPostHeader("ajaxRequest", "addEnteredMSISDNs");
+		addManager.addPostHeader("remove", "-");
+		addManager.addPostHeader("add", "0%7C" + recipient);
 		addManager.doConnection();
 
 		final String sendUrl = String.format(
 				"https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=%s&CFTOKEN=%s&func=sendSMS", this.cfId,
 				this.cfToken);
 		final ConnectionManager sendManager = new ConnectionManager(sendUrl);
-		sendManager.addRequestHeader("ajaxRequest", "sendSMS");
-		sendManager.addRequestHeader("messageText", message);
-		return sendManager.doConnection();
+		sendManager.addPostHeader("ajaxRequest", "sendSMS");
+		sendManager.addPostHeader("messageText", message);
+		sendManager.doConnection();
+		return sendManager.getResponseOutput();
 	}
 }

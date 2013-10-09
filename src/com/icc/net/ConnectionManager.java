@@ -10,6 +10,7 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ConnectionManager {
@@ -36,12 +37,11 @@ public class ConnectionManager {
 		}
 	}
 
-	public void addRequestHeader(final String key, final String value) {
+	public void addPostHeader(final String key, final String value) {
 		this.requestHeaders.put(key, value);
 	}
 
-	public String doConnection() {
-		final StringBuilder result = new StringBuilder();
+	public void doConnection() {
 		try {
 			final Writer writer = new BufferedWriter(new OutputStreamWriter(this.connection.getOutputStream()));
 			boolean firstHeader = true;
@@ -64,13 +64,44 @@ public class ConnectionManager {
 			// result.append("\n");
 			// }
 			// result.append(this.readStream(this.connection.getErrorStream()));
-			result.append(this.readStream(this.connection.getInputStream()));
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
 
-		return result.toString();
+	public String getResponseOutput() {
+		try {
+			return this.readStream(this.connection.getInputStream());
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Map<String, List<String>> getResponseHeaders() {
+		return this.connection.getHeaderFields();
+	}
+
+	public int getResponseStatus() {
+		try {
+			return this.connection.getResponseCode();
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	public String getResponseMessage() {
+		try {
+			return this.connection.getResponseMessage();
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private String readStream(final InputStream is) throws IOException {

@@ -38,22 +38,24 @@ public class Vodafone extends Operator {
 	@Override
 	public String login() {
 		final ConnectionManager loginManager = new ConnectionManager("https://www.vodafone.ie/myv/services/login/Login.shtml");
-		loginManager.addRequestHeader("username", this.getAccount().getMobileNumber());
-		loginManager.addRequestHeader("password", this.getAccount().getPassword());
+		loginManager.addPostHeader("username", this.getAccount().getMobileNumber());
+		loginManager.addPostHeader("password", this.getAccount().getPassword());
 		loginManager.doConnection();
 
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/");
-		return manager.doConnection();
+		manager.doConnection();
+		return manager.getResponseOutput();
 	}
 
 	@Override
 	public String send(final String recipient, final String message) {
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/Process.shtml");
-		manager.addRequestHeader("org.apache.struts.taglib.html.TOKEN", "MY TOKEN");
-		manager.addRequestHeader("message", message);
-		manager.addRequestHeader("recipients[0]", recipient);
-		manager.addRequestHeader("&jcaptcha_response", "MY CAPTCHA");
+		manager.addPostHeader("org.apache.struts.taglib.html.TOKEN", "MY TOKEN");
+		manager.addPostHeader("message", message);
+		manager.addPostHeader("recipients[0]", recipient);
+		manager.addPostHeader("&jcaptcha_response", "MY CAPTCHA");
 
-		return manager.doConnection();
+		manager.doConnection();
+		return manager.getResponseOutput();
 	}
 }
