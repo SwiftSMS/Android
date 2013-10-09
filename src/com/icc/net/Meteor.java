@@ -4,9 +4,6 @@ import com.icc.acc.Account;
 
 public class Meteor extends Operator {
 
-	private String cfId;
-	private String cfToken;
-
 	public Meteor(final Account account) {
 		super(account);
 	}
@@ -48,36 +45,20 @@ public class Meteor extends Operator {
 		final ConnectionManager loginManager = new ConnectionManager("https://www.mymeteor.ie/go/mymeteor-login-manager");
 		loginManager.addPostHeader("username", this.getAccount().getMobileNumber());
 		loginManager.addPostHeader("userpass", this.getAccount().getPassword());
-		loginManager.addPostHeader("login", "");
-		loginManager.addPostHeader("returnTo", "/");
-		loginManager.doConnection();
 
-		final ConnectionManager messageManager = new ConnectionManager("https://www.mymeteor.ie/go/freewebtext");
-		final String htmlWithIds = messageManager.doConnection();
-		this.cfId = this.extractSessionVar("var CFID = ", ";", htmlWithIds);
-		this.cfToken = this.extractSessionVar("var CFTOKEN = ", ";", htmlWithIds);
-		return String.format("CFID = %s%nCFTOKEN = %s", this.cfId, this.cfToken);
-	}
-
-	private String extractSessionVar(final String startChars, final String endChars, final String text) {
-		final int start = text.indexOf(startChars) + startChars.length();
-		return text.substring(start, text.indexOf(endChars, start));
+		return loginManager.doConnection();
 	}
 
 	@Override
 	public String send(final String recipient, final String message) {
-		final String addUrl = String.format(
-				"https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=%s&CFTOKEN=%s&func=addEnteredMsisdns",
-				this.cfId, this.cfToken);
+		final String addUrl = "https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax";
 		final ConnectionManager addManager = new ConnectionManager(addUrl);
 		addManager.addPostHeader("ajaxRequest", "addEnteredMSISDNs");
 		addManager.addPostHeader("remove", "-");
 		addManager.addPostHeader("add", "0%7C" + recipient);
 		addManager.doConnection();
 
-		final String sendUrl = String.format(
-				"https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=%s&CFTOKEN=%s&func=sendSMS", this.cfId,
-				this.cfToken);
+		final String sendUrl = "https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax";
 		final ConnectionManager sendManager = new ConnectionManager(sendUrl);
 		sendManager.addPostHeader("ajaxRequest", "sendSMS");
 		sendManager.addPostHeader("messageText", message);
