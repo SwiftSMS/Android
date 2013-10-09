@@ -53,8 +53,7 @@ public class Meteor extends Operator {
 		loginManager.doConnection();
 
 		final ConnectionManager messageManager = new ConnectionManager("https://www.mymeteor.ie/go/freewebtext");
-		messageManager.doConnection();
-		final String htmlWithIds = messageManager.getResponseOutput();
+		final String htmlWithIds = messageManager.doConnection();
 		this.cfId = this.extractSessionVar("var CFID = ", ";", htmlWithIds);
 		this.cfToken = this.extractSessionVar("var CFTOKEN = ", ";", htmlWithIds);
 		return String.format("CFID = %s%nCFTOKEN = %s", this.cfId, this.cfToken);
@@ -82,7 +81,6 @@ public class Meteor extends Operator {
 		final ConnectionManager sendManager = new ConnectionManager(sendUrl);
 		sendManager.addPostHeader("ajaxRequest", "sendSMS");
 		sendManager.addPostHeader("messageText", message);
-		sendManager.doConnection();
-		return sendManager.getResponseOutput();
+		return sendManager.doConnection();
 	}
 }

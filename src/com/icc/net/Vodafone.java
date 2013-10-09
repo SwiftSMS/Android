@@ -43,8 +43,7 @@ public class Vodafone extends Operator {
 		loginManager.doConnection();
 
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/");
-		manager.doConnection();
-		return manager.getResponseOutput();
+		return manager.doConnection();
 	}
 
 	@Override
@@ -55,7 +54,6 @@ public class Vodafone extends Operator {
 		manager.addPostHeader("recipients[0]", recipient);
 		manager.addPostHeader("&jcaptcha_response", "MY CAPTCHA");
 
-		manager.doConnection();
-		return manager.getResponseOutput();
+		return manager.doConnection();
 	}
 }

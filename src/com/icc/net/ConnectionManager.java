@@ -41,7 +41,8 @@ public class ConnectionManager {
 		this.requestHeaders.put(key, value);
 	}
 
-	public void doConnection() {
+	public String doConnection() {
+		final StringBuilder result = new StringBuilder();
 		try {
 			final Writer writer = new BufferedWriter(new OutputStreamWriter(this.connection.getOutputStream()));
 			boolean firstHeader = true;
@@ -54,30 +55,12 @@ public class ConnectionManager {
 			}
 			writer.close();
 
-			// result.append(this.connection.getContent());
-			// result.append(this.connection.getResponseCode());
-			// result.append("\n");
-			// for (final String key : this.connection.getHeaderFields().keySet()) {
-			// result.append(key);
-			// result.append("=");
-			// result.append(this.connection.getHeaderFields().get(key));
-			// result.append("\n");
-			// }
-			// result.append(this.readStream(this.connection.getErrorStream()));
+			result.append(this.readStream(this.connection.getInputStream()));
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public String getResponseOutput() {
-		try {
-			return this.readStream(this.connection.getInputStream());
-		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return result.toString();
 	}
 
 	public Map<String, List<String>> getResponseHeaders() {
