@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="8dp"
     tools:context=".MainActivity" >
 
     <EditText
@@ -10,9 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="@dimen/element_margin"
+        android:layout_marginRight="@dimen/element_margin"
+        android:layout_marginTop="@dimen/element_margin"
         android:ems="10"
         android:hint="@string/to"
         android:inputType="textPersonName" >
@@ -26,8 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@android:color/background_light"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
+        android:paddingLeft="@dimen/element_margin"
+        android:paddingRight="@dimen/element_margin" >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -35,8 +34,8 @@
 
             <ImageButton
                 android:id="@+id/button_compose_send"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="@dimen/element_size"
+                android:layout_height="@dimen/element_size"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
                 android:background="@android:color/transparent"
