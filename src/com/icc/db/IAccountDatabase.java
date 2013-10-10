@@ -13,4 +13,5 @@ public interface IAccountDatabase {
     public boolean addAccount(final Account account);
     public boolean removeAccount(final Account account);
     public List<Account> getAllAccounts();
+    public Account getAccountById(final int id);
 }

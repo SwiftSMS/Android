@@ -101,10 +101,19 @@ public class AccountDataSource implements IAccountDatabase {
         return accountList;
     }
 
+    @Override
+    public Account getAccountById(int id) {
+
+        final Cursor cursor = database.query(DbManager.TABLE_ACCOUNTS, null, DbManager.COLUMN_ID+" = "+id, null, null, null, null);
+
+        return cursorToAccount(cursor);
+    }
+
     private Account cursorToAccount(final Cursor cursor) {
 
         final Account account = new Account(cursor.getString(1),cursor.getString(2),cursor.getString(3), Network.valueOf(cursor.getString(4)));
         account.setId(cursor.getInt(0));
+        account.setTimeStamp(cursor.getLong(5));
 
         return account;
     }

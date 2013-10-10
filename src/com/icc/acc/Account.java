@@ -9,6 +9,7 @@ package com.icc.acc;
 public class Account {
 
 	private int id;
+    private long timeStamp;
 	private final String accountName;
 	private final String password;
 	private final String mobileNumber;
@@ -55,4 +56,12 @@ public class Account {
 	public void setId(final int id) {
 		this.id = id;
 	}
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 }
