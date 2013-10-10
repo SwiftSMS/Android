@@ -9,6 +9,7 @@
     <string name="hint_mob_number">Mobile Number</string>
     <string name="hint_password">Password</string>
     <string name="hint_acc_name_opt">Account name (optional)</string>
-    <string name="text_add_operator">Add an Operator Account to ICC</string>
+    <string name="text_add_operator">Add Account</string>
+    <string name="active_acc">Active Account</string>
 
 </resources>
