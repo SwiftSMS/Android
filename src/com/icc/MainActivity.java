@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 		new AsyncTask<String, Integer, String>() {
 			@Override
 			protected String doInBackground(final String... params) {
-				final int accountId = MainActivity.this.preferences.getInt(InternalString.ACCOUNT_LATEST, -1);
+				final int accountId = MainActivity.this.preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
 				final Account account = MainActivity.this.accountDatabase.getAccountById(accountId);
 				// final Account account = new Account("user", "My Meteor", "pass", Network.METEOR);
 				final Operator operator = new Meteor(account);
