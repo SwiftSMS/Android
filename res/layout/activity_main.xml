@@ -5,57 +5,57 @@
     android:paddingTop="8dp"
     tools:context=".MainActivity" >
 
-    <ScrollView
-        android:id="@+id/layout_compose_top_scrollview"
+    <EditText
+        android:id="@+id/text_compose_recipients"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp" >
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:hint="@string/to"
+        android:inputType="textPersonName" >
 
-        <EditText
-            android:id="@+id/text_compose_recipients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/to"
-            android:inputType="textPersonName" >
+        <requestFocus />
+    </EditText>
 
-            <requestFocus />
-        </EditText>
-    </ScrollView>
-
-    <RelativeLayout
+    <ScrollView
+        android:id="@+id/layout_compose_bottom_scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/layout_compose_top_scrollview"
         android:background="@android:color/background_light"
         android:paddingLeft="8dp"
         android:paddingRight="8dp" >
 
-        <ImageButton
-            android:id="@+id/button_compose_send"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:background="@android:color/transparent"
-            android:contentDescription="@string/app_name"
-            android:onClick="sendMessage"
-            android:scaleType="fitCenter"
-            android:src="@android:drawable/ic_menu_send" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
 
-        <EditText
-            android:id="@+id/text_compose_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@+id/button_compose_send"
-            android:ems="10"
-            android:hint="@string/type_message"
-            android:inputType="text|textCapSentences|textMultiLine" />
-    </RelativeLayout>
+            <ImageButton
+                android:id="@+id/button_compose_send"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/app_name"
+                android:onClick="sendMessage"
+                android:scaleType="fitCenter"
+                android:src="@android:drawable/ic_menu_send" />
+
+            <EditText
+                android:id="@+id/text_compose_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/button_compose_send"
+                android:ems="10"
+                android:hint="@string/type_message"
+                android:inputType="text|textCapSentences|textMultiLine" />
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>
