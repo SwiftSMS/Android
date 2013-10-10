@@ -3,7 +3,9 @@ package com.icc;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,7 +14,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.icc.acc.Account;
-import com.icc.acc.Network;
+import com.icc.db.AccountDataSource;
+import com.icc.db.IAccountDatabase;
 import com.icc.net.Meteor;
 import com.icc.net.Operator;
 import com.icc.view.acc.AddAccountActivity;
@@ -21,11 +24,16 @@ public class MainActivity extends Activity {
 
 	private EditText messageEditText;
 	private EditText recipientsEditText;
+	private IAccountDatabase accountDatabase;
+	private SharedPreferences preferences;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_main);
+
+		this.preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
+		this.accountDatabase = AccountDataSource.getInstance(this);
 
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		this.recipientsEditText = (EditText) this.findViewById(R.id.text_compose_recipients);
@@ -35,7 +43,9 @@ public class MainActivity extends Activity {
 		new AsyncTask<String, Integer, String>() {
 			@Override
 			protected String doInBackground(final String... params) {
-				final Account account = new Account("user", "My Meteor", "pass", Network.METEOR);
+				final int accountId = MainActivity.this.preferences.getInt(InternalString.ACCOUNT_LATEST, -1);
+				final Account account = MainActivity.this.accountDatabase.getAccountById(accountId);
+				// final Account account = new Account("user", "My Meteor", "pass", Network.METEOR);
 				final Operator operator = new Meteor(account);
 				operator.login();
 
