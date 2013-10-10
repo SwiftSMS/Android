@@ -4,33 +4,39 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
-    <EditText
-        android:id="@+id/text_compose_recipients"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="@dimen/element_margin"
-        android:layout_marginRight="@dimen/element_margin"
-        android:layout_marginTop="@dimen/element_margin"
-        android:ems="10"
-        android:hint="@string/to"
-        android:inputType="textPersonName" >
+        android:paddingLeft="@dimen/element_margin"
+        android:paddingRight="@dimen/element_margin"
+        android:paddingTop="@dimen/element_margin" >
 
-        <requestFocus />
-    </EditText>
+        <EditText
+            android:id="@+id/text_compose_recipients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:ems="10"
+            android:hint="@string/to"
+            android:inputType="textPersonName" >
+
+            <requestFocus />
+        </EditText>
+    </RelativeLayout>
 
     <ScrollView
         android:id="@+id/layout_compose_bottom_scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/background_light"
-        android:paddingLeft="@dimen/element_margin"
-        android:paddingRight="@dimen/element_margin" >
+        android:layout_alignParentBottom="true" >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:background="@android:color/background_light"
+            android:paddingLeft="@dimen/element_margin"
+            android:paddingRight="@dimen/element_margin" >
 
             <ImageButton
                 android:id="@+id/button_compose_send"
@@ -49,6 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:maxLines="5"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/button_compose_send"
                 android:ems="10"
