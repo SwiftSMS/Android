@@ -75,11 +75,13 @@
 
         <ImageButton
             android:id="@+id/button_add_account"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/element_size"
+            android:layout_height="@dimen/element_size"
+            android:background="@android:color/transparent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:onClick="addAccount"
+            android:scaleType="fitCenter"
             android:contentDescription="@string/app_name"
             android:src="@android:drawable/ic_menu_send" />
 
