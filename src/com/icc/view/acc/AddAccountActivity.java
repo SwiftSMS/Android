@@ -45,12 +45,15 @@ public class AddAccountActivity extends Activity {
 		AddAccountActivity.this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
 		AddAccountActivity.this.textAccPassword = (TextView) this.findViewById(R.id.text_acc_password);
 		AddAccountActivity.this.textViewNetwork = (TextView) this.findViewById(R.id.text_selected_network);
+
+        this.handleNetworkSelection();
 	}
 
 	@Override
 	protected void onResume() {
-		AddAccountActivity.this.accountDatabase = AccountDataSource.getInstance(this);
-		this.handleNetworkSelection();
+
+        AddAccountActivity.this.accountDatabase = AccountDataSource.getInstance(this);
+
 		super.onResume();
 	}
 
@@ -89,7 +92,7 @@ public class AddAccountActivity extends Activity {
 		if (successfullyAdded) {
 			Toast.makeText(this, "Accounted Added", Toast.LENGTH_SHORT).show();
 			final Editor editor = this.preferences.edit();
-			editor.putInt(InternalString.ACCOUNT_LATEST, this.getLatestAccount().getId());
+			editor.putInt(InternalString.LATEST_ACCOUNT, this.getLatestAccount().getId());
 			editor.commit();
 		}
 	}
