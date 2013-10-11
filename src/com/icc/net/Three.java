@@ -15,75 +15,23 @@ import java.net.URL;
 /**
  * Created by Rob Powell on 04/10/13.
  */
-public class Three {
-    /*
-	 * Steps to send
-	 * 	1. Get session cookie
-	 * 		- https://www.mymeteor.ie/go/mymeteor-login-manager
-	 * 		  POST
-	 * 			username=phone
-	 * 			userpass=pin
-	 * 			login=
-	 * 			returnTo=/
-	 * 		- Session cookie should be in the returned headers
-	 * 		  Example
-	 * 			CFID=35626768
-	 * 			CFTOKEN=13595949
-	 * 	2. Add recipients
-	 * 		- https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=35626768&CFTOKEN=13595949&func=addEnteredMsisdns
-	 * 		  POST (i think)
-	 * 			ajaxRequest=addEnteredMSISDNs
-	 * 			remove=-
-	 * 			add=NUMBER
-	 * 		- Form to replicate the adding
-	 * 			<form action="https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=35626768&CFTOKEN=13595949&func=addEnteredMsisdns" method="POST">
-	 *				<input name="ajaxRequest" value="addEnteredMSISDNs" />
-	 *				<input name="remove" value="-" />
-	 *				<input name="add" value="0871234567" />
-	 *				<input type="submit" />
-	 *			</form>
-	 * 	3. Send message
-	 * 		- https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&CFID=35626768&CFTOKEN=13595949&func=sendSMS
-	 * 		  POST (i think)
-	 * 			ajaxRequest=sendSMS
-	 * 			messageText=MESSAGE
-	 * 		- Form to replicate the adding
-	 *			<form action="https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax&func=sendSMS&CFID=35626768&CFTOKEN=13595949" method="POST">
-	 *				<input name="ajaxRequest" value="sendSMS" />
-	 *				<input name="messageText" value="My Text Message :-)" />
-	 *				<input type="submit" />
-	 *			</form>
-	 */
+public class Three extends Operator {
 
-    public String login(final Account account) {
-        final StringBuilder result = new StringBuilder();
-        try {
-            final URL url = new URL("https://www.mymeteor.ie/go/mymeteor-login-manager");
-            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
+    public Three(final Account account){
+        super(account);
+    }
 
-            final Writer writer = new OutputStreamWriter(connection.getOutputStream());
-            writer.write("username=" + account.getAccountName());
-            writer.write("&userpass=" + account.getPassword());
-            writer.write("&login=");
-            writer.write("&returnTo=/");
-            writer.close();
+    public String login() {
+        final ConnectionManager loginManager = new ConnectionManager("https://webtexts.three.ie/webtext/users/login");
+        loginManager.addPostHeader("UserTelephoneNo", this.getAccount().getMobileNumber());
+        loginManager.addPostHeader("UserPin", this.getAccount().getPassword());
 
-            result.append(connection.getResponseCode());
-            result.append(connection.getHeaderFields().toString());
-            // result.append(this.readStream(connection.getErrorStream()));
-            result.append(this.readStream(connection.getInputStream()));
+        return loginManager.doConnection();
+    }
 
-        } catch (final MalformedURLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (final IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return result.toString();
+    @Override
+    public String send(String recipient, String message) {
+        return null;
     }
 
     private String readStream(final InputStream is) throws IOException {
