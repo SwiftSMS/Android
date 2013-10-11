@@ -50,11 +50,11 @@ public class AccountDataSource implements IAccountDatabase {
 	 * @return true if insert is successful
 	 */
 	@Override
-	public boolean addAccount(final Account account) {
+	public int addAccount(final Account account) {
 		return this.addAccountToDb(account);
 	}
 
-	private boolean addAccountToDb(final Account account) {
+	private int addAccountToDb(final Account account) {
 
 		final ContentValues dbValues = new ContentValues();
 
@@ -64,13 +64,7 @@ public class AccountDataSource implements IAccountDatabase {
 		dbValues.put(DbManager.COLUMN_PASSWORD, account.getPassword());
 		dbValues.put(DbManager.COLUMN_TIMESTAMP, System.currentTimeMillis());
 
-		final long idOfNewRow = this.database.insert(DbManager.TABLE_ACCOUNTS, null, dbValues);
-
-		if (idOfNewRow < 0) {
-			return false;
-		}
-
-		return true;
+		return (int)this.database.insert(DbManager.TABLE_ACCOUNTS, null, dbValues);
 	}
 
 	/**

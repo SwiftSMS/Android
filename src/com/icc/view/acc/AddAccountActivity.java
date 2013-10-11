@@ -31,6 +31,7 @@ import com.icc.db.IAccountDatabase;
  */
 public class AddAccountActivity extends Activity {
 
+    private static int FAILED_DB_ADD = -1;
 	private IAccountDatabase accountDatabase;
 	private TextView textAccNumber, textAccName, textAccPassword, textViewNetwork;
     private CheckBox checkActiveAccount;
@@ -90,35 +91,17 @@ public class AddAccountActivity extends Activity {
 
 		final Account account = new Account(number, accountName, password, this.selectedNetwork);
 
-		final boolean successfullyAdded = this.accountDatabase.addAccount(account);
+		final int successfullyAddedId = this.accountDatabase.addAccount(account);
 
-		if (successfullyAdded) {
+		if (successfullyAddedId != FAILED_DB_ADD) {
 			Toast.makeText(this, "Accounted Added", Toast.LENGTH_SHORT).show();
 			final Editor editor = this.preferences.edit();
-            final int lastAccountAddedId = this.getLatestAccount().getId();
-			editor.putInt(InternalString.LATEST_ACCOUNT, lastAccountAddedId);
+			editor.putInt(InternalString.LATEST_ACCOUNT, successfullyAddedId);
 
             if(checkActiveAccount.isChecked())
-                editor.putInt(InternalString.ACTIVE_ACCOUNT, lastAccountAddedId);
+                editor.putInt(InternalString.ACTIVE_ACCOUNT, successfullyAddedId);
 
 			editor.commit();
 		}
-	}
-
-	private Account getLatestAccount() {
-
-		final List<Account> accounts = this.accountDatabase.getAllAccounts();
-
-		Account latestAccount = null;
-		long createdTime = 0;
-
-		for (final Account account : accounts) {
-			if (account.getTimeStamp() > createdTime) {
-				latestAccount = account;
-				createdTime = account.getTimeStamp();
-			}
-		}
-
-		return latestAccount;
 	}
 }
