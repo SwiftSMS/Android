@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,6 +33,7 @@ public class AddAccountActivity extends Activity {
 
 	private IAccountDatabase accountDatabase;
 	private TextView textAccNumber, textAccName, textAccPassword, textViewNetwork;
+    private CheckBox checkActiveAccount;
 	private SharedPreferences preferences;
 	private Network selectedNetwork = null;
 
@@ -45,6 +47,7 @@ public class AddAccountActivity extends Activity {
 		AddAccountActivity.this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
 		AddAccountActivity.this.textAccPassword = (TextView) this.findViewById(R.id.text_acc_password);
 		AddAccountActivity.this.textViewNetwork = (TextView) this.findViewById(R.id.text_selected_network);
+        AddAccountActivity.this.checkActiveAccount = (CheckBox) this.findViewById(R.id.checkBox_active_acc);
 
         this.handleNetworkSelection();
 	}
@@ -92,7 +95,12 @@ public class AddAccountActivity extends Activity {
 		if (successfullyAdded) {
 			Toast.makeText(this, "Accounted Added", Toast.LENGTH_SHORT).show();
 			final Editor editor = this.preferences.edit();
-			editor.putInt(InternalString.LATEST_ACCOUNT, this.getLatestAccount().getId());
+            final int lastAccountAddedId = this.getLatestAccount().getId();
+			editor.putInt(InternalString.LATEST_ACCOUNT, lastAccountAddedId);
+
+            if(checkActiveAccount.isChecked())
+                editor.putInt(InternalString.ACTIVE_ACCOUNT, lastAccountAddedId);
+
 			editor.commit();
 		}
 	}
