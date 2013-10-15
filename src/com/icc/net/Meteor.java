@@ -41,12 +41,13 @@ public class Meteor extends Operator {
 	 */
 
 	@Override
-	public String login() {
+	public boolean login() {
 		final ConnectionManager loginManager = new ConnectionManager("https://www.mymeteor.ie/go/mymeteor-login-manager");
 		loginManager.addPostHeader("username", this.getAccount().getMobileNumber());
 		loginManager.addPostHeader("userpass", this.getAccount().getPassword());
+		final String loginHtml = loginManager.doConnection();
 
-		return loginManager.doConnection();
+		return loginHtml.contains("Sign out");
 	}
 
 	@Override

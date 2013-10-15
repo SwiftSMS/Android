@@ -14,7 +14,7 @@ public abstract class Operator {
 		CookieHandler.setDefault(new CookieManager());
 	}
 
-	public abstract String login();
+	public abstract boolean login();
 
 	public abstract String send(final String recipient, final String message);
 

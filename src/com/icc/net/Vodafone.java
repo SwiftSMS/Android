@@ -36,14 +36,13 @@ public class Vodafone extends Operator {
 	 */
 
 	@Override
-	public String login() {
+	public boolean login() {
 		final ConnectionManager loginManager = new ConnectionManager("https://www.vodafone.ie/myv/services/login/Login.shtml");
 		loginManager.addPostHeader("username", this.getAccount().getMobileNumber());
 		loginManager.addPostHeader("password", this.getAccount().getPassword());
-		loginManager.doConnection();
+		final String loginHtml = loginManager.doConnection();
 
-		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/");
-		return manager.doConnection();
+		return loginHtml.contains("Sign out");
 	}
 
 	@Override
