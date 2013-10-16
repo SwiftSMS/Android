@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.acc.AddAccountActivity" />
+        <activity android:name=".view.acc.ManageAccountsActivity" />
     </application>
 
 </manifest>

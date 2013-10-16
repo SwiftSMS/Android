@@ -5,5 +5,9 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/action_add_account"/>
-
+    <item
+        android:id="@+id/action_manage_account"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_manage_account"/>
 </menu>
