@@ -22,27 +22,34 @@ public class Meteor extends Operator {
 	private static final String REMAINING_SMS_URL = "https://www.mymeteor.ie/cfusion/meteor/Meteor_REST/service/freeSMS";
 	private static final String SMS_URL = "https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax";
 
+	private boolean isLoggedIn = false;
+
 	public Meteor(final Account account) {
 		super(account);
 	}
 
 	@Override
 	public boolean login() {
-		final ConnectionManager loginManager = new ConnectionManager(LOGIN_URL);
-		loginManager.addPostHeader(POST_USERNAME, this.getAccount().getMobileNumber());
-		loginManager.addPostHeader(POST_PASSWORD, this.getAccount().getPassword());
-		final String loginHtml = loginManager.doConnection();
+		if (!this.isLoggedIn) {
+			final ConnectionManager loginManager = new ConnectionManager(LOGIN_URL);
+			loginManager.addPostHeader(POST_USERNAME, this.getAccount().getMobileNumber());
+			loginManager.addPostHeader(POST_PASSWORD, this.getAccount().getPassword());
+			final String loginHtml = loginManager.doConnection();
 
-		return loginHtml.contains(LOGIN_SUCCESS_TEXT);
+			this.isLoggedIn = loginHtml.contains(LOGIN_SUCCESS_TEXT);
+		}
+		return this.isLoggedIn;
 	}
 
 	public int getRemainingSMS() {
-		final ConnectionManager manager = new ConnectionManager(REMAINING_SMS_URL);
+		this.login();
+		final ConnectionManager manager = new ConnectionManager(REMAINING_SMS_URL, "GET", false);
 		final String smsHtml = manager.doConnection();
 
 		try {
 			final JSONObject smsJson = new JSONObject(smsHtml);
-			return smsJson.getInt("remainingFreeSMS");
+			final JSONObject freeSmsJson = smsJson.getJSONObject("FreeSMS");
+			return freeSmsJson.getInt("remainingFreeSMS");
 		} catch (final JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
