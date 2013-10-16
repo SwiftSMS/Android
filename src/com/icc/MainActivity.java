@@ -13,12 +13,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.icc.acc.Account;
 import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
 import com.icc.net.Meteor;
-import com.icc.net.Operator;
 import com.icc.view.acc.AddAccountActivity;
 
 public class MainActivity extends Activity {
@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
 	private IAccountDatabase accountDatabase;
 	private SharedPreferences preferences;
 	private ProgressBar progressBar;
+	private Meteor operator;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -40,9 +41,21 @@ public class MainActivity extends Activity {
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		this.progressBar = (ProgressBar) this.findViewById(R.id.progressbar_compose);
 		this.recipientsEditText = (EditText) this.findViewById(R.id.text_compose_recipients);
+
+		final int accountId = this.preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
+		if (accountId == -1) {
+			Toast.makeText(this, "No account, please add one.", Toast.LENGTH_LONG).show();
+		} else {
+			final Account account = this.accountDatabase.getAccountById(accountId);
+			this.operator = new Meteor(account);
+		}
 	}
 
 	public void sendMessage(final View view) {
+		if (this.operator == null) {
+			Toast.makeText(this, "No account, please add one.", Toast.LENGTH_LONG).show();
+			return;
+		}
 		new AsyncTask<String, Integer, String>() {
 			@Override
 			protected void onPreExecute() {
@@ -51,18 +64,14 @@ public class MainActivity extends Activity {
 
 			@Override
 			protected String doInBackground(final String... params) {
-				final int accountId = MainActivity.this.preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
-				final Account account = MainActivity.this.accountDatabase.getAccountById(accountId);
-				// final Account account = new Account("user", "My Meteor", "pass", Network.METEOR);
-				final Operator operator = new Meteor(account);
 				this.publishProgress(1);
-				operator.login();
+				MainActivity.this.operator.login();
 				this.publishProgress(2);
 
 				final String message = MainActivity.this.messageEditText.getText().toString();
 				final String recipients = MainActivity.this.recipientsEditText.getText().toString();
 				this.publishProgress(3);
-				return operator.send(recipients, message);
+				return MainActivity.this.operator.send(recipients, message);
 			}
 
 			@Override
