@@ -18,6 +18,7 @@ import com.icc.db.IAccountDatabase;
 import com.icc.net.Meteor;
 import com.icc.view.SendTask;
 import com.icc.view.acc.AddAccountActivity;
+import com.icc.view.acc.ManageAccountsActivity;
 
 public class MainActivity extends Activity {
 
@@ -91,9 +92,16 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
-		if (item.getItemId() == R.id.action_add_account) {
-			this.startActivity(new Intent(this, AddAccountActivity.class));
-		}
+
+        switch (item.getItemId()) {
+            case R.id.action_add_account:
+                    this.startActivity(new Intent(this, AddAccountActivity.class));
+                break;
+            case R.id.action_manage_account:
+                    this.startActivity(new Intent(this, ManageAccountsActivity.class));
+                break;
+        }
+
 		return super.onMenuItemSelected(featureId, item);
 	}
 }
