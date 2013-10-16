@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.icc.acc.Account;
@@ -29,6 +30,7 @@ public class MainActivity extends Activity {
 	private SharedPreferences preferences;
 	private ProgressBar progressBar;
 	private Meteor operator;
+	private TextView remainingSMSTextView;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class MainActivity extends Activity {
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		this.progressBar = (ProgressBar) this.findViewById(R.id.progressbar_compose);
 		this.recipientsEditText = (EditText) this.findViewById(R.id.text_compose_recipients);
+		this.remainingSMSTextView = (TextView) this.findViewById(R.id.label_compose_remaining_sms);
 
 		final int accountId = this.preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
 		if (accountId == -1) {
@@ -48,7 +51,22 @@ public class MainActivity extends Activity {
 		} else {
 			final Account account = this.accountDatabase.getAccountById(accountId);
 			this.operator = new Meteor(account);
+			this.getRemainingSMS();
 		}
+	}
+
+	private void getRemainingSMS() {
+		new AsyncTask<String, Integer, Integer>() {
+			@Override
+			protected Integer doInBackground(final String... params) {
+				return MainActivity.this.operator.getRemainingSMS();
+			}
+
+			@Override
+			protected void onPostExecute(final Integer result) {
+				MainActivity.this.remainingSMSTextView.setText(result + " remaining");
+			}
+		}.execute();
 	}
 
 	public void sendMessage(final View view) {
