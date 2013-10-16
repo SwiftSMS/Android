@@ -1,8 +1,6 @@
 package com.icc;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,8 +9,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,15 +16,11 @@ import com.icc.acc.Account;
 import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
 import com.icc.net.Meteor;
+import com.icc.view.SendTask;
 import com.icc.view.acc.AddAccountActivity;
 
 public class MainActivity extends Activity {
 
-	private EditText messageEditText;
-	private EditText recipientsEditText;
-	private IAccountDatabase accountDatabase;
-	private SharedPreferences preferences;
-	private ProgressBar progressBar;
 	private Meteor operator;
 	private TextView remainingSMSTextView;
 
@@ -36,25 +28,32 @@ public class MainActivity extends Activity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_main);
+		this.getActiveAccount();
 
-		this.preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
-		this.accountDatabase = AccountDataSource.getInstance(this);
-
-		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
-		this.progressBar = (ProgressBar) this.findViewById(R.id.progressbar_compose);
-		this.recipientsEditText = (EditText) this.findViewById(R.id.text_compose_recipients);
 		this.remainingSMSTextView = (TextView) this.findViewById(R.id.label_compose_remaining_sms);
+	}
 
-		final int accountId = this.preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
+	/**
+	 * This method is responsible for retrieving the account info from the account database.
+	 */
+	private void getActiveAccount() {
+		final SharedPreferences preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
+		final IAccountDatabase accountDatabase = AccountDataSource.getInstance(this);
+
+		final int accountId = preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
 		if (accountId == -1) {
 			Toast.makeText(this, "No account, please add one.", Toast.LENGTH_LONG).show();
 		} else {
-			final Account account = this.accountDatabase.getAccountById(accountId);
+			final Account account = accountDatabase.getAccountById(accountId);
 			this.operator = new Meteor(account);
 			this.getRemainingSMS();
 		}
 	}
 
+	/**
+	 * This method queries the Network provides web API for the users remaining number of SMS messages and updates the UI with
+	 * the information.
+	 */
 	private void getRemainingSMS() {
 		new AsyncTask<String, Integer, Integer>() {
 			@Override
@@ -69,44 +68,19 @@ public class MainActivity extends Activity {
 		}.execute();
 	}
 
+	/**
+	 * This method handles the UI click of the send button.
+	 * 
+	 * @param view
+	 *            The required View parameter.
+	 */
 	public void sendMessage(final View view) {
 		if (this.operator == null) {
 			Toast.makeText(this, "No account, please add one.", Toast.LENGTH_LONG).show();
-			return;
+		} else {
+			final SendTask sendTask = new SendTask(this, this.operator);
+			sendTask.execute();
 		}
-		new AsyncTask<String, Integer, String>() {
-			@Override
-			protected void onPreExecute() {
-				MainActivity.this.progressBar.setVisibility(View.VISIBLE);
-			}
-
-			@Override
-			protected String doInBackground(final String... params) {
-				this.publishProgress(1);
-				MainActivity.this.operator.login();
-				this.publishProgress(2);
-
-				final String message = MainActivity.this.messageEditText.getText().toString();
-				final String recipients = MainActivity.this.recipientsEditText.getText().toString();
-				this.publishProgress(3);
-				return MainActivity.this.operator.send(recipients, message);
-			}
-
-			@Override
-			protected void onProgressUpdate(final Integer... values) {
-				MainActivity.this.progressBar.setProgress(values[0]);
-			}
-
-			@Override
-			protected void onPostExecute(final String result) {
-				this.publishProgress(4);
-				final Builder builder = new AlertDialog.Builder(MainActivity.this);
-				builder.setMessage(result);
-				builder.setTitle("Server Message");
-				builder.show();
-				MainActivity.this.progressBar.setVisibility(View.GONE);
-			}
-		}.execute();
 	}
 
 	@Override
