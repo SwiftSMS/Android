@@ -19,18 +19,41 @@ public class ConnectionManager {
 	private final String webpageUrl;
 	private final Map<String, String> requestHeaders = new HashMap<String, String>();
 
-	public ConnectionManager(final String webpageUrl) {
+	/**
+	 * Create a new ConnectionManager with the settings provided to open a connection to the URL provided using the
+	 * {@link HttpURLConnection} APIs. <br />
+	 * 
+	 * @param webpageUrl
+	 *            The URL of the webpage to connect to.
+	 * @param requestMethod
+	 *            The request method to use for the connection.
+	 * @param doOutput
+	 *            Whether output to the server should be done or not.
+	 */
+	public ConnectionManager(final String webpageUrl, final String requestMethod, final boolean doOutput) {
 		this.webpageUrl = webpageUrl;
-		this.initalize();
+		this.initalize(requestMethod, doOutput);
 	}
 
-	private void initalize() {
+	/**
+	 * Create a new ConnectionManager with default settings to open a connection to the URL provided using the
+	 * {@link HttpURLConnection} APIs. <br />
+	 * By default uses a POST method and requires output to be made.
+	 * 
+	 * @param webpageUrl
+	 *            The URL of the webpage to connect to.
+	 */
+	public ConnectionManager(final String webpageUrl) {
+		this(webpageUrl, "POST", true);
+	}
+
+	private void initalize(final String method, final boolean doOutput) {
 		try {
 			final URL url = new URL(this.webpageUrl);
 			this.connection = (HttpURLConnection) url.openConnection();
 			// this.connection.setChunkedStreamingMode(0);
-			this.connection.setRequestMethod("POST");
-			this.connection.setDoOutput(true);
+			this.connection.setRequestMethod(method);
+			this.connection.setDoOutput(doOutput);
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -44,16 +67,18 @@ public class ConnectionManager {
 	public String doConnection() {
 		final StringBuilder result = new StringBuilder();
 		try {
-			final Writer writer = new BufferedWriter(new OutputStreamWriter(this.connection.getOutputStream()));
-			boolean firstHeader = true;
-			for (final String key : this.requestHeaders.keySet()) {
-				if (!firstHeader) {
-					writer.write("&");
+			if (this.connection.getDoOutput()) {
+				final Writer writer = new BufferedWriter(new OutputStreamWriter(this.connection.getOutputStream()));
+				boolean firstHeader = true;
+				for (final String key : this.requestHeaders.keySet()) {
+					if (!firstHeader) {
+						writer.write("&");
+					}
+					writer.write(key + "=" + this.requestHeaders.get(key));
+					firstHeader = false;
 				}
-				writer.write(key + "=" + this.requestHeaders.get(key));
-				firstHeader = false;
+				writer.close();
 			}
-			writer.close();
 
 			result.append(this.readStream(this.connection.getInputStream()));
 		} catch (final IOException e) {

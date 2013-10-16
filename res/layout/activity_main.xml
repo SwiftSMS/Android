@@ -23,6 +23,13 @@
 
             <requestFocus />
         </EditText>
+
+        <TextView
+            android:id="@+id/label_compose_remaining_sms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/text_compose_recipients" />
     </RelativeLayout>
 
     <ScrollView
@@ -38,6 +45,18 @@
             android:paddingLeft="@dimen/element_margin"
             android:paddingRight="@dimen/element_margin" >
 
+            <EditText
+                android:id="@+id/text_compose_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/button_compose_send"
+                android:ems="10"
+                android:hint="@string/type_message"
+                android:inputType="text|textCapSentences|textMultiLine"
+                android:maxLines="5" />
+
             <ImageButton
                 android:id="@+id/button_compose_send"
                 android:layout_width="@dimen/element_size"
@@ -49,29 +68,17 @@
                 android:onClick="sendMessage"
                 android:scaleType="fitCenter"
                 android:src="@android:drawable/ic_menu_send" />
-
-            <EditText
-                android:id="@+id/text_compose_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:maxLines="5"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/button_compose_send"
-                android:ems="10"
-                android:hint="@string/type_message"
-                android:inputType="text|textCapSentences|textMultiLine" />
         </RelativeLayout>
     </ScrollView>
 
     <ProgressBar
         android:id="@+id/progressbar_compose"
-        android:layout_width="wrap_content"
         style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:max="4"
-        android:visibility="gone"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        android:max="4"
+        android:visibility="gone" />
 
 </RelativeLayout>
