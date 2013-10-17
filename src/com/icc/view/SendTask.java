@@ -1,13 +1,12 @@
 package com.icc.view;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.icc.R;
 import com.icc.net.Operator;
@@ -46,20 +45,23 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 
 	@Override
 	protected Boolean doInBackground(final String... params) {
-		this.operator.login();
+		if (this.operator.login()) {
+			final String message = this.messageEditText.getText().toString();
+			final String recipients = this.recipientsEditText.getText().toString();
 
-		final String message = this.messageEditText.getText().toString();
-		final String recipients = this.recipientsEditText.getText().toString();
-		return this.operator.send(recipients, message);
+			return this.operator.send(recipients, message);
+		}
+		return false;
 	}
 
 	@Override
 	protected void onPostExecute(final Boolean result) {
-		final Builder builder = new AlertDialog.Builder(this.activity);
-		builder.setMessage(result.toString());
-		builder.setTitle("Server Message");
-		builder.show();
 		this.progressBar.setVisibility(View.GONE);
+		if (result) {
+			Toast.makeText(this.activity, "Message sent!", Toast.LENGTH_LONG).show();
+		} else {
+			Toast.makeText(this.activity, "Message failed to send!", Toast.LENGTH_LONG).show();
+		}
 	}
 
 }
