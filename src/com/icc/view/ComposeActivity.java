@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.icc.InternalString;
 import com.icc.R;
@@ -28,22 +27,22 @@ public class ComposeActivity extends Activity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_main);
-		this.getActiveAccount();
 
 		this.remainingSMSTextView = (TextView) this.findViewById(R.id.label_compose_remaining_sms);
 	}
 
-	/**
-	 * This method is responsible for retrieving the account info from the account database.
-	 */
-	private void getActiveAccount() {
-		final SharedPreferences preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
-		final IAccountDatabase accountDatabase = AccountDataSource.getInstance(this);
+	@Override
+	protected void onResume() {
+		super.onResume();
 
+		final SharedPreferences preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
 		final int accountId = preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
+
 		if (accountId == -1) {
-			Toast.makeText(this, "No account, please add one.", Toast.LENGTH_LONG).show();
+			this.startActivity(new Intent(this, AddAccountActivity.class));
+			this.finish();
 		} else {
+			final IAccountDatabase accountDatabase = AccountDataSource.getInstance(this);
 			final Account account = accountDatabase.getAccountById(accountId);
 			this.operator = new Meteor(account);
 			this.getRemainingSMS();
@@ -75,12 +74,8 @@ public class ComposeActivity extends Activity {
 	 *            The required View parameter.
 	 */
 	public void sendMessage(final View view) {
-		if (this.operator == null) {
-			Toast.makeText(this, "No account, please add one.", Toast.LENGTH_LONG).show();
-		} else {
-			final SendTask sendTask = new SendTask(this, this.operator);
-			sendTask.execute();
-		}
+		final SendTask sendTask = new SendTask(this, this.operator);
+		sendTask.execute();
 	}
 
 	@Override
