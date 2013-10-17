@@ -69,9 +69,8 @@
                     android:id="@+id/label_compose_character_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:gravity="center_horizontal|bottom"
-                    android:text="252" />
+                    android:visibility="gone" />
 
                 <ImageButton
                     android:id="@+id/button_compose_send"
@@ -88,12 +87,10 @@
 
     <ProgressBar
         android:id="@+id/progressbar_compose"
-        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:max="4"
         android:visibility="gone" />
 
 </RelativeLayout>

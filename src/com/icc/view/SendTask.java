@@ -46,24 +46,15 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 
 	@Override
 	protected Boolean doInBackground(final String... params) {
-		this.publishProgress(1);
 		this.operator.login();
-		this.publishProgress(2);
 
 		final String message = this.messageEditText.getText().toString();
 		final String recipients = this.recipientsEditText.getText().toString();
-		this.publishProgress(3);
 		return this.operator.send(recipients, message);
 	}
 
 	@Override
-	protected void onProgressUpdate(final Integer... values) {
-		this.progressBar.setProgress(values[0]);
-	}
-
-	@Override
 	protected void onPostExecute(final Boolean result) {
-		this.publishProgress(4);
 		final Builder builder = new AlertDialog.Builder(this.activity);
 		builder.setMessage(result.toString());
 		builder.setTitle("Server Message");
