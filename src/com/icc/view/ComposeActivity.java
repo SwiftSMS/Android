@@ -16,11 +16,12 @@ import com.icc.R;
 import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
 import com.icc.model.Account;
-import com.icc.net.Meteor;
+import com.icc.net.Operator;
+import com.icc.net.OperatorFactory;
 
 public class ComposeActivity extends Activity {
 
-	private Meteor operator;
+	private Operator operator;
 	private TextView remainingSMSTextView;
 
 	@Override
@@ -44,7 +45,7 @@ public class ComposeActivity extends Activity {
 		} else {
 			final IAccountDatabase accountDatabase = AccountDataSource.getInstance(this);
 			final Account account = accountDatabase.getAccountById(accountId);
-			this.operator = new Meteor(account);
+			this.operator = OperatorFactory.getOperator(account);
 			this.getRemainingSMS();
 		}
 	}

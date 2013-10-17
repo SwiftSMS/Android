@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.icc.R;
-import com.icc.net.Meteor;
+import com.icc.net.Operator;
 
 /**
  * This class is an {@link AsyncTask} responsible for sending a web text using the provided operator.
@@ -21,7 +21,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	private final ProgressBar progressBar;
 	private final EditText recipientsEditText;
 	private final Context activity;
-	private final Meteor operator;
+	private final Operator operator;
 
 	/**
 	 * Create a new instance of the sending Task.
@@ -31,7 +31,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	 * @param operator
 	 *            The network operator used to send the message.
 	 */
-	public SendTask(final Activity activity, final Meteor operator) {
+	public SendTask(final Activity activity, final Operator operator) {
 		this.activity = activity;
 		this.operator = operator;
 		this.messageEditText = (EditText) activity.findViewById(R.id.text_compose_message);
