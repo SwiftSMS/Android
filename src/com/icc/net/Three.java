@@ -12,7 +12,7 @@ public class Three extends Operator {
 	}
 
 	@Override
-	public boolean login() {
+	boolean doLogin() {
 		final ConnectionManager loginManager = new ConnectionManager("https://webtexts.three.ie/webtext/users/login");
 		loginManager.addPostHeader("UserTelephoneNo", this.getAccount().getMobileNumber());
 		loginManager.addPostHeader("UserPin", this.getAccount().getPassword());
@@ -22,7 +22,14 @@ public class Three extends Operator {
 	}
 
 	@Override
-	public String send(final String recipient, final String message) {
-		return null;
+	public boolean send(final String recipient, final String message) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int getRemainingSMS() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

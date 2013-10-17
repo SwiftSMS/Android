@@ -15,7 +15,7 @@ import com.icc.net.Meteor;
 /**
  * This class is an {@link AsyncTask} responsible for sending a web text using the provided operator.
  */
-public class SendTask extends AsyncTask<String, Integer, String> {
+public class SendTask extends AsyncTask<String, Integer, Boolean> {
 
 	private final EditText messageEditText;
 	private final ProgressBar progressBar;
@@ -45,7 +45,7 @@ public class SendTask extends AsyncTask<String, Integer, String> {
 	}
 
 	@Override
-	protected String doInBackground(final String... params) {
+	protected Boolean doInBackground(final String... params) {
 		this.publishProgress(1);
 		this.operator.login();
 		this.publishProgress(2);
@@ -62,10 +62,10 @@ public class SendTask extends AsyncTask<String, Integer, String> {
 	}
 
 	@Override
-	protected void onPostExecute(final String result) {
+	protected void onPostExecute(final Boolean result) {
 		this.publishProgress(4);
 		final Builder builder = new AlertDialog.Builder(this.activity);
-		builder.setMessage(result);
+		builder.setMessage(result.toString());
 		builder.setTitle("Server Message");
 		builder.show();
 		this.progressBar.setVisibility(View.GONE);
