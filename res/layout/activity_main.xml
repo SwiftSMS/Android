@@ -51,23 +51,38 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/button_compose_send"
+                android:layout_toLeftOf="@+id/layout_compose_bottom_right"
                 android:ems="10"
                 android:hint="@string/type_message"
                 android:inputType="text|textCapSentences|textMultiLine"
                 android:maxLines="5" />
 
-            <ImageButton
-                android:id="@+id/button_compose_send"
-                android:layout_width="@dimen/element_size"
-                android:layout_height="@dimen/element_size"
+            <LinearLayout
+                android:id="@+id/layout_compose_bottom_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentRight="true"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/app_name"
-                android:onClick="sendMessage"
-                android:scaleType="fitCenter"
-                android:src="@android:drawable/ic_menu_send" />
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/label_compose_character_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:gravity="center_horizontal|bottom"
+                    android:text="252" />
+
+                <ImageButton
+                    android:id="@+id/button_compose_send"
+                    android:layout_width="@dimen/element_size"
+                    android:layout_height="@dimen/element_size"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="sendMessage"
+                    android:scaleType="fitCenter"
+                    android:src="@android:drawable/ic_menu_send" />
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
 

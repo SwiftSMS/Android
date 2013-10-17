@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.icc.InternalString;
@@ -30,6 +32,16 @@ public class ComposeActivity extends Activity {
 		this.setContentView(R.layout.activity_main);
 
 		this.remainingSMSTextView = (TextView) this.findViewById(R.id.label_compose_remaining_sms);
+		this.setupCharacterCounter();
+	}
+
+	/**
+	 * This method is responsible for adding the {@link TextWatcher} that is used to display the SMS character count.
+	 */
+	private void setupCharacterCounter() {
+		final EditText messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
+		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
+		messageEditText.addTextChangedListener(new CharacterCountTextWatcher(characterCountTextView));
 	}
 
 	@Override
