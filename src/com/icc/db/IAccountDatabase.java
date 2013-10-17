@@ -1,6 +1,7 @@
 package com.icc.db;
 
-import com.icc.acc.Account;
+import com.icc.model.Account;
+
 import java.util.List;
 
 /**

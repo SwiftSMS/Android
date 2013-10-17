@@ -1,6 +1,6 @@
 package com.icc.net;
 
-import com.icc.acc.Account;
+import com.icc.model.Account;
 
 /**
  * Created by Rob Powell on 04/10/13.

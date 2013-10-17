@@ -1,6 +1,4 @@
-package com.icc.view.acc;
-
-import java.util.List;
+package com.icc.view;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -18,10 +16,10 @@ import android.widget.Toast;
 
 import com.icc.InternalString;
 import com.icc.R;
-import com.icc.acc.Account;
-import com.icc.acc.Network;
 import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
+import com.icc.model.Account;
+import com.icc.model.Network;
 
 /**
  * Activity to handle adding a new operator account to ICC
@@ -31,10 +29,10 @@ import com.icc.db.IAccountDatabase;
  */
 public class AddAccountActivity extends Activity {
 
-    private static int FAILED_DB_ADD = -1;
+	private static int FAILED_DB_ADD = -1;
 	private IAccountDatabase accountDatabase;
 	private TextView textAccNumber, textAccName, textAccPassword, textViewNetwork;
-    private CheckBox checkActiveAccount;
+	private CheckBox checkActiveAccount;
 	private SharedPreferences preferences;
 	private Network selectedNetwork = null;
 
@@ -48,15 +46,15 @@ public class AddAccountActivity extends Activity {
 		AddAccountActivity.this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
 		AddAccountActivity.this.textAccPassword = (TextView) this.findViewById(R.id.text_acc_password);
 		AddAccountActivity.this.textViewNetwork = (TextView) this.findViewById(R.id.text_selected_network);
-        AddAccountActivity.this.checkActiveAccount = (CheckBox) this.findViewById(R.id.checkBox_active_acc);
+		AddAccountActivity.this.checkActiveAccount = (CheckBox) this.findViewById(R.id.checkBox_active_acc);
 
-        this.handleNetworkSelection();
+		this.handleNetworkSelection();
 	}
 
 	@Override
 	protected void onResume() {
 
-        AddAccountActivity.this.accountDatabase = AccountDataSource.getInstance(this);
+		AddAccountActivity.this.accountDatabase = AccountDataSource.getInstance(this);
 
 		super.onResume();
 	}
@@ -93,13 +91,14 @@ public class AddAccountActivity extends Activity {
 
 		final int successfullyAddedId = this.accountDatabase.addAccount(account);
 
-		if (successfullyAddedId != FAILED_DB_ADD) {
+		if (successfullyAddedId != AddAccountActivity.FAILED_DB_ADD) {
 			Toast.makeText(this, "Accounted Added", Toast.LENGTH_SHORT).show();
 			final Editor editor = this.preferences.edit();
 			editor.putInt(InternalString.LATEST_ACCOUNT, successfullyAddedId);
 
-            if(checkActiveAccount.isChecked())
-                editor.putInt(InternalString.ACTIVE_ACCOUNT, successfullyAddedId);
+			if (this.checkActiveAccount.isChecked()) {
+				editor.putInt(InternalString.ACTIVE_ACCOUNT, successfullyAddedId);
+			}
 
 			editor.commit();
 		}

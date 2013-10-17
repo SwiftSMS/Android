@@ -3,7 +3,7 @@ package com.icc.net;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.icc.acc.Account;
+import com.icc.model.Account;
 
 public class Meteor extends Operator {
 

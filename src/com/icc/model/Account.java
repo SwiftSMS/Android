@@ -1,4 +1,4 @@
-package com.icc.acc;
+package com.icc.model;
 
 /**
  * Account Object used for the ICC user's account details

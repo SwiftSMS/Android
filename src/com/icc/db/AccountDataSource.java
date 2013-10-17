@@ -8,8 +8,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.icc.acc.Account;
-import com.icc.acc.Network;
+import com.icc.model.Account;
+import com.icc.model.Network;
 
 /**
  * Access object for the accounts table in the database This is a Singleton Factory class

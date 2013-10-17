@@ -1,4 +1,4 @@
-package com.icc.acc;
+package com.icc.model;
 
 /**
  * Simple enum to hold the current Network operators ICC will support.

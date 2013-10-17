@@ -3,7 +3,7 @@ package com.icc.net;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 
-import com.icc.acc.Account;
+import com.icc.model.Account;
 
 /**
  * This class contains all of the generic methods and actions needed for interaction with an operators website.

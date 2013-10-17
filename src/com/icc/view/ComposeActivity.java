@@ -1,4 +1,4 @@
-package com.icc;
+package com.icc.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,15 +12,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.icc.acc.Account;
+import com.icc.InternalString;
+import com.icc.R;
 import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
+import com.icc.model.Account;
 import com.icc.net.Meteor;
-import com.icc.view.SendTask;
-import com.icc.view.acc.AddAccountActivity;
-import com.icc.view.acc.ManageAccountsActivity;
 
-public class MainActivity extends Activity {
+public class ComposeActivity extends Activity {
 
 	private Meteor operator;
 	private TextView remainingSMSTextView;
@@ -59,12 +58,12 @@ public class MainActivity extends Activity {
 		new AsyncTask<String, Integer, Integer>() {
 			@Override
 			protected Integer doInBackground(final String... params) {
-				return MainActivity.this.operator.getRemainingSMS();
+				return ComposeActivity.this.operator.getRemainingSMS();
 			}
 
 			@Override
 			protected void onPostExecute(final Integer result) {
-				MainActivity.this.remainingSMSTextView.setText(result + " remaining");
+				ComposeActivity.this.remainingSMSTextView.setText(result + " remaining");
 			}
 		}.execute();
 	}
@@ -93,14 +92,14 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.action_add_account:
-                    this.startActivity(new Intent(this, AddAccountActivity.class));
-                break;
-            case R.id.action_manage_account:
-                    this.startActivity(new Intent(this, ManageAccountsActivity.class));
-                break;
-        }
+		switch (item.getItemId()) {
+		case R.id.action_add_account:
+			this.startActivity(new Intent(this, AddAccountActivity.class));
+			break;
+		case R.id.action_manage_account:
+			this.startActivity(new Intent(this, ManageAccountsActivity.class));
+			break;
+		}
 
 		return super.onMenuItemSelected(featureId, item);
 	}

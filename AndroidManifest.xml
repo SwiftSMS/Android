@@ -7,8 +7,8 @@
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="18" />
-    
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.icc.MainActivity"
+            android:name="com.icc.view.ComposeActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,8 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.acc.AddAccountActivity" />
-        <activity android:name=".view.acc.ManageAccountsActivity" />
+        <activity android:name="com.icc.view.AddAccountActivity" />
+        <activity android:name="com.icc.view.ManageAccountsActivity" />
     </application>
 
 </manifest>

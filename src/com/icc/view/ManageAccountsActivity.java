@@ -1,4 +1,4 @@
-package com.icc.view.acc;
+package com.icc.view;
 
 import android.app.Activity;
 import android.os.Bundle;
