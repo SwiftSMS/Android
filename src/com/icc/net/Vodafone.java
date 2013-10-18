@@ -46,7 +46,7 @@ public class Vodafone extends Operator {
 	}
 
 	@Override
-	public boolean send(final String recipient, final String message) {
+	boolean doSend(final String recipient, final String message) {
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/Process.shtml");
 		manager.addPostHeader("org.apache.struts.taglib.html.TOKEN", "MY TOKEN");
 		manager.addPostHeader("message", message);
@@ -58,7 +58,7 @@ public class Vodafone extends Operator {
 	}
 
 	@Override
-	public int getRemainingSMS() {
+	int doGetRemainingSMS() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

@@ -46,8 +46,7 @@ public class Meteor extends Operator {
 	}
 
 	@Override
-	public int getRemainingSMS() {
-		this.login();
+	int doGetRemainingSMS() {
 		final ConnectionManager manager = new ConnectionManager(REMAINING_SMS_URL, GET_REQUEST_METHOD, false);
 		final String smsHtml = manager.doConnection();
 
@@ -58,13 +57,12 @@ public class Meteor extends Operator {
 		} catch (final JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return -1;
 		}
-
-		return 0;
 	}
 
 	@Override
-	public boolean send(final String recipient, final String message) {
+	boolean doSend(final String recipient, final String message) {
 		this.addRecipient(recipient);
 
 		final ConnectionManager sendManager = new ConnectionManager(SMS_URL);

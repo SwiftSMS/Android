@@ -22,13 +22,13 @@ public class Three extends Operator {
 	}
 
 	@Override
-	public boolean send(final String recipient, final String message) {
+	boolean doSend(final String recipient, final String message) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public int getRemainingSMS() {
+	int doGetRemainingSMS() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
