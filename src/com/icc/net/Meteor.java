@@ -81,4 +81,9 @@ public class Meteor extends Operator {
 		addManager.addPostHeader(POST_ADD, POST_VALUE_NO_ID + recipient);
 		addManager.doConnection();
 	}
+
+	@Override
+	int doGetCharacterLimit() {
+		return 480;
+	}
 }
