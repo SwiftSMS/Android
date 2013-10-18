@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +24,8 @@ public class ComposeActivity extends Activity {
 
 	private Operator operator;
 	private TextView remainingSMSTextView;
+	private CharacterCountTextWatcher charCountWatcher;
+	private EditText messageEditText;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -32,16 +33,11 @@ public class ComposeActivity extends Activity {
 		this.setContentView(R.layout.activity_main);
 
 		this.remainingSMSTextView = (TextView) this.findViewById(R.id.label_compose_remaining_sms);
-		this.setupCharacterCounter();
-	}
+		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 
-	/**
-	 * This method is responsible for adding the {@link TextWatcher} that is used to display the SMS character count.
-	 */
-	private void setupCharacterCounter() {
-		final EditText messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
-		messageEditText.addTextChangedListener(new CharacterCountTextWatcher(characterCountTextView));
+		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
+		this.messageEditText.addTextChangedListener(this.charCountWatcher);
 	}
 
 	@Override
@@ -59,6 +55,7 @@ public class ComposeActivity extends Activity {
 			final Account account = accountDatabase.getAccountById(accountId);
 			this.operator = OperatorFactory.getOperator(account);
 			this.getRemainingSMS();
+			this.getMaxCharacterCount();
 		}
 	}
 
@@ -76,6 +73,24 @@ public class ComposeActivity extends Activity {
 			@Override
 			protected void onPostExecute(final Integer result) {
 				ComposeActivity.this.remainingSMSTextView.setText(result + " remaining");
+			}
+		}.execute();
+	}
+
+	/**
+	 * This method queries the Network provides web API for the maximum character count of a message.
+	 */
+	private void getMaxCharacterCount() {
+		new AsyncTask<String, Integer, Integer>() {
+			@Override
+			protected Integer doInBackground(final String... params) {
+				return ComposeActivity.this.operator.getCharacterLimit();
+			}
+
+			@Override
+			protected void onPostExecute(final Integer result) {
+				ComposeActivity.this.charCountWatcher.setCharacterLimit(result);
+				ComposeActivity.this.charCountWatcher.afterTextChanged(ComposeActivity.this.messageEditText.getEditableText());
 			}
 		}.execute();
 	}

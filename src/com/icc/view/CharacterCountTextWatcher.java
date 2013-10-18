@@ -12,6 +12,7 @@ import android.widget.TextView;
 public class CharacterCountTextWatcher implements TextWatcher {
 
 	private final TextView characterCountTextView;
+	private int maxCharacterCount = 0;
 
 	/**
 	 * Create the character counting {@link TextWatcher}.
@@ -25,10 +26,7 @@ public class CharacterCountTextWatcher implements TextWatcher {
 
 	@Override
 	public void afterTextChanged(final Editable s) {
-		if (s.length() > 100) {
-			this.characterCountTextView.setText(Integer.toString(s.length()));
-			this.characterCountTextView.setVisibility(View.VISIBLE);
-		}
+		this.updateCharacterCount(s.length());
 	}
 
 	@Override
@@ -37,5 +35,17 @@ public class CharacterCountTextWatcher implements TextWatcher {
 
 	@Override
 	public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+	}
+
+	private void updateCharacterCount(final int characters) {
+		if (characters > 100 && this.maxCharacterCount > 0) {
+			final int charactersRemaining = this.maxCharacterCount - characters;
+			this.characterCountTextView.setText(Integer.toString(charactersRemaining));
+			this.characterCountTextView.setVisibility(View.VISIBLE);
+		}
+	}
+
+	public void setCharacterLimit(final int result) {
+		this.maxCharacterCount = result;
 	}
 }

@@ -12,6 +12,7 @@ public abstract class Operator {
 
 	private final Account account;
 	private boolean isLoggedIn = false;
+	private int characterLimit = -1;
 
 	/**
 	 * Create a new Operator using the provided account.
@@ -99,6 +100,20 @@ public abstract class Operator {
 	 * @return <code>true</code> if the message was sent successfully else <code>false</code>
 	 */
 	abstract boolean doSend(final String recipient, final String message);
+
+	public final int getCharacterLimit() {
+		if (this.characterLimit == -1) {
+			this.login();
+			this.characterLimit = this.doGetCharacterLimit();
+			if (this.characterLimit == -1) {
+				this.retryLogin();
+				this.characterLimit = this.doGetCharacterLimit();
+			}
+		}
+		return this.characterLimit;
+	}
+
+	abstract int doGetCharacterLimit();
 
 	/**
 	 * This method returns the {@link Account} used to construct this instance of {@link Operator}. It contains the users

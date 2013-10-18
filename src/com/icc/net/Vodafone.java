@@ -62,4 +62,9 @@ public class Vodafone extends Operator {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	int doGetCharacterLimit() {
+		return 459;
+	}
 }
