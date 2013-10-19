@@ -23,20 +23,19 @@ import com.icc.net.OperatorFactory;
 public class ComposeActivity extends Activity {
 
 	private Operator operator;
-	private TextView remainingSMSTextView;
 	private CharacterCountTextWatcher charCountWatcher;
 	private EditText messageEditText;
+	private MenuItem actionBarRemainingSms;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_main);
 
-		this.remainingSMSTextView = (TextView) this.findViewById(R.id.label_compose_remaining_sms);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
-
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
+
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
 	}
 
@@ -78,7 +77,7 @@ public class ComposeActivity extends Activity {
 
 			@Override
 			protected void onPostExecute(final Integer result) {
-				ComposeActivity.this.remainingSMSTextView.setText(result + " remaining");
+				ComposeActivity.this.actionBarRemainingSms.setTitle(result.toString());
 			}
 		}.execute();
 	}
@@ -115,6 +114,7 @@ public class ComposeActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		this.getMenuInflater().inflate(R.menu.main, menu);
+		this.actionBarRemainingSms = menu.findItem(R.id.action_remaining_sms);
 		return true;
 	}
 
