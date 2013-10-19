@@ -26,7 +26,14 @@ public class CharacterCountTextWatcher implements TextWatcher {
 
 	@Override
 	public void afterTextChanged(final Editable s) {
-		this.updateCharacterCount(s.length());
+		if (s.length() > this.maxCharacterCount) {
+			s.delete(this.maxCharacterCount, s.length());
+		}
+		if (s.length() > 100 && this.maxCharacterCount > 0) {
+			final int charactersRemaining = this.maxCharacterCount - s.length();
+			this.characterCountTextView.setText(Integer.toString(charactersRemaining));
+			this.characterCountTextView.setVisibility(View.VISIBLE);
+		}
 	}
 
 	@Override
@@ -35,14 +42,6 @@ public class CharacterCountTextWatcher implements TextWatcher {
 
 	@Override
 	public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
-	}
-
-	private void updateCharacterCount(final int characters) {
-		if (characters > 100 && this.maxCharacterCount > 0) {
-			final int charactersRemaining = this.maxCharacterCount - characters;
-			this.characterCountTextView.setText(Integer.toString(charactersRemaining));
-			this.characterCountTextView.setVisibility(View.VISIBLE);
-		}
 	}
 
 	public void setCharacterLimit(final int result) {
