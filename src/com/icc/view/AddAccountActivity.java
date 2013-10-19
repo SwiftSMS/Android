@@ -102,5 +102,8 @@ public class AddAccountActivity extends Activity {
 			}
 			editor.commit();
 		}
+
+		this.setResult(Activity.RESULT_OK);
+		this.finish();
 	}
 }

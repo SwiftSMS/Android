@@ -48,14 +48,20 @@ public class ComposeActivity extends Activity {
 		final int accountId = preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
 
 		if (accountId == -1) {
-			this.startActivity(new Intent(this, AddAccountActivity.class));
-			this.finish();
+			this.startActivityForResult(new Intent(this, AddAccountActivity.class), 0);
 		} else {
 			final IAccountDatabase accountDatabase = AccountDataSource.getInstance(this);
 			final Account account = accountDatabase.getAccountById(accountId);
 			this.operator = OperatorFactory.getOperator(account);
 			this.getRemainingSMS();
 			this.getMaxCharacterCount();
+		}
+	}
+
+	@Override
+	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+		if (resultCode == Activity.RESULT_CANCELED) {
+			this.finish();
 		}
 	}
 
