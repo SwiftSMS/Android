@@ -82,13 +82,14 @@ public class AddAccountActivity extends Activity {
 	}
 
 	public void addAccount(final View view) {
-
 		final String number = AddAccountActivity.this.textAccNumber.getText().toString();
-		final String accountName = AddAccountActivity.this.textAccName.getText().toString();
 		final String password = AddAccountActivity.this.textAccPassword.getText().toString();
 
-		final Account account = new Account(number, accountName, password, this.selectedNetwork);
+		final String defaultAccName = this.selectedNetwork + " (" + number.substring(number.length() - 4) + ")";
+		final String enteredAccName = AddAccountActivity.this.textAccName.getText().toString();
+		final String accountName = enteredAccName.equals("") ? defaultAccName : enteredAccName;
 
+		final Account account = new Account(number, accountName, password, this.selectedNetwork);
 		final int successfullyAddedId = this.accountDatabase.addAccount(account);
 
 		if (successfullyAddedId != AddAccountActivity.FAILED_DB_ADD) {
@@ -99,7 +100,6 @@ public class AddAccountActivity extends Activity {
 			if (this.checkActiveAccount.isChecked()) {
 				editor.putInt(InternalString.ACTIVE_ACCOUNT, successfullyAddedId);
 			}
-
 			editor.commit();
 		}
 	}
