@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.icc.R;
 import com.icc.model.Account;
@@ -40,14 +41,15 @@ public class AccountAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(final int i, final View view, final ViewGroup viewGroup) {
-		View v = view;
-		if (v == null) {
-			v = AccountAdapter.layoutInflater.inflate(R.layout.manage_account_list_item, null);
+	public View getView(final int position, final View convertView, final ViewGroup parent) {
+		View view = convertView;
+		if (view == null) {
+			view = AccountAdapter.layoutInflater.inflate(R.layout.manage_account_list_item, null);
 		}
 
-		v.findViewById(R.id.textview_manage_account_name);
+		final TextView textViewAccountName = (TextView) view.findViewById(R.id.textview_manage_account_name);
+		textViewAccountName.setText(this.accounts.get(position).getAccountName());
 
-		return v;
+		return view;
 	}
 }
