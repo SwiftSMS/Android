@@ -91,7 +91,7 @@ public class Meteor extends Operator {
 		final String charsText = "charsLeft\" value='";
 		final int startPos = html.indexOf(charsText) + charsText.length();
 		final int endPos = html.indexOf("'", startPos);
-		if (startPos > 0 && endPos > 0) {
+		if (startPos > charsText.length()) {
 			final String characterCount = html.substring(startPos, endPos);
 			return Integer.valueOf(characterCount);
 		} else {
