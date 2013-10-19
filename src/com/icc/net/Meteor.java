@@ -12,6 +12,7 @@ public class Meteor extends Operator {
 
 	private static final String LOGIN_URL = "https://www.mymeteor.ie/go/mymeteor-login-manager";
 	private static final String REMAINING_SMS_URL = "https://www.mymeteor.ie/cfusion/meteor/Meteor_REST/service/freeSMS";
+	private static final String CHARACTER_COUNT_URL = "https://www.mymeteor.ie/go/freewebtext";
 	private static final String SMS_URL = "https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax";
 
 	private static final String GET_REQUEST_METHOD = "GET";
@@ -37,23 +38,23 @@ public class Meteor extends Operator {
 
 	@Override
 	boolean doLogin() {
-		final ConnectionManager loginManager = new ConnectionManager(LOGIN_URL);
-		loginManager.addPostHeader(POST_USERNAME, this.getAccount().getMobileNumber());
-		loginManager.addPostHeader(POST_PASSWORD, this.getAccount().getPassword());
+		final ConnectionManager loginManager = new ConnectionManager(Meteor.LOGIN_URL);
+		loginManager.addPostHeader(Meteor.POST_USERNAME, this.getAccount().getMobileNumber());
+		loginManager.addPostHeader(Meteor.POST_PASSWORD, this.getAccount().getPassword());
 		final String loginHtml = loginManager.doConnection();
 
-		return loginHtml.contains(LOGIN_SUCCESS_TEXT);
+		return loginHtml.contains(Meteor.LOGIN_SUCCESS_TEXT);
 	}
 
 	@Override
 	int doGetRemainingSMS() {
-		final ConnectionManager manager = new ConnectionManager(REMAINING_SMS_URL, GET_REQUEST_METHOD, false);
+		final ConnectionManager manager = new ConnectionManager(Meteor.REMAINING_SMS_URL, Meteor.GET_REQUEST_METHOD, false);
 		final String smsHtml = manager.doConnection();
 
 		try {
 			final JSONObject smsJson = new JSONObject(smsHtml);
-			final JSONObject freeSmsJson = smsJson.getJSONObject(JSON_FREE_SMS);
-			return freeSmsJson.getInt(JSON_REMAINING_FREE_SMS);
+			final JSONObject freeSmsJson = smsJson.getJSONObject(Meteor.JSON_FREE_SMS);
+			return freeSmsJson.getInt(Meteor.JSON_REMAINING_FREE_SMS);
 		} catch (final JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -65,25 +66,31 @@ public class Meteor extends Operator {
 	boolean doSend(final String recipient, final String message) {
 		this.addRecipient(recipient);
 
-		final ConnectionManager sendManager = new ConnectionManager(SMS_URL);
-		sendManager.addPostHeader(POST_AJAX_REQUEST, POST_VALUE_SEND_SMS);
-		sendManager.addPostHeader(POST_MESSAGE_TEXT, message);
+		final ConnectionManager sendManager = new ConnectionManager(Meteor.SMS_URL);
+		sendManager.addPostHeader(Meteor.POST_AJAX_REQUEST, Meteor.POST_VALUE_SEND_SMS);
+		sendManager.addPostHeader(Meteor.POST_MESSAGE_TEXT, message);
 		final String html = sendManager.doConnection();
 
-		return html.contains(SEND_SUCCESS_TEXT);
+		return html.contains(Meteor.SEND_SUCCESS_TEXT);
 	}
 
 	private void addRecipient(final String recipient) {
-		final String addUrl = SMS_URL;
+		final String addUrl = Meteor.SMS_URL;
 		final ConnectionManager addManager = new ConnectionManager(addUrl);
-		addManager.addPostHeader(POST_AJAX_REQUEST, POST_VALUE_ADD_RECIPIENT);
-		addManager.addPostHeader(POST_REMOVE, POST_VALUE_NONE);
-		addManager.addPostHeader(POST_ADD, POST_VALUE_NO_ID + recipient);
+		addManager.addPostHeader(Meteor.POST_AJAX_REQUEST, Meteor.POST_VALUE_ADD_RECIPIENT);
+		addManager.addPostHeader(Meteor.POST_REMOVE, Meteor.POST_VALUE_NONE);
+		addManager.addPostHeader(Meteor.POST_ADD, Meteor.POST_VALUE_NO_ID + recipient);
 		addManager.doConnection();
 	}
 
 	@Override
 	int doGetCharacterLimit() {
-		return 480;
+		final ConnectionManager manager = new ConnectionManager(Meteor.CHARACTER_COUNT_URL, Meteor.GET_REQUEST_METHOD, false);
+		final String html = manager.doConnection();
+
+		final String charsText = "charsLeft\" value='";
+		final int startPos = html.indexOf(charsText) + charsText.length();
+		final String characterCount = html.substring(startPos, html.indexOf("'", startPos));
+		return Integer.valueOf(characterCount);
 	}
 }
