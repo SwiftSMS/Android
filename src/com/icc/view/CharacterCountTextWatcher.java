@@ -29,10 +29,14 @@ public class CharacterCountTextWatcher implements TextWatcher {
 		if (s.length() > this.maxCharacterCount) {
 			s.delete(this.maxCharacterCount, s.length());
 		}
+
+		final int charactersRemaining = this.maxCharacterCount - s.length();
+		this.characterCountTextView.setText(Integer.toString(charactersRemaining));
+
 		if (s.length() > 100 && this.maxCharacterCount > 0) {
-			final int charactersRemaining = this.maxCharacterCount - s.length();
-			this.characterCountTextView.setText(Integer.toString(charactersRemaining));
 			this.characterCountTextView.setVisibility(View.VISIBLE);
+		} else {
+			this.characterCountTextView.setVisibility(View.GONE);
 		}
 	}
 
