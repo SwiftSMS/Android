@@ -27,12 +27,14 @@ public class ComposeActivity extends Activity {
 	private Operator operator;
 	private CharacterCountTextWatcher charCountWatcher;
 	private EditText messageEditText;
+	private SharedPreferences preferences;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_main);
 
+		this.preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
@@ -44,9 +46,7 @@ public class ComposeActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 
-		final SharedPreferences preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
-		final int accountId = preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
-
+		final int accountId = this.preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
 		if (accountId == -1) {
 			this.startActivityForResult(new Intent(this, AddAccountActivity.class), 0);
 		} else {
@@ -68,7 +68,8 @@ public class ComposeActivity extends Activity {
 	 * This method queries the Network provides web API for the maximum character count of a message.
 	 */
 	private void getMaxCharacterCount() {
-		final MaxCharacterCountTask task = new MaxCharacterCountTask(this.operator, this.charCountWatcher, this.messageEditText);
+		final MaxCharacterCountTask task = new MaxCharacterCountTask(this.operator, this.preferences, this.charCountWatcher,
+				this.messageEditText);
 		task.execute();
 	}
 
