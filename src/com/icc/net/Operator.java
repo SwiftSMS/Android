@@ -121,7 +121,7 @@ public abstract class Operator {
 	 * 
 	 * @return The users {@link Account}
 	 */
-	Account getAccount() {
+	public Account getAccount() {
 		return this.account;
 	}
 

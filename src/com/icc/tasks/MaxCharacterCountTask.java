@@ -17,18 +17,20 @@ public class MaxCharacterCountTask extends AsyncTask<String, Integer, Integer> {
 	private final EditText messageEditText;
 	private final SharedPreferences preferences;
 
+	private final String key;
+
 	public MaxCharacterCountTask(final Operator operator, final SharedPreferences preferences,
 			final CharacterCountTextWatcher charCountWatcher, final EditText messageEditText) {
 		this.operator = operator;
 		this.preferences = preferences;
 		this.charCountWatcher = charCountWatcher;
 		this.messageEditText = messageEditText;
+		this.key = this.operator.getAccount().getMobileNumber() + MaxCharacterCountTask.PREFERENCE_KEY;
 	}
 
 	@Override
 	protected Integer doInBackground(final String... params) {
-		final String operatorName = this.operator.getClass().getSimpleName();
-		final int storedCharCount = this.preferences.getInt(operatorName + MaxCharacterCountTask.PREFERENCE_KEY, -1);
+		final int storedCharCount = this.preferences.getInt(this.key, -1);
 		if (storedCharCount != -1) {
 			return storedCharCount;
 		}
@@ -40,7 +42,7 @@ public class MaxCharacterCountTask extends AsyncTask<String, Integer, Integer> {
 		this.charCountWatcher.setCharacterLimit(result);
 		this.charCountWatcher.afterTextChanged(this.messageEditText.getEditableText());
 		final Editor editor = this.preferences.edit();
-		editor.putInt("meteor_max_character_count", result);
+		editor.putInt(this.key, result);
 		editor.commit();
 	}
 }
