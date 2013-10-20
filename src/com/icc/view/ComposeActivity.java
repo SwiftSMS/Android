@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ public class ComposeActivity extends Activity {
 	private CharacterCountTextWatcher charCountWatcher;
 	private EditText messageEditText;
 	private SharedPreferences preferences;
+	private AutoCompleteTextView recipientEdittext;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -36,9 +38,12 @@ public class ComposeActivity extends Activity {
 
 		this.preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
+		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
 
+		this.recipientEdittext.setAdapter(new ContactAdapter(this));
+		this.recipientEdittext.setThreshold(1);
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
 	}
 

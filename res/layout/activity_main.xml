@@ -12,7 +12,7 @@
         android:paddingRight="@dimen/element_margin"
         android:paddingTop="@dimen/element_margin" >
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/text_compose_recipients"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
             android:inputType="textPersonName" >
 
             <requestFocus />
-        </EditText>
+        </AutoCompleteTextView>
     </RelativeLayout>
 
     <ScrollView
