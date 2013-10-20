@@ -87,7 +87,7 @@ public class ComposeActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		this.getMenuInflater().inflate(R.menu.main, menu);
-		final RemainingSmsTask task = new RemainingSmsTask(this.operator, menu.findItem(R.id.action_remaining_sms));
+		final RemainingSmsTask task = new RemainingSmsTask(this.operator, this.preferences, menu.findItem(R.id.action_remaining_sms));
 		task.execute();
 		return true;
 	}
