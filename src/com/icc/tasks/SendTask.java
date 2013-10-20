@@ -1,4 +1,4 @@
-package com.icc.view;
+package com.icc.tasks;
 
 import android.app.Activity;
 import android.content.Context;
