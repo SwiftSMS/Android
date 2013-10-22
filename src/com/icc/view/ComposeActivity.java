@@ -25,11 +25,14 @@ import com.icc.tasks.SendTask;
 
 public class ComposeActivity extends Activity {
 
+	private static final int ADD_FIRST_ACCOUNT_REQUEST = 23;
+
 	private Operator operator;
 	private CharacterCountTextWatcher charCountWatcher;
 	private EditText messageEditText;
 	private SharedPreferences preferences;
 	private AutoCompleteTextView recipientEdittext;
+	private MenuItem remaingSmsMenuItem;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -53,19 +56,22 @@ public class ComposeActivity extends Activity {
 
 		final int accountId = this.preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
 		if (accountId == -1) {
-			this.startActivityForResult(new Intent(this, AddAccountActivity.class), 0);
+			this.startActivityForResult(new Intent(this, AddAccountActivity.class), ADD_FIRST_ACCOUNT_REQUEST);
 		} else {
 			final IAccountDatabase accountDatabase = AccountDataSource.getInstance(this);
 			final Account account = accountDatabase.getAccountById(accountId);
 			this.operator = OperatorFactory.getOperator(account);
+			this.getRemainingSmsCount();
 			this.getMaxCharacterCount();
 		}
 	}
 
 	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-		if (resultCode == Activity.RESULT_CANCELED) {
-			this.finish();
+		if (requestCode == ADD_FIRST_ACCOUNT_REQUEST) {
+			if (resultCode == Activity.RESULT_CANCELED) {
+				this.finish();
+			}
 		}
 	}
 
@@ -76,6 +82,28 @@ public class ComposeActivity extends Activity {
 		final MaxCharacterCountTask task = new MaxCharacterCountTask(this.operator, this.preferences, this.charCountWatcher,
 				this.messageEditText);
 		task.execute();
+	}
+
+	/**
+	 * This method queries the Network provides web API for the users remaining SMS count.
+	 * <p>
+	 * This method <b>must</b> be called from both {@link #onResume()} and {@link #onCreateOptionsMenu(Menu)}.<br />
+	 * There is two prerequisites to execution for this method
+	 * <ol>
+	 * <li>An operator has been retrieved.</li>
+	 * <li>The {@link MenuItem} that displays the count has been created.</li>
+	 * </ol>
+	 * In normal operation this method will not execute it's task until {@link #onCreateOptionsMenu(Menu)} calls it as then both
+	 * prerequisites will be satisfied.<br />
+	 * However in the case of the App being run for the first time onResume needs to call this method as the prerequisites will
+	 * not be satisfied until the onResume has run after the {@link AddAccountActivity} has completed successfully.
+	 * </p>
+	 */
+	private void getRemainingSmsCount() {
+		if (this.operator != null && this.remaingSmsMenuItem != null) {
+			final RemainingSmsTask task = new RemainingSmsTask(this.operator, this.preferences, this.remaingSmsMenuItem);
+			task.execute();
+		}
 	}
 
 	/**
@@ -92,8 +120,8 @@ public class ComposeActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		this.getMenuInflater().inflate(R.menu.main, menu);
-		final RemainingSmsTask task = new RemainingSmsTask(this.operator, this.preferences, menu.findItem(R.id.action_remaining_sms));
-		task.execute();
+		this.remaingSmsMenuItem = menu.findItem(R.id.action_remaining_sms);
+		this.getRemainingSmsCount();
 		return true;
 	}
 
