@@ -61,7 +61,11 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 			@SuppressWarnings("unchecked")
 			@Override
 			protected void publishResults(final CharSequence constraint, final FilterResults results) {
-				ContactAdapter.this.items = (ArrayList<String>) results.values;
+				if (results.values != null) {
+					ContactAdapter.this.items = (ArrayList<String>) results.values;
+				} else {
+					ContactAdapter.this.items = new ArrayList<String>();
+				}
 				if (results.count > 0) {
 					ContactAdapter.this.notifyDataSetChanged();
 				} else {
@@ -71,7 +75,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 
 			@Override
 			protected FilterResults performFiltering(final CharSequence constraint) {
-				final String[] PROJECTION = new String[] { Contacts._ID, Contacts.DISPLAY_NAME };
+				final String[] PROJECTION = new String[] { Contacts._ID, Contacts.LOOKUP_KEY, Contacts.DISPLAY_NAME };
 				final Uri contentUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI, Uri.encode(constraint.toString()));
 
 				final ContentResolver resolver = ContactAdapter.this.context.getContentResolver();
@@ -79,7 +83,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 
 				final ArrayList<String> values = new ArrayList<String>();
 				while (c.moveToNext()) {
-					final String cName = c.getString(1);
+					final String cName = c.getString(2);
 					values.add(cName);
 				}
 
