@@ -6,7 +6,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.Contacts;
+import android.provider.ContactsContract.Data;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +17,18 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import com.icc.model.Contact;
+
 public class ContactAdapter extends BaseAdapter implements Filterable {
 
 	private final LayoutInflater layoutInflater;
-	private ArrayList<String> items;
+	private ArrayList<Contact> items;
 	private final Context context;
 
 	public ContactAdapter(final Context context) {
 		this.context = context;
 		this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.items = new ArrayList<String>();
+		this.items = new ArrayList<Contact>();
 	}
 
 	@Override
@@ -50,7 +54,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 		}
 
 		final TextView textView = (TextView) view;
-		textView.setText(this.items.get(position));
+		textView.setText(this.items.get(position).getName() + " (" + this.items.get(position).getNumber() + ")");
 
 		return view;
 	}
@@ -62,9 +66,9 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 			@Override
 			protected void publishResults(final CharSequence constraint, final FilterResults results) {
 				if (results.values != null) {
-					ContactAdapter.this.items = (ArrayList<String>) results.values;
+					ContactAdapter.this.items = (ArrayList<Contact>) results.values;
 				} else {
-					ContactAdapter.this.items = new ArrayList<String>();
+					ContactAdapter.this.items = new ArrayList<Contact>();
 				}
 				if (results.count > 0) {
 					ContactAdapter.this.notifyDataSetChanged();
@@ -75,16 +79,20 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 
 			@Override
 			protected FilterResults performFiltering(final CharSequence constraint) {
-				final String[] PROJECTION = new String[] { Contacts._ID, Contacts.LOOKUP_KEY, Contacts.DISPLAY_NAME };
-				final Uri contentUri = Uri.withAppendedPath(Contacts.CONTENT_FILTER_URI, Uri.encode(constraint.toString()));
+				final String[] PROJECTION = new String[] { Contacts.DISPLAY_NAME, Phone.NUMBER, Phone.TYPE };
+				final String SELECTION = Data.MIMETYPE + " = '" + Phone.CONTENT_ITEM_TYPE + "'";
+				final Uri contentUri = Uri.withAppendedPath(Phone.CONTENT_FILTER_URI, Uri.encode(constraint.toString()));
 
 				final ContentResolver resolver = ContactAdapter.this.context.getContentResolver();
-				final Cursor c = resolver.query(contentUri, PROJECTION, null, null, null);
+				final Cursor c = resolver.query(contentUri, PROJECTION, SELECTION, null, null);
 
-				final ArrayList<String> values = new ArrayList<String>();
+				final ArrayList<Contact> values = new ArrayList<Contact>();
 				while (c.moveToNext()) {
-					final String cName = c.getString(2);
-					values.add(cName);
+					final String cName = c.getString(0);
+					final String cNumber = c.getString(1);
+					final String cNumberType = c.getString(2);
+					final Contact contact = new Contact(cName, cNumber, cNumberType);
+					values.add(contact);
 				}
 
 				final FilterResults result = new FilterResults();
