@@ -17,6 +17,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
+import com.icc.R;
 import com.icc.model.Contact;
 
 public class ContactAdapter extends BaseAdapter implements Filterable {
@@ -50,11 +51,15 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		View view = convertView;
 		if (view == null) {
-			view = this.layoutInflater.inflate(android.R.layout.simple_list_item_1, null);
+			view = this.layoutInflater.inflate(R.layout.contact_suggest_dropdown, null);
 		}
 
-		final TextView textView = (TextView) view;
-		textView.setText(this.items.get(position).getName() + " (" + this.items.get(position).getNumber() + ")");
+		final TextView nameTextView = (TextView) view.findViewById(R.id.text_contact_suggestion_name);
+		final TextView numberTextView = (TextView) view.findViewById(R.id.text_contact_suggestion_number);
+		final TextView numberTypeTextView = (TextView) view.findViewById(R.id.text_contact_suggestion_label);
+		nameTextView.setText(this.items.get(position).getName());
+		numberTextView.setText(this.items.get(position).getNumber());
+		numberTypeTextView.setText(this.items.get(position).getNumberType());
 
 		return view;
 	}
