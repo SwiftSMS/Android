@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
@@ -97,7 +98,8 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 				while (c.moveToNext()) {
 					final String cName = c.getString(0);
 					final String cNumber = c.getString(1);
-					final String cNumberType = c.getString(2);
+					final Resources res = ContactAdapter.this.context.getResources();
+					final String cNumberType = Phone.getTypeLabel(res, c.getInt(2), "Other").toString();
 					final Contact contact = new Contact(cName, cNumber, cNumberType);
 					values.add(contact);
 				}
