@@ -79,13 +79,14 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 
 			@Override
 			protected FilterResults performFiltering(final CharSequence constraint) {
-				final String[] PROJECTION = new String[] { Contacts.DISPLAY_NAME, Phone.NUMBER, Phone.TYPE };
-				final String SELECTION = Data.MIMETYPE + " = '" + Phone.CONTENT_ITEM_TYPE + "'";
-				final String SORT = Contacts.DISPLAY_NAME + " ASC";
+				final String[] projection = new String[] { Contacts.DISPLAY_NAME, Phone.NUMBER, Phone.TYPE };
+				final String selection = Data.MIMETYPE + " = ?";
+				final String[] selectionArgs = new String[] { Phone.CONTENT_ITEM_TYPE };
+				final String sortOrder = Contacts.DISPLAY_NAME + " ASC";
 				final Uri contentUri = Uri.withAppendedPath(Phone.CONTENT_FILTER_URI, Uri.encode(constraint.toString()));
 
 				final ContentResolver resolver = ContactAdapter.this.context.getContentResolver();
-				final Cursor c = resolver.query(contentUri, PROJECTION, SELECTION, null, SORT);
+				final Cursor c = resolver.query(contentUri, projection, selection, selectionArgs, sortOrder);
 
 				final ArrayList<Contact> values = new ArrayList<Contact>();
 				while (c.moveToNext()) {
