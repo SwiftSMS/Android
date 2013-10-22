@@ -85,7 +85,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 
 			@Override
 			protected FilterResults performFiltering(final CharSequence constraint) {
-				final String[] projection = new String[] { Contacts.DISPLAY_NAME, Phone.NUMBER, Phone.TYPE };
+				final String[] projection = new String[] { Contacts.DISPLAY_NAME, Phone.NUMBER, Phone.TYPE, Phone.LABEL };
 				final String selection = Data.MIMETYPE + " = ?";
 				final String[] selectionArgs = new String[] { Phone.CONTENT_ITEM_TYPE };
 				final String sortOrder = Contacts.DISPLAY_NAME + " ASC";
@@ -98,10 +98,13 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 				while (c.moveToNext()) {
 					final String cName = c.getString(0);
 					final String cNumber = c.getString(1);
+					final int cLabelType = c.getInt(2);
+					final String cCustomLabel = c.getString(3);
+
 					final Resources res = ContactAdapter.this.context.getResources();
-					final String cNumberType = Phone.getTypeLabel(res, c.getInt(2), "Other").toString();
-					final Contact contact = new Contact(cName, cNumber, cNumberType);
-					values.add(contact);
+					final String cNumberType = Phone.getTypeLabel(res, cLabelType, cCustomLabel).toString();
+
+					values.add(new Contact(cName, cNumber, cNumberType));
 				}
 
 				final FilterResults result = new FilterResults();
