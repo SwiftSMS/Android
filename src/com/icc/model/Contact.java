@@ -1,6 +1,7 @@
 package com.icc.model;
 
 import android.net.Uri;
+import android.telephony.PhoneNumberUtils;
 
 import com.icc.R;
 
@@ -30,6 +31,16 @@ public class Contact {
 		return this.number;
 	}
 
+	/**
+	 * Get the contacts phone number with all formatting removed. The returned number is in a format that is acceptable by all
+	 * network operators for sending an SMS.
+	 * 
+	 * @return A non formatted phone number.
+	 */
+	public String getStrippedNumber() {
+		return PhoneNumberUtils.stripSeparators(this.number);
+	}
+
 	public String getName() {
 		return this.name;
 	}
@@ -48,6 +59,6 @@ public class Contact {
 
 	@Override
 	public String toString() {
-		return this.name + "(" + this.number + ")";
+		return this.name + " (" + this.getStrippedNumber() + ")";
 	}
 }
