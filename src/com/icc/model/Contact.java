@@ -1,15 +1,26 @@
 package com.icc.model;
 
+import java.io.InputStream;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 public class Contact {
 
 	private final String number;
 	private final String name;
 	private final String numberType;
+	private final Bitmap photo;
 
-	public Contact(final String name, final String number, final String cNumberType) {
+	public Contact(final String name, final InputStream photo, final String number, final String numberType) {
 		this.name = name;
+		this.photo = BitmapFactory.decodeStream(photo);
 		this.number = number;
-		this.numberType = cNumberType;
+		this.numberType = numberType;
+	}
+
+	public Bitmap getPhoto() {
+		return this.photo;
 	}
 
 	public String getNumberType() {

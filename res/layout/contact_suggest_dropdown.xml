@@ -10,32 +10,37 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:gravity="center_vertical"
-        android:paddingTop="@dimen/element_margin"
         android:paddingLeft="@dimen/element_margin"
         android:paddingRight="@dimen/element_margin"
-        android:text="Large Text"
+        android:paddingTop="@dimen/element_margin"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/text_contact_suggestion_number"
         android:layout_width="wrap_content"
-        android:text="Medium Text"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/text_contact_suggestion_name"
         android:paddingBottom="@dimen/element_margin"
         android:paddingLeft="@dimen/element_margin"
-        android:paddingRight="@dimen/element_margin"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/text_contact_suggestion_name" />
+        android:paddingRight="@dimen/element_margin" />
+
+    <ImageView
+        android:id="@+id/image_contact_suggestion_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/contact_photo" />
 
     <TextView
         android:id="@+id/text_contact_suggestion_label"
         android:layout_width="wrap_content"
-        android:text="Label"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/text_contact_suggestion_name"
+        android:layout_toLeftOf="@+id/image_contact_suggestion_photo"
         android:paddingBottom="@dimen/element_margin"
         android:paddingLeft="@dimen/element_margin"
-        android:paddingRight="@dimen/element_margin"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/text_contact_suggestion_name" />
-    
+        android:paddingRight="@dimen/element_margin" />
+
 </RelativeLayout>
