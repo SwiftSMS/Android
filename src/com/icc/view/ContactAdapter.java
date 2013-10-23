@@ -62,9 +62,19 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 		final TextView numberTextView = (TextView) view.findViewById(R.id.text_contact_suggestion_number);
 		final TextView numberTypeTextView = (TextView) view.findViewById(R.id.text_contact_suggestion_label);
 		nameTextView.setText(this.items.get(position).getName());
-		photoImageView.setImageBitmap(this.items.get(position).getPhoto());
 		numberTextView.setText(this.items.get(position).getNumber());
 		numberTypeTextView.setText(this.items.get(position).getNumberType());
+
+		if (this.items.get(position).getPhoto() != null) {
+			photoImageView.setImageBitmap(this.items.get(position).getPhoto());
+		} else {
+			final int num = (int) (Math.random() * 2);
+			if (num == 0) {
+				photoImageView.setImageResource(R.drawable.ic_contact_picture_3);
+			} else if (num == 1) {
+				photoImageView.setImageResource(R.drawable.ic_contact_picture_2);
+			}
+		}
 
 		return view;
 	}
