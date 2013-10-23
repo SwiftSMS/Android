@@ -1,6 +1,5 @@
 package com.icc.view;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import android.content.ContentResolver;
@@ -62,19 +61,9 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 		final TextView numberTextView = (TextView) view.findViewById(R.id.text_contact_suggestion_number);
 		final TextView numberTypeTextView = (TextView) view.findViewById(R.id.text_contact_suggestion_label);
 		nameTextView.setText(this.items.get(position).getName());
+		photoImageView.setImageURI(this.items.get(position).getPhoto());
 		numberTextView.setText(this.items.get(position).getNumber());
 		numberTypeTextView.setText(this.items.get(position).getNumberType());
-
-		if (this.items.get(position).getPhoto() != null) {
-			photoImageView.setImageBitmap(this.items.get(position).getPhoto());
-		} else {
-			final int num = (int) (Math.random() * 2);
-			if (num == 0) {
-				photoImageView.setImageResource(R.drawable.ic_contact_picture_3);
-			} else if (num == 1) {
-				photoImageView.setImageResource(R.drawable.ic_contact_picture_2);
-			}
-		}
 
 		return view;
 	}
@@ -99,8 +88,8 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 
 			@Override
 			protected FilterResults performFiltering(final CharSequence constraint) {
-				final String[] projection = new String[] { Contacts._ID, Contacts.LOOKUP_KEY, Contacts.DISPLAY_NAME,
-						Phone.NUMBER, Phone.TYPE, Phone.LABEL };
+				final String[] projection = new String[] { Contacts.DISPLAY_NAME, Contacts.PHOTO_THUMBNAIL_URI, Phone.NUMBER,
+						Phone.TYPE, Phone.LABEL };
 				final String selection = Data.MIMETYPE + " = ?";
 				final String[] selectionArgs = new String[] { Phone.CONTENT_ITEM_TYPE };
 				final String sortOrder = Contacts.DISPLAY_NAME + " ASC";
@@ -111,17 +100,14 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 
 				final ArrayList<Contact> values = new ArrayList<Contact>();
 				while (c.moveToNext()) {
-					final long cId = c.getLong(0);
-					final String cLookupKey = c.getString(1);
-					final String cName = c.getString(2);
-					final String cNumber = c.getString(3);
-					final int cLabelType = c.getInt(4);
-					final String cCustomLabel = c.getString(5);
+					final String cName = c.getString(0);
+					final String cPhoto = c.getString(1);
+					final String cNumber = c.getString(2);
+					final int cLabelType = c.getInt(3);
+					final String cCustomLabel = c.getString(4);
 
 					final Resources res = ContactAdapter.this.context.getResources();
 					final String cNumberType = Phone.getTypeLabel(res, cLabelType, cCustomLabel).toString();
-					final Uri contactUri = Contacts.getLookupUri(cId, cLookupKey);
-					final InputStream cPhoto = Contacts.openContactPhotoInputStream(resolver, contactUri);
 
 					values.add(new Contact(cName, cPhoto, cNumber, cNumberType));
 				}

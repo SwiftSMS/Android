@@ -1,25 +1,24 @@
 package com.icc.model;
 
-import java.io.InputStream;
+import android.net.Uri;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import com.icc.R;
 
 public class Contact {
 
 	private final String number;
 	private final String name;
 	private final String numberType;
-	private final Bitmap photo;
+	private final Uri photo;
 
-	public Contact(final String name, final InputStream photo, final String number, final String numberType) {
+	public Contact(final String name, final String photo, final String number, final String numberType) {
 		this.name = name;
-		this.photo = BitmapFactory.decodeStream(photo);
+		this.photo = Uri.parse(this.getImageUri(photo));
 		this.number = number;
 		this.numberType = numberType;
 	}
 
-	public Bitmap getPhoto() {
+	public Uri getPhoto() {
 		return this.photo;
 	}
 
@@ -33,6 +32,18 @@ public class Contact {
 
 	public String getName() {
 		return this.name;
+	}
+
+	private String getImageUri(final String imageUri) {
+		if (imageUri == null) {
+			final int num = (int) (Math.random() * 2);
+			if (num == 0) {
+				return "android.resource://com.icc/" + R.drawable.ic_contact_picture_2;
+			} else if (num == 1) {
+				return "android.resource://com.icc/" + R.drawable.ic_contact_picture_3;
+			}
+		}
+		return imageUri;
 	}
 
 	@Override
