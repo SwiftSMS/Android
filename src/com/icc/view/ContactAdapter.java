@@ -93,7 +93,12 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 				final String selection = Data.MIMETYPE + " = ?";
 				final String[] selectionArgs = new String[] { Phone.CONTENT_ITEM_TYPE };
 				final String sortOrder = Contacts.DISPLAY_NAME + " ASC";
-				final Uri contentUri = Uri.withAppendedPath(Phone.CONTENT_FILTER_URI, Uri.encode(constraint.toString()));
+
+				String searchText = constraint.toString();
+				if (searchText.contains(",")) {
+					searchText = searchText.substring(searchText.lastIndexOf(",") + 1);
+				}
+				final Uri contentUri = Uri.withAppendedPath(Phone.CONTENT_FILTER_URI, Uri.encode(searchText));
 
 				final ContentResolver resolver = ContactAdapter.this.context.getContentResolver();
 				final Cursor c = resolver.query(contentUri, projection, selection, selectionArgs, sortOrder);

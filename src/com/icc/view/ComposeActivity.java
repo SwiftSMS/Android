@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +49,40 @@ public class ComposeActivity extends Activity {
 
 		this.recipientEdittext.setAdapter(new ContactAdapter(this));
 		this.recipientEdittext.setThreshold(1);
+		this.recipientEdittext.addTextChangedListener(new TextWatcher() {
+			private boolean isReplaced = false;
+			private String oldText = "";
+
+			@Override
+			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
+				if (this.isAllTextReplaced(start, s.length(), count, after)) {
+					this.isReplaced = true;
+					final String old = s.toString();
+					final int lastComma = old.lastIndexOf(",");
+					if (lastComma != -1) {
+						this.oldText = old.substring(0, lastComma + 1) + " ";
+					}
+				}
+			}
+
+			private boolean isAllTextReplaced(final int start, final int length, final int count, final int after) {
+				return start == 0 && length > 0 && length == count && after != 0;
+			}
+
+			@Override
+			public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+			}
+
+			@Override
+			public void afterTextChanged(final Editable s) {
+				if (this.isReplaced) {
+					this.isReplaced = false;
+					s.insert(0, this.oldText);
+					this.oldText = "";
+					s.append(", ");
+				}
+			}
+		});
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
 	}
 
