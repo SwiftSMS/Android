@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.icc.utils.MultipleContactUtilities;
+
 /**
  * This class is used to manage allowing the user enter multiple contacts to the Recipients text box.
  */
@@ -28,13 +30,12 @@ public class ContactSuggestionClickListener implements TextWatcher, OnItemClickL
 
 	@Override
 	public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
-		this.oldText = "";
+		this.oldText = EMPTY_STRING;
 		if (this.isAllTextReplaced(start, s.length(), count, after)) {
 			final String old = s.toString();
-			final int lastComma = old.lastIndexOf(CONTACT_SEPARATOR);
-			if (lastComma != -1) {
+			if (MultipleContactUtilities.hasMultipleContacts(old)) {
 				// only store the original text if the contact separator character is found
-				this.oldText = old.substring(0, lastComma + 1) + SPACE;
+				this.oldText = MultipleContactUtilities.getEnteredContacts(old);
 			}
 		}
 	}
