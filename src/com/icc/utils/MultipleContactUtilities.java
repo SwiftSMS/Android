@@ -35,12 +35,27 @@ public class MultipleContactUtilities {
 	 * @return A String containing all the fully entered contacts.
 	 */
 	public static String getEnteredContacts(final String recipients) {
-		final int lastComma = getPositionOfLastSeparator(recipients);
-		String oldText = EMPTY_STRING;
 		if (hasMultipleContacts(recipients)) {
-			oldText = recipients.substring(0, lastComma + 1) + SPACE;
+			final int lastComma = getPositionOfLastSeparator(recipients);
+			return recipients.substring(0, lastComma + 1) + SPACE;
 		}
-		return oldText;
+		return EMPTY_STRING;
+	}
+
+	/**
+	 * This method is used to get only the last entered contact from a string. It finds the last comma (,) in the string and
+	 * returns anything after that. It does no validation that the contacts are valid.
+	 * 
+	 * @param recipients
+	 *            A string containing one or more contacts separated by commas (,).
+	 * @return A String containing the last contact.
+	 */
+	public static String getLastContact(final String recipients) {
+		if (hasMultipleContacts(recipients)) {
+			final int lastComma = getPositionOfLastSeparator(recipients);
+			return recipients.substring(lastComma).trim();
+		}
+		return recipients.trim();
 	}
 
 	/**

@@ -3,8 +3,10 @@ package com.icc.view;
 import static com.icc.InternalString.CONTACT_SEPARATOR;
 import static com.icc.InternalString.EMPTY_STRING;
 import static com.icc.InternalString.SPACE;
+import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -71,5 +73,11 @@ public class ContactSuggestionClickListener implements TextWatcher, OnItemClickL
 	@Override
 	public void afterTextChanged(final Editable s) {
 		this.editable = s;
+		final String lastContact = MultipleContactUtilities.getLastContact(s.toString());
+		if (PhoneNumberUtils.isWellFormedSmsAddress(lastContact)) {
+			Log.d("co.icc.debug", "Number: " + lastContact + " is a properly formatted number. Append: '" + CONTACT_SEPARATOR
+					+ SPACE + "'");
+			// s.append(CONTACT_SEPARATOR + SPACE);
+		}
 	}
 }
