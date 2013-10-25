@@ -1,5 +1,7 @@
 package com.icc.net;
 
+import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,8 +65,10 @@ public class Meteor extends Operator {
 	}
 
 	@Override
-	boolean doSend(final String recipient, final String message) {
-		this.addRecipient(recipient);
+	boolean doSend(final List<String> recipients, final String message) {
+		for (final String recipient : recipients) {
+			this.addRecipient(recipient);
+		}
 
 		final ConnectionManager sendManager = new ConnectionManager(Meteor.SMS_URL);
 		sendManager.addPostHeader(Meteor.POST_AJAX_REQUEST, Meteor.POST_VALUE_SEND_SMS);

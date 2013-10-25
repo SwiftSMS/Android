@@ -1,5 +1,7 @@
 package com.icc.net;
 
+import java.util.List;
+
 import com.icc.model.Account;
 
 public class Vodafone extends Operator {
@@ -46,11 +48,13 @@ public class Vodafone extends Operator {
 	}
 
 	@Override
-	boolean doSend(final String recipient, final String message) {
+	boolean doSend(final List<String> recipients, final String message) {
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/Process.shtml");
 		manager.addPostHeader("org.apache.struts.taglib.html.TOKEN", "MY TOKEN");
 		manager.addPostHeader("message", message);
-		manager.addPostHeader("recipients[0]", recipient);
+		for (int i = 0; i < recipients.size(); i++) {
+			manager.addPostHeader("recipients[" + i + "]", recipients.get(i));
+		}
 		manager.addPostHeader("&jcaptcha_response", "MY CAPTCHA");
 		final String html = manager.doConnection();
 

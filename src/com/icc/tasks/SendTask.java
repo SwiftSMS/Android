@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.icc.R;
 import com.icc.net.Operator;
+import com.icc.utils.MultipleContactUtilities;
 
 /**
  * This class is an {@link AsyncTask} responsible for sending a web text using the provided operator.
@@ -49,7 +50,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 			final String message = this.messageEditText.getText().toString();
 			final String recipients = this.recipientsEditText.getText().toString();
 
-			return this.operator.send(recipients, message);
+			return this.operator.send(MultipleContactUtilities.getEnteredContactsAsList(recipients), message);
 		}
 		return false;
 	}

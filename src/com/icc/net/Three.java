@@ -1,5 +1,7 @@
 package com.icc.net;
 
+import java.util.List;
+
 import com.icc.model.Account;
 
 /**
@@ -22,7 +24,7 @@ public class Three extends Operator {
 	}
 
 	@Override
-	boolean doSend(final String recipient, final String message) {
+	boolean doSend(final List<String> recipients, final String message) {
 		// TODO Auto-generated method stub
 		return false;
 	}

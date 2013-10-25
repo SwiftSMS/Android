@@ -2,6 +2,7 @@ package com.icc.net;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.util.List;
 
 import com.icc.model.Account;
 
@@ -74,18 +75,18 @@ public abstract class Operator {
 	 * non-network-specific send actions. Each sub-class of {@link Operator} will implement the specific send algorithm in the
 	 * {@link #doSend(String, String)} method.
 	 * 
-	 * @param recipient
-	 *            The phone number the message will be send to. Currently only one recipient per message.
+	 * @param list
+	 *            A list of phone numbers the message will be sent to.
 	 * @param message
 	 *            The message to send.
 	 * @return <code>true</code> if the message was sent successfully else <code>false</code>
 	 */
-	public final boolean send(final String recipient, final String message) {
+	public final boolean send(final List<String> list, final String message) {
 		this.login();
-		final boolean sendStatus = this.doSend(recipient, message);
+		final boolean sendStatus = this.doSend(list, message);
 		if (!sendStatus) {
 			this.retryLogin();
-			return this.doSend(recipient, message);
+			return this.doSend(list, message);
 		}
 		return sendStatus;
 	}
@@ -93,13 +94,13 @@ public abstract class Operator {
 	/**
 	 * This method is responsible for sending the actual SMS message through the operators website.
 	 * 
-	 * @param recipient
-	 *            The phone number the message will be send to. Currently only one recipient per message.
+	 * @param list
+	 *            A list of phone numbers the message will be sent to.
 	 * @param message
 	 *            The message to send.
 	 * @return <code>true</code> if the message was sent successfully else <code>false</code>
 	 */
-	abstract boolean doSend(final String recipient, final String message);
+	abstract boolean doSend(final List<String> list, final String message);
 
 	public final int getCharacterLimit() {
 		if (this.characterLimit == -1) {
