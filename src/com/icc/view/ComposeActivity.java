@@ -1,9 +1,13 @@
 package com.icc.view;
 
+import static com.icc.InternalString.CONTACT_SEPARATOR;
+import static com.icc.InternalString.LATEST_ACCOUNT;
+import static com.icc.InternalString.PREFS_KEY;
+import static com.icc.InternalString.SPACE;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,7 +16,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.icc.InternalString;
 import com.icc.R;
 import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
@@ -39,7 +42,7 @@ public class ComposeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_main);
 
-		this.preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
+		this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
@@ -51,13 +54,19 @@ public class ComposeActivity extends Activity {
 		this.recipientEdittext.addTextChangedListener(itemClickTextWatcher);
 		this.recipientEdittext.setOnItemClickListener(itemClickTextWatcher);
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
+
+		final Uri intentData = this.getIntent().getData();
+		if (intentData != null) {
+			final String smsto = intentData.getSchemeSpecificPart();
+			this.recipientEdittext.setText(smsto + CONTACT_SEPARATOR + SPACE);
+		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
-		final int accountId = this.preferences.getInt(InternalString.LATEST_ACCOUNT, -1);
+		final int accountId = this.preferences.getInt(LATEST_ACCOUNT, -1);
 		if (accountId == -1) {
 			this.startActivityForResult(new Intent(this, AddAccountActivity.class), ADD_FIRST_ACCOUNT_REQUEST);
 		} else {
