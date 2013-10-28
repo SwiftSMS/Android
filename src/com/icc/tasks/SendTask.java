@@ -1,8 +1,20 @@
 package com.icc.tasks;
 
+import static com.icc.Notifications.FAILURE_NOTIFICATION;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Notification;
+import android.app.Notification.BigTextStyle;
+import android.app.Notification.Builder;
+import android.app.Notification.Style;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -11,6 +23,7 @@ import android.widget.Toast;
 import com.icc.R;
 import com.icc.net.Operator;
 import com.icc.utils.MultipleContactUtilities;
+import com.icc.view.ComposeActivity;
 
 /**
  * This class is an {@link AsyncTask} responsible for sending a web text using the provided operator.
@@ -62,7 +75,45 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 			Toast.makeText(this.activity, "Message sent!", Toast.LENGTH_LONG).show();
 		} else {
 			Toast.makeText(this.activity, "Message failed to send!", Toast.LENGTH_LONG).show();
+
+			final Notification notif = this.buildFailureNotification();
+			final NotificationManager service = (NotificationManager) this.activity
+					.getSystemService(Context.NOTIFICATION_SERVICE);
+			service.notify(FAILURE_NOTIFICATION, notif);
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
+	private Notification buildFailureNotification() {
+		final Builder builder = new Notification.Builder(this.activity);
+		builder.setContentTitle("Message failed to send");
+		builder.setSmallIcon(R.drawable.ic_launcher);
+		builder.setContentIntent(this.buildFailureIntent());
+		final String message = "Recipient(s): " + this.recipientsEditText.getText().toString();
+		builder.setStyle(this.buildFailureNotificationStyle(message));
+		builder.setContentText(message);
+		Notification notif = null;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			notif = builder.build();
+		} else {
+			notif = builder.getNotification();
+		}
+		return notif;
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private Style buildFailureNotificationStyle(final String message) {
+		final BigTextStyle style = new Notification.BigTextStyle();
+		style.setSummaryText(message);
+		style.bigText(this.messageEditText.getText().toString());
+		return style;
+	}
+
+	private PendingIntent buildFailureIntent() {
+		final Intent intent = new Intent(this.activity, ComposeActivity.class);
+		intent.setData(Uri.parse("smsto:" + this.recipientsEditText.getText().toString()));
+		intent.putExtra("sms_body", this.messageEditText.getText().toString());
+		return PendingIntent.getActivity(this.activity, FAILURE_NOTIFICATION, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
+	}
 }
