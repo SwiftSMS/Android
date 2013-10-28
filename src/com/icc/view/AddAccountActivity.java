@@ -20,6 +20,9 @@ import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
 import com.icc.model.Account;
 import com.icc.model.Network;
+import com.icc.net.Operator;
+import com.icc.net.OperatorFactory;
+import com.icc.tasks.VerifyTask;
 
 /**
  * Activity to handle adding a new operator account to ICC
@@ -82,14 +85,7 @@ public class AddAccountActivity extends Activity {
 	}
 
 	public void addAccount(final View view) {
-		final String number = AddAccountActivity.this.textAccNumber.getText().toString();
-		final String password = AddAccountActivity.this.textAccPassword.getText().toString();
-
-		final String defaultAccName = this.selectedNetwork + " (" + number.substring(number.length() - 4) + ")";
-		final String enteredAccName = AddAccountActivity.this.textAccName.getText().toString();
-		final String accountName = enteredAccName.equals("") ? defaultAccName : enteredAccName;
-
-		final Account account = new Account(number, accountName, password, this.selectedNetwork);
+		final Account account = this.makeAccountFromUI();
 		final int successfullyAddedId = this.accountDatabase.addAccount(account);
 
 		if (successfullyAddedId != AddAccountActivity.FAILED_DB_ADD) {
@@ -105,5 +101,28 @@ public class AddAccountActivity extends Activity {
 
 		this.setResult(Activity.RESULT_OK);
 		this.finish();
+	}
+
+	/**
+	 * This method pulls data from the UI components and tries to construct an account object using the details.
+	 * 
+	 * @return An {@link Account} using the details entered on the UI.
+	 */
+	private Account makeAccountFromUI() {
+		final String number = AddAccountActivity.this.textAccNumber.getText().toString();
+		final String password = AddAccountActivity.this.textAccPassword.getText().toString();
+
+		final String numberLast4Digits = number.substring(number.length() - Math.min(4, number.length()));
+		final String defaultAccName = this.selectedNetwork + " (" + numberLast4Digits + ")";
+		final String enteredAccName = AddAccountActivity.this.textAccName.getText().toString();
+		final String accountName = enteredAccName.equals("") ? defaultAccName : enteredAccName;
+
+		return new Account(number, accountName, password, this.selectedNetwork);
+	}
+
+	public void verifyAccount(final View view) {
+		final Account account = this.makeAccountFromUI();
+		final Operator operator = OperatorFactory.getOperator(account);
+		new VerifyTask(this, operator).execute();
 	}
 }
