@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,87 +7,87 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".view.acc.AddAccountActivity">
+    tools:context=".view.acc.AddAccountActivity" >
+
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/scrollView">
+        android:layout_height="wrap_content" >
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_alignParentTop="true"
-            >
+            android:orientation="vertical" >
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
                 android:paddingBottom="@dimen/element_margin"
                 android:paddingTop="@dimen/element_margin"
-                android:text="@string/text_add_operator"/>
+                android:text="@string/text_add_operator"
+                android:textSize="18sp" />
 
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="1dip"
                 android:background="#ff16a1b5" />
+
             <TextView
                 android:id="@+id/text_selected_network"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/element_margin"
-                android:paddingBottom="@dimen/element_margin"
                 android:gravity="center"
-                android:textSize="14sp"/>
-
+                android:paddingBottom="@dimen/element_margin"
+                android:paddingTop="@dimen/element_margin"
+                android:textSize="14sp" />
 
             <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/hint_acc_name_opt"
                 android:id="@+id/text_acc_name"
-                android:paddingTop="@dimen/element_margin"
-                android:paddingBottom="@dimen/element_margin"
-             />
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:hint="@string/hint_mob_number"
-                android:id="@+id/text_acc_number"
-                android:paddingTop="@dimen/element_margin"
+                android:hint="@string/hint_acc_name_opt"
+                android:inputType="text"
                 android:paddingBottom="@dimen/element_margin"
-            />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="@string/hint_password"
-                android:id="@+id/text_acc_password"
-                android:paddingTop="@dimen/element_margin"
-                android:paddingBottom="@dimen/element_margin"
-                />
+                android:paddingTop="@dimen/element_margin" />
 
+            <EditText
+                android:id="@+id/text_acc_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_mob_number"
+                android:inputType="phone"
+                android:paddingBottom="@dimen/element_margin"
+                android:paddingTop="@dimen/element_margin" />
+
+            <EditText
+                android:id="@+id/text_acc_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword"
+                android:paddingBottom="@dimen/element_margin"
+                android:paddingTop="@dimen/element_margin" />
         </LinearLayout>
     </ScrollView>
 
-        <ImageButton
-            android:id="@+id/button_add_account"
-            android:layout_width="@dimen/element_size"
-            android:layout_height="@dimen/element_size"
-            android:background="@android:color/transparent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:onClick="addAccount"
-            android:scaleType="fitCenter"
-            android:contentDescription="@string/app_name"
-            android:src="@android:drawable/ic_menu_send" />
+    <ImageButton
+        android:id="@+id/button_add_account"
+        android:layout_width="@dimen/element_size"
+        android:layout_height="@dimen/element_size"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/app_name"
+        android:onClick="addAccount"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_send" />
 
     <CheckBox
+        android:id="@+id/checkBox_active_acc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/active_acc"
-        android:id="@+id/checkBox_active_acc"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:text="@string/active_acc" />
 
 </RelativeLayout>
