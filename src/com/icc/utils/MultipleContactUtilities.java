@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.telephony.PhoneNumberUtils;
+
 /**
  * A utility class to help with entering multiple contacts in the UI Recipients EditText.
  */
@@ -69,11 +71,9 @@ public class MultipleContactUtilities {
 	public static List<String> getEnteredContactsAsList(final String recipients) {
 		final List<String> listOfRecip = new ArrayList<String>();
 		final String[] tokens = recipients.trim().split(CONTACT_SEPARATOR);
-		for (final String recipient : tokens) {
-			final Pattern pattern = Pattern.compile(".*?(\\+?\\d+).*");
-			final Matcher matcher = pattern.matcher(recipient);
-			matcher.find();
-			listOfRecip.add(matcher.group(1));
+		for (final String unformattedRecipient : tokens) {
+			final String recipient = PhoneNumberUtils.stripSeparators(unformattedRecipient);
+			listOfRecip.add(recipient);
 		}
 		return listOfRecip;
 	}
