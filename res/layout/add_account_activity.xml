@@ -71,17 +71,14 @@
         </LinearLayout>
     </ScrollView>
 
-    <ImageButton
+    <Button
         android:id="@+id/button_add_account"
-        android:layout_width="@dimen/element_size"
-        android:layout_height="@dimen/element_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/app_name"
         android:onClick="addAccount"
-        android:scaleType="fitCenter"
-        android:src="@android:drawable/ic_menu_send" />
+        android:text="@string/add_account" />
 
     <CheckBox
         android:id="@+id/checkBox_active_acc"

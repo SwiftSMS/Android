@@ -13,5 +13,6 @@
     <string name="active_acc">Active Account</string>
     <string name="action_manage_account">Manage Accounts</string>
     <string name="contact_photo">Contact photo</string>
+    <string name="add_account">Add Account</string>
 
 </resources>
