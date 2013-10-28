@@ -9,76 +9,81 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".view.acc.AddAccountActivity" >
 
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:orientation="vertical" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/element_margin"
-                android:paddingTop="@dimen/element_margin"
-                android:text="@string/text_add_operator"
-                android:textSize="18sp" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:background="#ff16a1b5" />
-
-            <TextView
-                android:id="@+id/text_selected_network"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingBottom="@dimen/element_margin"
-                android:paddingTop="@dimen/element_margin"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/text_acc_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_acc_name_opt"
-                android:inputType="text"
-                android:paddingBottom="@dimen/element_margin"
-                android:paddingTop="@dimen/element_margin" />
-
-            <EditText
-                android:id="@+id/text_acc_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_mob_number"
-                android:inputType="phone"
-                android:paddingBottom="@dimen/element_margin"
-                android:paddingTop="@dimen/element_margin" />
-
-            <EditText
-                android:id="@+id/text_acc_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_password"
-                android:inputType="textPassword"
-                android:paddingBottom="@dimen/element_margin"
-                android:paddingTop="@dimen/element_margin" />
-        </LinearLayout>
-    </ScrollView>
-
-    <Button
-        android:id="@+id/button_add_account"
+    <TextView
+        android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:onClick="addAccount"
-        android:text="@string/add_account" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="@dimen/element_margin"
+        android:paddingTop="@dimen/element_margin"
+        android:text="@string/text_add_operator"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/text_selected_network"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
+        android:gravity="center"
+        android:paddingBottom="@dimen/element_margin"
+        android:paddingTop="@dimen/element_margin"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_alignBottom="@+id/textView1"
+        android:layout_alignParentLeft="true"
+        android:background="#ff16a1b5" />
+
+    <EditText
+        android:id="@+id/text_acc_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/text_selected_network"
+        android:ems="10"
+        android:hint="@string/hint_acc_name_opt"
+        android:inputType="text"
+        android:paddingBottom="@dimen/element_margin"
+        android:paddingTop="@dimen/element_margin" />
+
+    <EditText
+        android:id="@+id/text_acc_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/text_acc_name"
+        android:ems="10"
+        android:hint="@string/hint_mob_number"
+        android:inputType="phone"
+        android:paddingBottom="@dimen/element_margin"
+        android:paddingTop="@dimen/element_margin" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/text_acc_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/text_acc_number"
+        android:ems="10"
+        android:hint="@string/hint_password"
+        android:inputType="textPassword"
+        android:paddingBottom="@dimen/element_margin"
+        android:paddingTop="@dimen/element_margin" />
+
+    <CheckBox
+        android:id="@+id/checkBox_active_acc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button_add_account_verify"
+        android:layout_alignParentLeft="true"
+        android:text="@string/active_acc" />
 
     <Button
         android:id="@+id/button_add_account_verify"
@@ -89,12 +94,13 @@
         android:onClick="verifyAccount"
         android:text="@string/verify" />
 
-    <CheckBox
-        android:id="@+id/checkBox_active_acc"
+    <Button
+        android:id="@+id/button_add_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button_add_account_verify"
-        android:layout_alignParentLeft="true"
-        android:text="@string/active_acc" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="addAccount"
+        android:text="@string/add_account" />
 
 </RelativeLayout>
