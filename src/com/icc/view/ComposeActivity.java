@@ -70,9 +70,12 @@ public class ComposeActivity extends Activity {
 		if (accountId == -1) {
 			this.startActivityForResult(new Intent(this, AddAccountActivity.class), ADD_FIRST_ACCOUNT_REQUEST);
 		} else {
-			final IAccountDatabase accountDatabase = AccountDataSource.getInstance(this);
-			final Account account = accountDatabase.getAccountById(accountId);
-			this.operator = OperatorFactory.getOperator(account);
+			if (this.operator == null) {
+				final IAccountDatabase accountDatabase = AccountDataSource.getInstance(this);
+				final Account account = accountDatabase.getAccountById(accountId);
+				this.operator = OperatorFactory.getOperator(account);
+				this.setTitle(account.getAccountName());
+			}
 			this.getRemainingSmsCount();
 			this.getMaxCharacterCount();
 		}
