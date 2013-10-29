@@ -96,7 +96,9 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		final Builder builder = new Notification.Builder(this.activity);
 		builder.setContentTitle(this.getStringRes(R.string.message_failed_to_send));
 		builder.setSmallIcon(R.drawable.ic_launcher);
+		builder.setVibrate(new long[] { 10, 200 });
 		builder.setContentIntent(this.buildFailureIntent());
+		builder.setAutoCancel(true);
 		final String message = this.getStringRes(R.string.to) + COLON_SPACE + this.recipients;
 		builder.setContentText(message);
 		builder.setStyle(this.buildFailureNotificationStyle(message));
