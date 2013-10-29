@@ -96,14 +96,12 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		builder.setAutoCancel(true);
 		final String message = this.getStringRes(R.string.to) + COLON_SPACE + this.recipients;
 		builder.setContentText(message);
-		Notification notif = null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			notif = this.buildJB(builder);
 			this.setNotificationStyle(builder, message);
+			return this.buildJB(builder);
 		} else {
-			notif = this.build(builder);
+			return this.build(builder);
 		}
-		return notif;
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
