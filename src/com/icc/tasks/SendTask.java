@@ -30,6 +30,10 @@ import com.icc.view.ComposeActivity;
  */
 public class SendTask extends AsyncTask<String, Integer, Boolean> {
 
+	private static final String SMSTO = "smsto:";
+	private static final String SMS_BODY = "sms_body";
+	private static final String COLON_SPACE = ": ";
+
 	private final EditText messageEditText;
 	private final ProgressBar progressBar;
 	private final EditText recipientsEditText;
@@ -74,9 +78,9 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	protected void onPostExecute(final Boolean result) {
 		this.progressBar.setVisibility(View.GONE);
 		if (result) {
-			Toast.makeText(this.activity, "Message sent!", Toast.LENGTH_LONG).show();
+			Toast.makeText(this.activity, this.getStringRes(R.string.message_sent), Toast.LENGTH_LONG).show();
 		} else {
-			Toast.makeText(this.activity, "Message failed to send!", Toast.LENGTH_LONG).show();
+			Toast.makeText(this.activity, this.getStringRes(R.string.message_failed_to_send), Toast.LENGTH_LONG).show();
 
 			final Notification notif = this.buildFailureNotification();
 			final NotificationManager service = (NotificationManager) this.activity
@@ -89,10 +93,10 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	@SuppressLint("NewApi")
 	private Notification buildFailureNotification() {
 		final Builder builder = new Notification.Builder(this.activity);
-		builder.setContentTitle("Message failed to send");
+		builder.setContentTitle(this.getStringRes(R.string.message_failed_to_send));
 		builder.setSmallIcon(R.drawable.ic_launcher);
 		builder.setContentIntent(this.buildFailureIntent());
-		final String message = "Recipient(s): " + this.recipients;
+		final String message = this.getStringRes(R.string.to) + COLON_SPACE + this.recipients;
 		builder.setContentText(message);
 		builder.setStyle(this.buildFailureNotificationStyle(message));
 		Notification notif = null;
@@ -114,8 +118,19 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 
 	private PendingIntent buildFailureIntent() {
 		final Intent intent = new Intent(this.activity, ComposeActivity.class);
-		intent.setData(Uri.parse("smsto:" + this.recipients));
-		intent.putExtra("sms_body", this.message);
+		intent.setData(Uri.parse(SMSTO + this.recipients));
+		intent.putExtra(SMS_BODY, this.message);
 		return PendingIntent.getActivity(this.activity, FAILURE_NOTIFICATION, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
+	}
+
+	/**
+	 * Get the string value from strings.xml using activity resources.
+	 * 
+	 * @param id
+	 *            The id of the resource to get.
+	 * @return The string value of the resource.
+	 */
+	private String getStringRes(final int id) {
+		return this.activity.getResources().getString(id);
 	}
 }

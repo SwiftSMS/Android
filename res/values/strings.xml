@@ -15,5 +15,7 @@
     <string name="contact_photo">Contact photo</string>
     <string name="add_account">Add Account</string>
     <string name="verify">Verify</string>
+    <string name="message_failed_to_send">Message failed to send</string>
+    <string name="message_sent">Message sent!</string>
 
 </resources>
