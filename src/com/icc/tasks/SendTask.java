@@ -3,6 +3,9 @@ package com.icc.tasks;
 import static com.icc.InternalString.COLON_SPACE;
 import static com.icc.InternalString.SMSTO;
 import static com.icc.InternalString.SMS_BODY;
+import static com.icc.InternalString.SMS_PROVIDER_MESSAGE_ADDRESS;
+import static com.icc.InternalString.SMS_PROVIDER_MESSAGE_BODY;
+import static com.icc.InternalString.SMS_PROVIDER_SENTBOX_URI;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
@@ -10,6 +13,7 @@ import android.app.Notification.BigTextStyle;
 import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -77,6 +81,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		this.progressBar.setVisibility(View.GONE);
 		if (result) {
 			Toast.makeText(this.activity, this.getStringRes(R.string.message_sent), Toast.LENGTH_LONG).show();
+			this.insertMessageInSmsDb();
 		} else {
 			Toast.makeText(this.activity, this.getStringRes(R.string.message_failed_to_send), Toast.LENGTH_LONG).show();
 
@@ -87,6 +92,23 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		}
 	}
 
+	/**
+	 * Take the data from this {@link SendTask} and insert into the Android SMS provider.
+	 */
+	private void insertMessageInSmsDb() {
+		for (final String recipient : MultipleContactUtilities.getEnteredContactsAsList(this.recipients)) {
+			final ContentValues values = new ContentValues();
+			values.put(SMS_PROVIDER_MESSAGE_ADDRESS, recipient);
+			values.put(SMS_PROVIDER_MESSAGE_BODY, this.message);
+			this.activity.getContentResolver().insert(Uri.parse(SMS_PROVIDER_SENTBOX_URI), values);
+		}
+	}
+
+	/**
+	 * Build up an Android notification for this {@link SendTask} to inform the user of a message that failed to send.
+	 * 
+	 * @return A message send failure notification.
+	 */
 	private Notification buildFailureNotification() {
 		final Builder builder = new Notification.Builder(this.activity);
 		builder.setContentTitle(this.getStringRes(R.string.message_failed_to_send));

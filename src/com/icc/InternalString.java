@@ -1,5 +1,7 @@
 package com.icc;
 
+import android.net.Uri;
+
 /**
  * Internal Strings used in the application that are not applicable to the String.xml resource
  * 
@@ -51,4 +53,19 @@ public class InternalString {
 	 * A ': ' character
 	 */
 	public static final String COLON_SPACE = ": ";
+
+	/**
+	 * This is the SMS Content Provider {@link Uri} of the SMS sentbox.
+	 */
+	public static final String SMS_PROVIDER_SENTBOX_URI = "content://sms/sent";
+
+	/**
+	 * This is the key used to store the receiver of an SMS message in the SMS Content Provider.
+	 */
+	public static final String SMS_PROVIDER_MESSAGE_BODY = "body";
+
+	/**
+	 * This is the key used to store the message body of an SMS message in the SMS Content Provider.
+	 */
+	public static final String SMS_PROVIDER_MESSAGE_ADDRESS = "address";
 }
