@@ -1,12 +1,10 @@
 package com.icc.tasks;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.Notification.BigTextStyle;
 import android.app.Notification.Builder;
-import android.app.Notification.Style;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -90,8 +88,6 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	@SuppressLint("NewApi")
 	private Notification buildFailureNotification() {
 		final Builder builder = new Notification.Builder(this.activity);
 		builder.setContentTitle(this.getStringRes(R.string.message_failed_to_send));
@@ -101,22 +97,33 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		builder.setAutoCancel(true);
 		final String message = this.getStringRes(R.string.to) + COLON_SPACE + this.recipients;
 		builder.setContentText(message);
-		builder.setStyle(this.buildFailureNotificationStyle(message));
 		Notification notif = null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			notif = builder.build();
+			notif = this.buildJB(builder);
+			this.setNotificationStyle(builder, message);
 		} else {
-			notif = builder.getNotification();
+			notif = this.build(builder);
 		}
 		return notif;
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	private Style buildFailureNotificationStyle(final String message) {
+	private void setNotificationStyle(final Builder builder, final String message) {
 		final BigTextStyle style = new Notification.BigTextStyle();
 		style.setSummaryText(message);
 		style.bigText(this.message);
-		return style;
+
+		builder.setStyle(style);
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private Notification buildJB(final Notification.Builder builder) {
+		return builder.build();
+	}
+
+	@SuppressWarnings("deprecation")
+	private Notification build(final Notification.Builder builder) {
+		return builder.getNotification();
 	}
 
 	private PendingIntent buildFailureIntent() {
