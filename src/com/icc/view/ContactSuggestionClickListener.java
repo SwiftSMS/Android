@@ -37,7 +37,7 @@ public class ContactSuggestionClickListener implements TextWatcher, OnItemClickL
 			final String old = s.toString();
 			if (ContactUtils.hasMultipleContacts(old)) {
 				// only store the original text if the contact separator character is found
-				this.oldText = ContactUtils.getEnteredContacts(old);
+				this.oldText = ContactUtils.getAllButLastContacts(old);
 			}
 		}
 	}

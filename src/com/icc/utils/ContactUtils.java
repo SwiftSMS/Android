@@ -34,7 +34,7 @@ public class ContactUtils {
 	 *            A string containing one or more contacts separated by commas (,).
 	 * @return A String containing all the fully entered contacts.
 	 */
-	public static String getEnteredContacts(final String recipients) {
+	public static String getAllButLastContacts(final String recipients) {
 		if (hasMultipleContacts(recipients)) {
 			final int lastComma = getPositionOfLastSeparator(recipients);
 			return recipients.substring(0, lastComma + 1) + SPACE;
