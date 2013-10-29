@@ -43,22 +43,6 @@ public class ContactUtils {
 	}
 
 	/**
-	 * This method is used to get only the last entered contact from a string. It finds the last comma (,) in the string and
-	 * returns anything after that. It does no validation that the contacts are valid.
-	 * 
-	 * @param recipients
-	 *            A string containing one or more contacts separated by commas (,).
-	 * @return A String containing the last contact.
-	 */
-	public static String getLastContact(final String recipients) {
-		if (hasMultipleContacts(recipients)) {
-			final int lastComma = getPositionOfLastSeparator(recipients);
-			return recipients.substring(lastComma).trim();
-		}
-		return recipients.trim();
-	}
-
-	/**
 	 * This method is used to convert a String version of a list of contacts to an array of formatted numbers that can be used
 	 * for sending an SMS.
 	 * 
