@@ -66,7 +66,7 @@ public class ContactUtils {
 	 *            A string containing one or more contacts separated by commas (,).
 	 * @return A list of numbers taken from the contacts in String.
 	 */
-	public static List<String> getEnteredContactsAsList(final String recipients) {
+	public static List<String> getContactsAsList(final String recipients) {
 		final List<String> listOfRecip = new ArrayList<String>();
 		final String[] tokens = trimSeparators(recipients).split(CONTACT_SEPARATOR);
 		for (final String unformattedRecipient : tokens) {

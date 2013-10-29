@@ -71,7 +71,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		this.message = this.messageEditText.getText().toString();
 		this.recipients = ContactUtils.trimSeparators(this.recipientsEditText.getText().toString());
 		if (this.operator.login()) {
-			return this.operator.send(ContactUtils.getEnteredContactsAsList(this.recipients), this.message);
+			return this.operator.send(ContactUtils.getContactsAsList(this.recipients), this.message);
 		}
 		return false;
 	}
@@ -99,7 +99,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	 * Take the data from this {@link SendTask} and insert into the Android SMS provider.
 	 */
 	private void insertMessageInSmsDb() {
-		for (final String recipient : ContactUtils.getEnteredContactsAsList(this.recipients)) {
+		for (final String recipient : ContactUtils.getContactsAsList(this.recipients)) {
 			final ContentValues values = new ContentValues();
 			values.put(SMS_PROVIDER_MESSAGE_ADDRESS, recipient);
 			values.put(SMS_PROVIDER_MESSAGE_BODY, this.message);
