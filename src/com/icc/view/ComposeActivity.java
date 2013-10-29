@@ -119,7 +119,7 @@ public class ComposeActivity extends Activity {
 	 * not be satisfied until the onResume has run after the {@link AddAccountActivity} has completed successfully.
 	 * </p>
 	 */
-	private void getRemainingSmsCount() {
+	public void getRemainingSmsCount() {
 		if (this.operator != null && this.remaingSmsMenuItem != null) {
 			final RemainingSmsTask task = new RemainingSmsTask(this.operator, this.preferences, this.remaingSmsMenuItem);
 			task.execute();

@@ -1,13 +1,13 @@
 package com.icc.tasks;
 
 import static com.icc.InternalString.COLON_SPACE;
+import static com.icc.InternalString.EMPTY_STRING;
 import static com.icc.InternalString.SMSTO;
 import static com.icc.InternalString.SMS_BODY;
 import static com.icc.InternalString.SMS_PROVIDER_MESSAGE_ADDRESS;
 import static com.icc.InternalString.SMS_PROVIDER_MESSAGE_BODY;
 import static com.icc.InternalString.SMS_PROVIDER_SENTBOX_URI;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Notification;
 import android.app.Notification.BigTextStyle;
 import android.app.Notification.Builder;
@@ -39,7 +39,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	private final EditText messageEditText;
 	private final ProgressBar progressBar;
 	private final EditText recipientsEditText;
-	private final Context activity;
+	private final ComposeActivity activity;
 	private final Operator operator;
 
 	private String recipients;
@@ -53,7 +53,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	 * @param operator
 	 *            The network operator used to send the message.
 	 */
-	public SendTask(final Activity activity, final Operator operator) {
+	public SendTask(final ComposeActivity activity, final Operator operator) {
 		this.activity = activity;
 		this.operator = operator;
 		this.messageEditText = (EditText) activity.findViewById(R.id.text_compose_message);
@@ -81,6 +81,9 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		this.progressBar.setVisibility(View.GONE);
 		if (result) {
 			Toast.makeText(this.activity, this.getStringRes(R.string.message_sent), Toast.LENGTH_LONG).show();
+			this.activity.getRemainingSmsCount();
+			this.recipientsEditText.setText(EMPTY_STRING);
+			this.messageEditText.setText(EMPTY_STRING);
 			this.insertMessageInSmsDb();
 		} else {
 			Toast.makeText(this.activity, this.getStringRes(R.string.message_failed_to_send), Toast.LENGTH_LONG).show();
