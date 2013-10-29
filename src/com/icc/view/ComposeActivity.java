@@ -3,6 +3,7 @@ package com.icc.view;
 import static com.icc.InternalString.CONTACT_SEPARATOR;
 import static com.icc.InternalString.LATEST_ACCOUNT;
 import static com.icc.InternalString.PREFS_KEY;
+import static com.icc.InternalString.SMS_BODY;
 import static com.icc.InternalString.SPACE;
 import android.app.Activity;
 import android.content.Intent;
@@ -59,6 +60,10 @@ public class ComposeActivity extends Activity {
 		if (intentData != null) {
 			final String smsto = intentData.getSchemeSpecificPart();
 			this.recipientEdittext.setText(smsto + CONTACT_SEPARATOR + SPACE);
+			final String smsBody = this.getIntent().getStringExtra(SMS_BODY);
+			if (smsBody != null) {
+				this.messageEditText.setText(smsBody);
+			}
 		}
 	}
 

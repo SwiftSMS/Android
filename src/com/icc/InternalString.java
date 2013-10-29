@@ -36,4 +36,19 @@ public class InternalString {
 	 * An empty string. Does not contain spaces.
 	 */
 	public static final String EMPTY_STRING = "";
+
+	/**
+	 * The Uri Schema used to send a phone number when an Intent is sending a message.
+	 */
+	public static final String SMSTO = "smsto:";
+
+	/**
+	 * The key used to store the message body when an Intent is sending a message.
+	 */
+	public static final String SMS_BODY = "sms_body";
+
+	/**
+	 * A ': ' character
+	 */
+	public static final String COLON_SPACE = ": ";
 }

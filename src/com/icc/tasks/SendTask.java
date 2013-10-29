@@ -1,5 +1,8 @@
 package com.icc.tasks;
 
+import static com.icc.InternalString.COLON_SPACE;
+import static com.icc.InternalString.SMSTO;
+import static com.icc.InternalString.SMS_BODY;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
@@ -28,10 +31,6 @@ import com.icc.view.ComposeActivity;
 public class SendTask extends AsyncTask<String, Integer, Boolean> {
 
 	public static int FAILURE_NOTIFICATION = 127;
-
-	private static final String SMSTO = "smsto:";
-	private static final String SMS_BODY = "sms_body";
-	private static final String COLON_SPACE = ": ";
 
 	private final EditText messageEditText;
 	private final ProgressBar progressBar;
