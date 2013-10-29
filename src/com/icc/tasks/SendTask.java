@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.icc.R;
 import com.icc.net.Operator;
-import com.icc.utils.MultipleContactUtilities;
+import com.icc.utils.ContactUtils;
 import com.icc.view.ComposeActivity;
 
 /**
@@ -69,9 +69,9 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	@Override
 	protected Boolean doInBackground(final String... params) {
 		this.message = this.messageEditText.getText().toString();
-		this.recipients = MultipleContactUtilities.trimSeparators(this.recipientsEditText.getText().toString());
+		this.recipients = ContactUtils.trimSeparators(this.recipientsEditText.getText().toString());
 		if (this.operator.login()) {
-			return this.operator.send(MultipleContactUtilities.getEnteredContactsAsList(this.recipients), this.message);
+			return this.operator.send(ContactUtils.getEnteredContactsAsList(this.recipients), this.message);
 		}
 		return false;
 	}
@@ -99,7 +99,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	 * Take the data from this {@link SendTask} and insert into the Android SMS provider.
 	 */
 	private void insertMessageInSmsDb() {
-		for (final String recipient : MultipleContactUtilities.getEnteredContactsAsList(this.recipients)) {
+		for (final String recipient : ContactUtils.getEnteredContactsAsList(this.recipients)) {
 			final ContentValues values = new ContentValues();
 			values.put(SMS_PROVIDER_MESSAGE_ADDRESS, recipient);
 			values.put(SMS_PROVIDER_MESSAGE_BODY, this.message);

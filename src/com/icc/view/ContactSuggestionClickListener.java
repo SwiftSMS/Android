@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.icc.utils.MultipleContactUtilities;
+import com.icc.utils.ContactUtils;
 
 /**
  * This class is used to manage allowing the user enter multiple contacts to the Recipients text box.
@@ -35,9 +35,9 @@ public class ContactSuggestionClickListener implements TextWatcher, OnItemClickL
 		this.oldText = EMPTY_STRING;
 		if (this.isAllTextReplaced(start, s.length(), count, after)) {
 			final String old = s.toString();
-			if (MultipleContactUtilities.hasMultipleContacts(old)) {
+			if (ContactUtils.hasMultipleContacts(old)) {
 				// only store the original text if the contact separator character is found
-				this.oldText = MultipleContactUtilities.getEnteredContacts(old);
+				this.oldText = ContactUtils.getEnteredContacts(old);
 			}
 		}
 	}
@@ -73,7 +73,7 @@ public class ContactSuggestionClickListener implements TextWatcher, OnItemClickL
 	@Override
 	public void afterTextChanged(final Editable s) {
 		this.editable = s;
-		final String lastContact = MultipleContactUtilities.getLastContact(s.toString());
+		final String lastContact = ContactUtils.getLastContact(s.toString());
 		if (PhoneNumberUtils.isWellFormedSmsAddress(lastContact)) {
 			Log.d("co.icc.debug", "Number: " + lastContact + " is a properly formatted number. Append: '" + CONTACT_SEPARATOR
 					+ SPACE + "'");

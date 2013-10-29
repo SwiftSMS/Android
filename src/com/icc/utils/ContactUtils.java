@@ -12,7 +12,7 @@ import android.telephony.PhoneNumberUtils;
 /**
  * A utility class to help with entering multiple contacts in the UI Recipients EditText.
  */
-public class MultipleContactUtilities {
+public class ContactUtils {
 
 	/**
 	 * This method determines if there is more than one contact entered in a String. This is determined by the separator
