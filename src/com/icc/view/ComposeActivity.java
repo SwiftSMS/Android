@@ -81,7 +81,7 @@ public class ComposeActivity extends Activity {
 				this.operator = OperatorFactory.getOperator(account);
 				this.setTitle(account.getAccountName());
 			}
-			this.getRemainingSmsCount();
+			this.retrieveRemainingSmsCount();
 			this.getMaxCharacterCount();
 		}
 	}
@@ -119,7 +119,7 @@ public class ComposeActivity extends Activity {
 	 * not be satisfied until the onResume has run after the {@link AddAccountActivity} has completed successfully.
 	 * </p>
 	 */
-	public void getRemainingSmsCount() {
+	public void retrieveRemainingSmsCount() {
 		if (this.operator != null && this.remaingSmsMenuItem != null) {
 			final RemainingSmsTask task = new RemainingSmsTask(this.operator, this.preferences, this.remaingSmsMenuItem);
 			task.execute();
@@ -141,7 +141,7 @@ public class ComposeActivity extends Activity {
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		this.getMenuInflater().inflate(R.menu.main, menu);
 		this.remaingSmsMenuItem = menu.findItem(R.id.action_remaining_sms);
-		this.getRemainingSmsCount();
+		this.retrieveRemainingSmsCount();
 		return true;
 	}
 

@@ -81,7 +81,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		this.progressBar.setVisibility(View.GONE);
 		if (result) {
 			Toast.makeText(this.activity, this.getStringRes(R.string.message_sent), Toast.LENGTH_LONG).show();
-			this.activity.getRemainingSmsCount();
+			this.activity.retrieveRemainingSmsCount();
 			this.recipientsEditText.setText(EMPTY_STRING);
 			this.messageEditText.setText(EMPTY_STRING);
 			this.insertMessageInSmsDb();
