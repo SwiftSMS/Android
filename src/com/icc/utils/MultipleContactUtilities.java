@@ -68,7 +68,7 @@ public class MultipleContactUtilities {
 	 */
 	public static List<String> getEnteredContactsAsList(final String recipients) {
 		final List<String> listOfRecip = new ArrayList<String>();
-		final String[] tokens = recipients.trim().split(CONTACT_SEPARATOR);
+		final String[] tokens = trimSeparators(recipients).split(CONTACT_SEPARATOR);
 		for (final String unformattedRecipient : tokens) {
 			final String recipient = PhoneNumberUtils.stripSeparators(unformattedRecipient);
 			listOfRecip.add(recipient);
@@ -87,4 +87,25 @@ public class MultipleContactUtilities {
 		return recipients.lastIndexOf(CONTACT_SEPARATOR);
 	}
 
+	/**
+	 * This method is used to remove unneeded contact separator characters (comma) from a String. It will remove all contact
+	 * separator characters from the string if they are 'empty'.
+	 * 
+	 * @param recipients
+	 *            A string containing one or more contacts separated by commas (,).
+	 * @return A String containing the recipients without trailing commas (,).
+	 */
+	public static String trimSeparators(final String recipients) {
+		final StringBuilder result = new StringBuilder();
+		final String[] tokens = recipients.trim().split(CONTACT_SEPARATOR);
+		for (final String token : tokens) {
+			final String recipient = token.trim();
+			if (!recipient.equals(EMPTY_STRING)) {
+				result.append(recipient);
+				result.append(CONTACT_SEPARATOR + SPACE);
+			}
+		}
+		result.delete(result.length() - 2, result.length()); // remove last trailing separator
+		return result.toString();
+	}
 }

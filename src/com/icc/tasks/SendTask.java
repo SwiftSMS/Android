@@ -36,6 +36,9 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	private final Context activity;
 	private final Operator operator;
 
+	private String recipients;
+	private String message;
+
 	/**
 	 * Create a new instance of the sending Task.
 	 * 
@@ -59,11 +62,10 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 
 	@Override
 	protected Boolean doInBackground(final String... params) {
+		this.message = this.messageEditText.getText().toString();
+		this.recipients = MultipleContactUtilities.trimSeparators(this.recipientsEditText.getText().toString());
 		if (this.operator.login()) {
-			final String message = this.messageEditText.getText().toString();
-			final String recipients = this.recipientsEditText.getText().toString();
-
-			return this.operator.send(MultipleContactUtilities.getEnteredContactsAsList(recipients), message);
+			return this.operator.send(MultipleContactUtilities.getEnteredContactsAsList(this.recipients), this.message);
 		}
 		return false;
 	}
@@ -90,9 +92,9 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		builder.setContentTitle("Message failed to send");
 		builder.setSmallIcon(R.drawable.ic_launcher);
 		builder.setContentIntent(this.buildFailureIntent());
-		final String message = "Recipient(s): " + this.recipientsEditText.getText().toString();
-		builder.setStyle(this.buildFailureNotificationStyle(message));
+		final String message = "Recipient(s): " + this.recipients;
 		builder.setContentText(message);
+		builder.setStyle(this.buildFailureNotificationStyle(message));
 		Notification notif = null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 			notif = builder.build();
@@ -106,14 +108,14 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	private Style buildFailureNotificationStyle(final String message) {
 		final BigTextStyle style = new Notification.BigTextStyle();
 		style.setSummaryText(message);
-		style.bigText(this.messageEditText.getText().toString());
+		style.bigText(this.message);
 		return style;
 	}
 
 	private PendingIntent buildFailureIntent() {
 		final Intent intent = new Intent(this.activity, ComposeActivity.class);
-		intent.setData(Uri.parse("smsto:" + this.recipientsEditText.getText().toString()));
-		intent.putExtra("sms_body", this.messageEditText.getText().toString());
+		intent.setData(Uri.parse("smsto:" + this.recipients));
+		intent.putExtra("sms_body", this.message);
 		return PendingIntent.getActivity(this.activity, FAILURE_NOTIFICATION, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
 	}
 }
