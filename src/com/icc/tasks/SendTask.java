@@ -1,6 +1,5 @@
 package com.icc.tasks;
 
-import static com.icc.Notifications.FAILURE_NOTIFICATION;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -29,6 +28,8 @@ import com.icc.view.ComposeActivity;
  * This class is an {@link AsyncTask} responsible for sending a web text using the provided operator.
  */
 public class SendTask extends AsyncTask<String, Integer, Boolean> {
+
+	public static int FAILURE_NOTIFICATION = 127;
 
 	private static final String SMSTO = "smsto:";
 	private static final String SMS_BODY = "sms_body";
@@ -85,7 +86,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 			final Notification notif = this.buildFailureNotification();
 			final NotificationManager service = (NotificationManager) this.activity
 					.getSystemService(Context.NOTIFICATION_SERVICE);
-			service.notify(FAILURE_NOTIFICATION, notif);
+			service.notify(++FAILURE_NOTIFICATION, notif);
 		}
 	}
 
