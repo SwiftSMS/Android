@@ -38,7 +38,7 @@ import com.icc.view.ComposeActivity;
  */
 public class SendTask extends AsyncTask<String, Integer, Boolean> {
 
-	public static int FAILURE_NOTIFICATION = 127;
+	private static int FAILURE_NOTIFICATION = 127;
 
 	private final EditText messageEditText;
 	private final ProgressBar progressBar;
