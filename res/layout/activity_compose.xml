@@ -47,7 +47,8 @@
                 android:layout_toLeftOf="@+id/layout_compose_bottom_right"
                 android:ems="10"
                 android:hint="@string/type_message"
-                android:inputType="text|textCapSentences|textMultiLine"
+                android:imeOptions="actionSend|flagNoEnterAction"
+                android:inputType="textShortMessage|textAutoCorrect|textCapSentences|textMultiLine"
                 android:maxLines="5" />
 
             <LinearLayout
