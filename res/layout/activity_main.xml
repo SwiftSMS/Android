@@ -67,13 +67,15 @@
 
                 <ImageButton
                     android:id="@+id/button_compose_send"
-                    android:layout_width="@dimen/element_size"
-                    android:layout_height="@dimen/element_size"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/app_name"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dip"
+                    android:layout_marginLeft="4dip"
+                    android:layout_weight="1.0"
+                    android:contentDescription="@string/send"
+                    android:drawablePadding="0dip"
                     android:onClick="sendMessage"
-                    android:scaleType="fitCenter"
-                    android:src="@android:drawable/ic_menu_send" />
+                    android:src="@drawable/send_button_selector" />
             </LinearLayout>
         </RelativeLayout>
     </ScrollView>
