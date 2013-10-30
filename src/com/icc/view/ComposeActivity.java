@@ -48,7 +48,7 @@ public class ComposeActivity extends Activity implements Observer {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.activity_main);
+		this.setContentView(R.layout.activity_compose);
 
 		this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);

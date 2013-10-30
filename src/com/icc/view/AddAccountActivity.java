@@ -43,7 +43,7 @@ public class AddAccountActivity extends Activity {
 	public void onCreate(final Bundle savedInstanceState) {
 		this.preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.add_account_activity);
+		this.setContentView(R.layout.activity_add_account);
 
 		AddAccountActivity.this.textAccName = (TextView) this.findViewById(R.id.text_acc_name);
 		AddAccountActivity.this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
