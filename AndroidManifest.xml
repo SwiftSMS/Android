@@ -10,10 +10,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.WRITE_SMS"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -37,7 +37,9 @@
                 <data android:scheme="smsto" />
             </intent-filter>
         </activity>
-        <activity android:name="com.icc.view.AddAccountActivity" />
+        <activity
+            android:name="com.icc.view.AddAccountActivity"
+            android:windowSoftInputMode="stateAlwaysVisible" />
         <activity android:name="com.icc.view.ManageAccountsActivity" />
     </application>
 
