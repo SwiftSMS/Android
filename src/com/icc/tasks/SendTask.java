@@ -2,8 +2,10 @@ package com.icc.tasks;
 
 import static com.icc.InternalString.COLON_SPACE;
 import static com.icc.InternalString.EMPTY_STRING;
+import static com.icc.InternalString.LOG_TAG;
 import static com.icc.InternalString.SMSTO;
 import static com.icc.InternalString.SMS_BODY;
+import static com.icc.InternalString.SMS_PROVIDER_FAILURE;
 import static com.icc.InternalString.SMS_PROVIDER_MESSAGE_ADDRESS;
 import static com.icc.InternalString.SMS_PROVIDER_MESSAGE_BODY;
 import static com.icc.InternalString.SMS_PROVIDER_SENTBOX_URI;
@@ -13,12 +15,14 @@ import android.app.Notification.BigTextStyle;
 import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -100,10 +104,16 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	 */
 	private void insertMessageInSmsDb() {
 		for (final String recipient : ContactUtils.getContactsAsList(this.recipients)) {
-			final ContentValues values = new ContentValues();
-			values.put(SMS_PROVIDER_MESSAGE_ADDRESS, recipient);
-			values.put(SMS_PROVIDER_MESSAGE_BODY, this.message);
-			this.activity.getContentResolver().insert(Uri.parse(SMS_PROVIDER_SENTBOX_URI), values);
+			try {
+				final ContentValues values = new ContentValues();
+				values.put(SMS_PROVIDER_MESSAGE_ADDRESS, recipient);
+				values.put(SMS_PROVIDER_MESSAGE_BODY, this.message);
+				final ContentResolver resolver = this.activity.getContentResolver();
+				final Uri smsUri = Uri.parse(SMS_PROVIDER_SENTBOX_URI);
+				resolver.insert(smsUri, values);
+			} catch (final Exception e) {
+				Log.e(LOG_TAG, SMS_PROVIDER_FAILURE, e);
+			}
 		}
 	}
 

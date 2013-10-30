@@ -68,4 +68,14 @@ public class InternalString {
 	 * This is the key used to store the message body of an SMS message in the SMS Content Provider.
 	 */
 	public static final String SMS_PROVIDER_MESSAGE_ADDRESS = "address";
+
+	/**
+	 * The message to enter in the logs when inserting a sent SMS to the SMS provider fails.
+	 */
+	public static final String SMS_PROVIDER_FAILURE = "Could not insert message to SMS provider";
+
+	/**
+	 * The tag to use when logging messages.
+	 */
+	public static final String LOG_TAG = "com.icc.log";
 }
