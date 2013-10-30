@@ -1,5 +1,6 @@
 package com.icc.view;
 
+import static com.icc.InternalString.PREFS_KEY;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -41,32 +43,29 @@ public class AddAccountActivity extends Activity {
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
-		this.preferences = this.getSharedPreferences(InternalString.PREFS_KEY, Context.MODE_PRIVATE);
+		this.preferences = this.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_add_account);
 
-		AddAccountActivity.this.textAccName = (TextView) this.findViewById(R.id.text_acc_name);
-		AddAccountActivity.this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
-		AddAccountActivity.this.textAccPassword = (TextView) this.findViewById(R.id.text_acc_password);
-		AddAccountActivity.this.textViewNetwork = (TextView) this.findViewById(R.id.text_selected_network);
-		AddAccountActivity.this.checkActiveAccount = (CheckBox) this.findViewById(R.id.checkBox_active_acc);
+		this.textAccName = (TextView) this.findViewById(R.id.text_acc_name);
+		this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
+		this.textAccPassword = (TextView) this.findViewById(R.id.text_acc_password);
+		this.textViewNetwork = (TextView) this.findViewById(R.id.text_selected_network);
+		this.checkActiveAccount = (CheckBox) this.findViewById(R.id.checkBox_active_acc);
 
 		this.handleNetworkSelection();
 	}
 
 	@Override
 	protected void onResume() {
-
-		AddAccountActivity.this.accountDatabase = AccountDataSource.getInstance(this);
-
+		this.accountDatabase = AccountDataSource.getInstance(this);
 		super.onResume();
 	}
 
 	private void handleNetworkSelection() {
-
-		final Dialog dialog = new Dialog(AddAccountActivity.this);
+		final Dialog dialog = new Dialog(this);
 		final ListView listView = new ListView(this);
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
 				AddAccountActivity.this.selectedNetwork = Network.values()[i];
@@ -88,7 +87,7 @@ public class AddAccountActivity extends Activity {
 		final Account account = this.makeAccountFromUI();
 		final int successfullyAddedId = this.accountDatabase.addAccount(account);
 
-		if (successfullyAddedId != AddAccountActivity.FAILED_DB_ADD) {
+		if (successfullyAddedId != FAILED_DB_ADD) {
 			Toast.makeText(this, "Accounted Added", Toast.LENGTH_SHORT).show();
 			final Editor editor = this.preferences.edit();
 			editor.putInt(InternalString.LATEST_ACCOUNT, successfullyAddedId);
@@ -109,13 +108,13 @@ public class AddAccountActivity extends Activity {
 	 * @return An {@link Account} using the details entered on the UI.
 	 */
 	private Account makeAccountFromUI() {
-		final String number = AddAccountActivity.this.textAccNumber.getText().toString();
-		final String password = AddAccountActivity.this.textAccPassword.getText().toString();
+		final String number = this.textAccNumber.getText().toString();
+		final String password = this.textAccPassword.getText().toString();
 
 		final String numberLast4Digits = number.substring(number.length() - Math.min(4, number.length()));
 		final String defaultAccName = this.selectedNetwork + " (" + numberLast4Digits + ")";
-		final String enteredAccName = AddAccountActivity.this.textAccName.getText().toString();
-		final String accountName = enteredAccName.equals("") ? defaultAccName : enteredAccName;
+		final String enteredAccName = this.textAccName.getText().toString();
+		final String accountName = enteredAccName.isEmpty() ? defaultAccName : enteredAccName;
 
 		return new Account(number, accountName, password, this.selectedNetwork);
 	}
