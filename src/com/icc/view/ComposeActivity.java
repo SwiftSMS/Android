@@ -5,6 +5,10 @@ import static com.icc.InternalString.LATEST_ACCOUNT;
 import static com.icc.InternalString.PREFS_KEY;
 import static com.icc.InternalString.SMS_BODY;
 import static com.icc.InternalString.SPACE;
+
+import java.util.Observable;
+import java.util.Observer;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.icc.R;
@@ -27,7 +32,7 @@ import com.icc.tasks.MaxCharacterCountTask;
 import com.icc.tasks.RemainingSmsTask;
 import com.icc.tasks.SendTask;
 
-public class ComposeActivity extends Activity {
+public class ComposeActivity extends Activity implements Observer {
 
 	private static final int ADD_FIRST_ACCOUNT_REQUEST = 23;
 
@@ -38,6 +43,8 @@ public class ComposeActivity extends Activity {
 	private AutoCompleteTextView recipientEdittext;
 	private MenuItem remaingSmsMenuItem;
 
+	private ImageButton sendButton;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,15 +52,19 @@ public class ComposeActivity extends Activity {
 
 		this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
+		this.sendButton = (ImageButton) this.findViewById(R.id.button_compose_send);
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
 		final ContactSuggestionClickListener itemClickTextWatcher = new ContactSuggestionClickListener();
 
+		this.sendButton.setEnabled(false);
 		this.recipientEdittext.setAdapter(new ContactAdapter(this));
 		this.recipientEdittext.setThreshold(1);
+		itemClickTextWatcher.addObserver(this);
 		this.recipientEdittext.addTextChangedListener(itemClickTextWatcher);
 		this.recipientEdittext.setOnItemClickListener(itemClickTextWatcher);
+		this.charCountWatcher.addObserver(this);
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
 
 		final Uri intentData = this.getIntent().getData();
@@ -137,6 +148,15 @@ public class ComposeActivity extends Activity {
 		sendTask.execute();
 	}
 
+	/**
+	 * Update the enabled state of the send button based on the recipients and message text boxes.
+	 */
+	public void updateSendButton() {
+		final boolean isMessageEmpty = !this.messageEditText.getText().toString().isEmpty();
+		final boolean isRecipientsEmpty = !this.recipientEdittext.getText().toString().isEmpty();
+		this.sendButton.setEnabled(isMessageEmpty && isRecipientsEmpty);
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
 		this.getMenuInflater().inflate(R.menu.main, menu);
@@ -156,5 +176,10 @@ public class ComposeActivity extends Activity {
 			break;
 		}
 		return super.onMenuItemSelected(featureId, item);
+	}
+
+	@Override
+	public void update(final Observable observable, final Object data) {
+		ComposeActivity.this.updateSendButton();
 	}
 }

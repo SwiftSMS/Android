@@ -1,5 +1,7 @@
 package com.icc.view;
 
+import java.util.Observable;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -9,7 +11,7 @@ import android.widget.TextView;
 /**
  * This class is responsible for counting the characters in an {@link EditText} and display that count in a {@link TextView}.
  */
-public class CharacterCountTextWatcher implements TextWatcher {
+public class CharacterCountTextWatcher extends Observable implements TextWatcher {
 
 	private final TextView characterCountTextView;
 	private int maxCharacterCount = 0;
@@ -52,6 +54,8 @@ public class CharacterCountTextWatcher implements TextWatcher {
 
 	@Override
 	public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+		this.setChanged();
+		this.notifyObservers();
 	}
 
 	public void setCharacterLimit(final int result) {

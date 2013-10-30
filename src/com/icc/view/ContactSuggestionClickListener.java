@@ -3,6 +3,9 @@ package com.icc.view;
 import static com.icc.InternalString.CONTACT_SEPARATOR;
 import static com.icc.InternalString.EMPTY_STRING;
 import static com.icc.InternalString.SPACE;
+
+import java.util.Observable;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -14,7 +17,7 @@ import com.icc.utils.ContactUtils;
 /**
  * This class is used to manage allowing the user enter multiple contacts to the Recipients text box.
  */
-public class ContactSuggestionClickListener implements TextWatcher, OnItemClickListener {
+public class ContactSuggestionClickListener extends Observable implements TextWatcher, OnItemClickListener {
 
 	/** used to store the text the user had entered before clicking a contact suggestion. */
 	private String oldText = EMPTY_STRING;
@@ -66,6 +69,8 @@ public class ContactSuggestionClickListener implements TextWatcher, OnItemClickL
 
 	@Override
 	public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+		this.setChanged();
+		this.notifyObservers();
 	}
 
 	@Override
