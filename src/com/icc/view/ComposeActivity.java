@@ -67,6 +67,13 @@ public class ComposeActivity extends Activity implements Observer {
 		this.charCountWatcher.addObserver(this);
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
 
+		this.handleIntentData();
+	}
+
+	/**
+	 * Handle the data passed to this {@link Activity} from it's {@link Intent}.
+	 */
+	private void handleIntentData() {
 		final Uri intentData = this.getIntent().getData();
 		if (intentData != null) {
 			final String smsto = intentData.getSchemeSpecificPart();
@@ -97,24 +104,6 @@ public class ComposeActivity extends Activity implements Observer {
 		}
 	}
 
-	@Override
-	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-		if (requestCode == ADD_FIRST_ACCOUNT_REQUEST) {
-			if (resultCode == Activity.RESULT_CANCELED) {
-				this.finish();
-			}
-		}
-	}
-
-	/**
-	 * This method queries the Network provides web API for the maximum character count of a message.
-	 */
-	private void getMaxCharacterCount() {
-		final MaxCharacterCountTask task = new MaxCharacterCountTask(this.operator, this.preferences, this.charCountWatcher,
-				this.messageEditText);
-		task.execute();
-	}
-
 	/**
 	 * This method queries the Network provides web API for the users remaining SMS count.
 	 * <p>
@@ -134,6 +123,24 @@ public class ComposeActivity extends Activity implements Observer {
 		if (this.operator != null && this.remaingSmsMenuItem != null) {
 			final RemainingSmsTask task = new RemainingSmsTask(this.operator, this.preferences, this.remaingSmsMenuItem);
 			task.execute();
+		}
+	}
+
+	/**
+	 * This method queries the Network provides web API for the maximum character count of a message.
+	 */
+	private void getMaxCharacterCount() {
+		final MaxCharacterCountTask task = new MaxCharacterCountTask(this.operator, this.preferences, this.charCountWatcher,
+				this.messageEditText);
+		task.execute();
+	}
+
+	@Override
+	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+		if (requestCode == ADD_FIRST_ACCOUNT_REQUEST) {
+			if (resultCode == Activity.RESULT_CANCELED) {
+				this.finish();
+			}
 		}
 	}
 
