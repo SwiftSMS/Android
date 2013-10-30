@@ -25,6 +25,7 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -49,6 +50,8 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	private String recipients;
 	private String message;
 
+	private final ImageButton sendButton;
+
 	/**
 	 * Create a new instance of the sending Task.
 	 * 
@@ -61,6 +64,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		this.activity = activity;
 		this.operator = operator;
 		this.messageEditText = (EditText) activity.findViewById(R.id.text_compose_message);
+		this.sendButton = (ImageButton) activity.findViewById(R.id.button_compose_send);
 		this.progressBar = (ProgressBar) activity.findViewById(R.id.progressbar_compose);
 		this.recipientsEditText = (EditText) activity.findViewById(R.id.text_compose_recipients);
 	}
@@ -68,6 +72,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	@Override
 	protected void onPreExecute() {
 		this.progressBar.setVisibility(View.VISIBLE);
+		this.sendButton.setEnabled(false);
 	}
 
 	@Override
@@ -83,6 +88,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	@Override
 	protected void onPostExecute(final Boolean result) {
 		this.progressBar.setVisibility(View.GONE);
+		this.sendButton.setEnabled(true);
 		if (result) {
 			Toast.makeText(this.activity, this.getStringRes(R.string.message_sent), Toast.LENGTH_LONG).show();
 			this.activity.retrieveRemainingSmsCount();
