@@ -17,8 +17,8 @@ import com.icc.model.Account;
  */
 public class AccountAdapter extends BaseAdapter {
 
-	private final List<Account> accounts;
-	private static LayoutInflater layoutInflater;
+	final List<Account> accounts;
+	static LayoutInflater layoutInflater;
 
 	public AccountAdapter(final Context context, final List<Account> accounts) {
 		this.accounts = accounts;

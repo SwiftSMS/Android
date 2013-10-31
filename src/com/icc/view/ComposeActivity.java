@@ -6,14 +6,20 @@ import static com.icc.InternalString.PREFS_KEY;
 import static com.icc.InternalString.SMS_BODY;
 import static com.icc.InternalString.SPACE;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +38,7 @@ import com.icc.tasks.MaxCharacterCountTask;
 import com.icc.tasks.RemainingSmsTask;
 import com.icc.tasks.SendTask;
 
-public class ComposeActivity extends Activity implements Observer {
+public class ComposeActivity extends Activity implements Observer, ActionBar.OnNavigationListener {
 
 	private static final int ADD_FIRST_ACCOUNT_REQUEST = 23;
 
@@ -45,12 +51,19 @@ public class ComposeActivity extends Activity implements Observer {
 
 	private ImageButton sendButton;
 
+	private IAccountDatabase accountDatabase;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_compose);
 
+		final ActionBar actionBar = this.getActionBar();
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
 		this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+		this.accountDatabase = AccountDataSource.getInstance(this.getApplicationContext());
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		this.sendButton = (ImageButton) this.findViewById(R.id.button_compose_send);
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
@@ -93,14 +106,48 @@ public class ComposeActivity extends Activity implements Observer {
 		if (accountId == -1) {
 			this.startActivityForResult(new Intent(this, AddAccountActivity.class), ADD_FIRST_ACCOUNT_REQUEST);
 		} else {
-			if (this.operator == null) {
-				final IAccountDatabase accountDatabase = AccountDataSource.getInstance(this);
-				final Account account = accountDatabase.getAccountById(accountId);
+			if (this.operator == null || this.operator.getAccount().getId() != accountId) {
+				Log.d("com.icc.debug", "onResume - Get account with id = " + accountId);
+				final Account account = this.accountDatabase.getAccountById(accountId);
 				this.operator = OperatorFactory.getOperator(account);
-				this.setTitle(account.getAccountName());
 			}
+			this.setupActionBar();
 			this.retrieveRemainingSmsCount();
 			this.getMaxCharacterCount();
+		}
+	}
+
+	/**
+	 * This method sets up the {@link ActionBar} dropdown list to contain all the accounts added to the App.
+	 */
+	private void setupActionBar() {
+		// Set up the action bar to show a dropdown list.
+		final int activeAccountId = this.preferences.getInt(LATEST_ACCOUNT, -1);
+		final List<Account> accounts = this.accountDatabase.getAllAccounts();
+		final int activeAccountIndex = accounts.indexOf(this.accountDatabase.getAccountById(activeAccountId));
+		final Context context = this.getActionBarThemedContextCompat();
+
+		Log.d("com.icc.debug", "Accounts:");
+		for (final Account a : accounts) {
+			Log.d("com.icc.debug", "Account = [" + a.getAccountName() + ", " + a.getId() + "]");
+		}
+
+		final AccountSpinnerAdapter adapter = new AccountSpinnerAdapter(context, accounts);
+		final ActionBar actionBar = this.getActionBar();
+		actionBar.setListNavigationCallbacks(adapter, this);
+		actionBar.setSelectedNavigationItem(activeAccountIndex);
+	}
+
+	/**
+	 * Backward-compatible version of {@link ActionBar#getThemedContext()} that simply returns the {@link android.app.Activity}
+	 * if <code>getThemedContext</code> is unavailable.
+	 */
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	private Context getActionBarThemedContextCompat() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			return this.getActionBar().getThemedContext();
+		} else {
+			return this;
 		}
 	}
 
@@ -188,5 +235,15 @@ public class ComposeActivity extends Activity implements Observer {
 	@Override
 	public void update(final Observable observable, final Object data) {
 		ComposeActivity.this.updateSendButton();
+	}
+
+	@Override
+	public boolean onNavigationItemSelected(final int itemPosition, final long itemId) {
+		Log.d("com.icc.debug", "onNavigationItemSelected - Get account with id = " + itemId);
+		final Account account = this.accountDatabase.getAccountById((int) itemId);
+		this.operator = OperatorFactory.getOperator(account);
+		this.retrieveRemainingSmsCount();
+		this.getMaxCharacterCount();
+		return true;
 	}
 }
