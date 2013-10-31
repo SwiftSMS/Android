@@ -16,10 +16,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -107,7 +107,6 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 			this.startActivityForResult(new Intent(this, AddAccountActivity.class), ADD_FIRST_ACCOUNT_REQUEST);
 		} else {
 			if (this.operator == null || this.operator.getAccount().getId() != accountId) {
-				Log.d("com.icc.debug", "onResume - Get account with id = " + accountId);
 				final Account account = this.accountDatabase.getAccountById(accountId);
 				this.operator = OperatorFactory.getOperator(account);
 			}
@@ -124,13 +123,14 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		// Set up the action bar to show a dropdown list.
 		final int activeAccountId = this.preferences.getInt(LATEST_ACCOUNT, -1);
 		final List<Account> accounts = this.accountDatabase.getAllAccounts();
-		final int activeAccountIndex = accounts.indexOf(this.accountDatabase.getAccountById(activeAccountId));
-		final Context context = this.getActionBarThemedContextCompat();
-
-		Log.d("com.icc.debug", "Accounts:");
-		for (final Account a : accounts) {
-			Log.d("com.icc.debug", "Account = [" + a.getAccountName() + ", " + a.getId() + "]");
+		int activeAccountIndex = -1;
+		for (int i = 0; i < accounts.size(); i++) {
+			if (accounts.get(i).getId() == activeAccountId) {
+				activeAccountIndex = i;
+				break;
+			}
 		}
+		final Context context = this.getActionBarThemedContextCompat();
 
 		final AccountSpinnerAdapter adapter = new AccountSpinnerAdapter(context, accounts);
 		final ActionBar actionBar = this.getActionBar();
@@ -239,11 +239,15 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 
 	@Override
 	public boolean onNavigationItemSelected(final int itemPosition, final long itemId) {
-		Log.d("com.icc.debug", "onNavigationItemSelected - Get account with id = " + itemId);
-		final Account account = this.accountDatabase.getAccountById((int) itemId);
+		final int accountId = (int) itemId;
+		final Account account = this.accountDatabase.getAccountById(accountId);
 		this.operator = OperatorFactory.getOperator(account);
 		this.retrieveRemainingSmsCount();
 		this.getMaxCharacterCount();
+
+		final Editor editor = this.preferences.edit();
+		editor.putInt(LATEST_ACCOUNT, accountId);
+		editor.commit();
 		return true;
 	}
 }
