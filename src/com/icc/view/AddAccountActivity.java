@@ -1,13 +1,16 @@
 package com.icc.view;
 
 import static com.icc.InternalString.PREFS_KEY;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -46,6 +49,15 @@ public class AddAccountActivity extends Activity {
 		this.preferences = this.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_add_account);
+
+		final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		final View customActionBarView = inflater.inflate(R.layout.actionbar_custom_view_done_cancel, null);
+		// Show the custom action bar view and hide the normal Home icon and title.
+		final ActionBar actionBar = this.getActionBar();
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME
+				| ActionBar.DISPLAY_SHOW_TITLE);
+		actionBar.setCustomView(customActionBarView, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT));
 
 		this.textAccName = (TextView) this.findViewById(R.id.text_acc_name);
 		this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
