@@ -104,7 +104,7 @@ public class AddAccountActivity extends Activity {
 			final Editor editor = this.preferences.edit();
 			editor.putInt(InternalString.LATEST_ACCOUNT, successfullyAddedId);
 
-			if (this.checkActiveAccount.isChecked()) {
+			if (this.checkActiveAccount.isChecked() || successfullyAddedId == 1) {
 				editor.putInt(InternalString.ACTIVE_ACCOUNT, successfullyAddedId);
 			}
 			editor.commit();
