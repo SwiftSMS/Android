@@ -53,6 +53,8 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 
 	private IAccountDatabase accountDatabase;
 
+	private RemainingSmsTask task;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -168,8 +170,11 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	 */
 	public void retrieveRemainingSmsCount() {
 		if (this.operator != null && this.remaingSmsMenuItem != null) {
-			final RemainingSmsTask task = new RemainingSmsTask(this.operator, this.preferences, this.remaingSmsMenuItem);
-			task.execute();
+			if (this.task != null) {
+				this.task.cancel(true);
+			}
+			this.task = new RemainingSmsTask(this.operator, this.preferences, this.remaingSmsMenuItem);
+			this.task.execute();
 		}
 	}
 
