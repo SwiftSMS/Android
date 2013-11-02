@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,122 +8,85 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".view.acc.AddAccountActivity" >
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/layout_add_account_bottom"
-        android:layout_height="wrap_content" >
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true"
-                android:paddingBottom="@dimen/element_margin"
-                android:paddingTop="@dimen/element_margin"
-                android:text="@string/text_add_operator"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/text_selected_network"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/textView1"
-                android:gravity="center"
-                android:paddingBottom="@dimen/element_margin"
-                android:paddingTop="@dimen/element_margin"
-                android:textSize="14sp" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:layout_alignBottom="@+id/textView1"
-                android:layout_alignParentLeft="true"
-                android:background="#ff16a1b5" />
-
-            <EditText
-                android:id="@+id/text_acc_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/text_selected_network"
-                android:ems="10"
-                android:hint="@string/hint_acc_name_opt"
-                android:inputType="text"
-                android:paddingBottom="@dimen/element_margin"
-                android:paddingTop="@dimen/element_margin" />
-
-            <EditText
-                android:id="@+id/text_acc_number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/text_acc_name"
-                android:ems="10"
-                android:hint="@string/hint_mob_number"
-                android:inputType="phone"
-                android:paddingBottom="@dimen/element_margin"
-                android:paddingTop="@dimen/element_margin" >
-
-                <requestFocus />
-            </EditText>
-
-            <EditText
-                android:id="@+id/text_acc_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/text_acc_number"
-                android:ems="10"
-                android:hint="@string/hint_password"
-                android:inputType="textPassword"
-                android:paddingBottom="@dimen/element_margin"
-                android:paddingTop="@dimen/element_margin" />
-
-            <CheckBox
-                android:id="@+id/checkBox_active_acc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/text_acc_password"
-                android:text="@string/active_acc" />
-        </RelativeLayout>
-    </ScrollView>
-
-    <ScrollView
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/layout_add_account_bottom"
         android:layout_height="wrap_content" >
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/textView1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="@dimen/element_margin"
+            android:paddingTop="@dimen/element_margin"
+            android:text="@string/text_add_operator"
+            android:textSize="18sp" />
 
-            <Button
-                android:id="@+id/button_add_account_verify"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:onClick="verifyAccount"
-                android:text="@string/verify" />
+        <TextView
+            android:id="@+id/text_selected_network"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textView1"
+            android:gravity="center"
+            android:paddingBottom="@dimen/element_margin"
+            android:paddingTop="@dimen/element_margin"
+            android:textSize="14sp" />
 
-            <Button
-                android:id="@+id/button_add_account"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:onClick="addAccount"
-                android:text="@string/add_account" />
-        </RelativeLayout>
-    </ScrollView>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_alignBottom="@+id/textView1"
+            android:layout_alignParentLeft="true"
+            android:background="#ff16a1b5" />
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/text_acc_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/text_selected_network"
+            android:ems="10"
+            android:hint="@string/hint_acc_name_opt"
+            android:inputType="text"
+            android:paddingBottom="@dimen/element_margin"
+            android:paddingTop="@dimen/element_margin" />
+
+        <EditText
+            android:id="@+id/text_acc_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/text_acc_name"
+            android:ems="10"
+            android:hint="@string/hint_mob_number"
+            android:inputType="phone"
+            android:paddingBottom="@dimen/element_margin"
+            android:paddingTop="@dimen/element_margin" >
+
+            <requestFocus />
+        </EditText>
+
+        <EditText
+            android:id="@+id/text_acc_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/text_acc_number"
+            android:ems="10"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:paddingBottom="@dimen/element_margin"
+            android:paddingTop="@dimen/element_margin" />
+
+        <CheckBox
+            android:id="@+id/checkBox_active_acc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/text_acc_password"
+            android:text="@string/active_acc" />
+    </RelativeLayout>
+
+</ScrollView>

@@ -15,6 +15,7 @@
         android:layout_alignParentLeft="true"
         android:clickable="true"
         android:drawableLeft="@drawable/ic_action_navigation_refresh"
+        android:onClick="verifyAccount"
         android:drawablePadding="8dp"
         android:focusable="true"
         android:paddingRight="20dp"
@@ -23,6 +24,7 @@
     <TextView
         android:id="@+id/actionbar_done"
         style="?android:actionButtonStyle"
+        android:onClick="addAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
