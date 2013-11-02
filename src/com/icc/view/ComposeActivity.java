@@ -1,7 +1,7 @@
 package com.icc.view;
 
+import static com.icc.InternalString.ACTIVE_ACCOUNT;
 import static com.icc.InternalString.CONTACT_SEPARATOR;
-import static com.icc.InternalString.LATEST_ACCOUNT;
 import static com.icc.InternalString.PREFS_KEY;
 import static com.icc.InternalString.SMS_BODY;
 import static com.icc.InternalString.SPACE;
@@ -102,7 +102,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	protected void onResume() {
 		super.onResume();
 
-		final int accountId = this.preferences.getInt(LATEST_ACCOUNT, -1);
+		final int accountId = this.preferences.getInt(ACTIVE_ACCOUNT, -1);
 		if (accountId == -1) {
 			this.startActivityForResult(new Intent(this, AddAccountActivity.class), ADD_FIRST_ACCOUNT_REQUEST);
 		} else {
@@ -121,7 +121,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	 */
 	private void setupActionBar() {
 		// Set up the action bar to show a dropdown list.
-		final int activeAccountId = this.preferences.getInt(LATEST_ACCOUNT, -1);
+		final int activeAccountId = this.preferences.getInt(ACTIVE_ACCOUNT, -1);
 		final List<Account> accounts = this.accountDatabase.getAllAccounts();
 		int activeAccountIndex = -1;
 		for (int i = 0; i < accounts.size(); i++) {
@@ -246,7 +246,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.getMaxCharacterCount();
 
 		final Editor editor = this.preferences.edit();
-		editor.putInt(LATEST_ACCOUNT, accountId);
+		editor.putInt(ACTIVE_ACCOUNT, accountId);
 		editor.commit();
 		return true;
 	}
