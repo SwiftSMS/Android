@@ -1,30 +1,38 @@
-<!--
-        android:drawableLeft="@drawable/ic_action_cancel"
-        android:drawableLeft="@drawable/ic_action_done"
--->
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/actionbar_cancel"
+    <LinearLayout
         style="?android:actionButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:clickable="true"
-        android:drawableLeft="@drawable/ic_action_refresh"
-        android:onClick="verifyAccount"
-        android:drawablePadding="8dp"
         android:focusable="true"
-        android:paddingRight="20dp"
-        android:text="@string/verify" />
+        android:onClick="verifyAccount"
+        tools:ignore="UseCompoundDrawables" >
+
+        <ImageView
+            android:id="@+id/actionbar_verify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/verify"
+            android:src="@drawable/ic_action_refresh" />
+
+        <TextView
+            style="?android:actionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/element_margin"
+            android:text="@string/verify" >
+        </TextView>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/actionbar_done"
         style="?android:actionButtonStyle"
-        android:onClick="addAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -32,6 +40,7 @@
         android:drawableLeft="@drawable/ic_action_done"
         android:drawablePadding="8dp"
         android:focusable="true"
+        android:onClick="addAccount"
         android:paddingRight="20dp"
         android:text="@string/done" />
 

@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -132,8 +135,13 @@ public class AddAccountActivity extends Activity {
 	}
 
 	public void verifyAccount(final View view) {
+		final ImageView verifyView = (ImageView) this.findViewById(R.id.actionbar_verify);
+		final Animation rotation = AnimationUtils.loadAnimation(this, R.anim.clockwise_refresh);
+		rotation.setRepeatCount(Animation.INFINITE);
+		verifyView.startAnimation(rotation);
+
 		final Account account = this.makeAccountFromUI();
 		final Operator operator = OperatorFactory.getOperator(account);
-		new VerifyTask(this, operator).execute();
+		new VerifyTask(this, operator, verifyView).execute();
 	}
 }
