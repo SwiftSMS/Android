@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:clickable="true"
-        android:drawableLeft="@drawable/ic_action_navigation_refresh"
+        android:drawableLeft="@drawable/ic_action_refresh"
         android:onClick="verifyAccount"
         android:drawablePadding="8dp"
         android:focusable="true"
