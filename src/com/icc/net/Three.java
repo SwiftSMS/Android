@@ -20,7 +20,7 @@ public class Three extends Operator {
 		loginManager.addPostHeader("UserPin", this.getAccount().getPassword());
 		final String loginHtml = loginManager.doConnection();
 
-		return loginHtml.contains("Sign out");
+		return loginHtml.contains("Logout");
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class ManageAccountsActivity extends ListActivity {
 
         int activeAccountId = this.preferences.getInt(InternalString.ACTIVE_ACCOUNT, -1);
 
-        accountAdapter = new AccountAdapter(ManageAccountsActivity.this, accountDatabase.getAllAccounts(), activeAccountId);
+        accountAdapter = new AccountAdapter(ManageAccountsActivity.this, accountDatabase.getAllAccounts());
 
         setListAdapter(accountAdapter);
         super.onResume();

@@ -19,14 +19,12 @@ import com.icc.model.Account;
  */
 public class AccountAdapter extends BaseAdapter {
 
-	private final List<Account> accounts;
-	private static LayoutInflater layoutInflater;
-    private int activeAccountId = -1;
+	final List<Account> accounts;
+	static LayoutInflater layoutInflater;
 
-	public AccountAdapter(final Context context, final List<Account> accounts, int activeAccountId) {
+	public AccountAdapter(final Context context, final List<Account> accounts) {
 		this.accounts = accounts;
 		AccountAdapter.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.activeAccountId = activeAccountId;
 	}
 
 	@Override
@@ -55,9 +53,5 @@ public class AccountAdapter extends BaseAdapter {
 		textViewAccountName.setText(this.accounts.get(position).getAccountName());
 
 		return view;
-    }
-
-    public void setActiveAccountId(int activeAccountId) {
-        this.activeAccountId = activeAccountId;
     }
 }
