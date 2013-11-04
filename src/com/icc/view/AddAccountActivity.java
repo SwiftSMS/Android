@@ -134,13 +134,11 @@ public class AddAccountActivity extends Activity {
 
 		if (successfullyAddedId != FAILED_DB_ADD) {
 			Toast.makeText(this, "Accounted Added", Toast.LENGTH_SHORT).show();
-			final Editor editor = this.preferences.edit();
-			editor.putInt(InternalString.LATEST_ACCOUNT, successfullyAddedId);
-
 			if (this.checkActiveAccount.isChecked() || successfullyAddedId == 1) {
+				final Editor editor = this.preferences.edit();
 				editor.putInt(InternalString.ACTIVE_ACCOUNT, successfullyAddedId);
+				editor.commit();
 			}
-			editor.commit();
 		}
 
 		this.setResult(Activity.RESULT_OK);

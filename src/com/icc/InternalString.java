@@ -15,11 +15,6 @@ public class InternalString {
 	public static final String PREFS_KEY = "com.icc.app.prefs";
 
 	/**
-	 * This key is used to store the ID of the latest account added to ICC
-	 */
-	public static final String LATEST_ACCOUNT = "latestAccount";
-
-	/**
 	 * This key is used to store the ID of the Active account in ICC
 	 */
 	public static final String ACTIVE_ACCOUNT = "activeAccount";
