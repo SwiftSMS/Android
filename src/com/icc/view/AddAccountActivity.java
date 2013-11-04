@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +49,10 @@ public class AddAccountActivity extends Activity {
 	private CheckBox checkActiveAccount;
 	private SharedPreferences preferences;
 	private Network selectedNetwork = null;
+	private TextView buttonDone;
+	private LinearLayout buttonVerify;
+	private TextView buttonVerifyText;
+	private ImageView buttonVerifyIcon;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -66,8 +73,39 @@ public class AddAccountActivity extends Activity {
 		this.textAccPassword = (TextView) this.findViewById(R.id.text_acc_password);
 		this.textViewNetwork = (TextView) this.findViewById(R.id.text_selected_network);
 		this.checkActiveAccount = (CheckBox) this.findViewById(R.id.checkBox_active_acc);
+		this.buttonVerify = (LinearLayout) this.findViewById(R.id.actionbar_verify);
+		this.buttonVerifyIcon = (ImageView) this.findViewById(R.id.actionbar_verify_icon);
+		this.buttonVerifyText = (TextView) this.findViewById(R.id.actionbar_verify_text);
+		this.buttonDone = (TextView) this.findViewById(R.id.actionbar_done);
 
+		final TextWatcher watcher = new TextWatcher() {
+			@Override
+			public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+				AddAccountActivity.this.updateDoneButton();
+			}
+
+			@Override
+			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
+			}
+
+			@Override
+			public void afterTextChanged(final Editable s) {
+			}
+		};
+		this.textAccNumber.addTextChangedListener(watcher);
+		this.textAccPassword.addTextChangedListener(watcher);
+
+		this.updateDoneButton();
 		this.handleNetworkSelection();
+	}
+
+	protected void updateDoneButton() {
+		final boolean isMessageEmpty = !this.textAccNumber.getText().toString().isEmpty();
+		final boolean isRecipientsEmpty = !this.textAccPassword.getText().toString().isEmpty();
+		this.buttonDone.setEnabled(isMessageEmpty && isRecipientsEmpty);
+		this.buttonVerify.setEnabled(isMessageEmpty && isRecipientsEmpty);
+		this.buttonVerifyIcon.setEnabled(isMessageEmpty && isRecipientsEmpty);
+		this.buttonVerifyText.setEnabled(isMessageEmpty && isRecipientsEmpty);
 	}
 
 	@Override
@@ -134,13 +172,12 @@ public class AddAccountActivity extends Activity {
 	}
 
 	public void verifyAccount(final View view) {
-		final ImageView verifyView = (ImageView) this.findViewById(R.id.actionbar_verify);
 		final Animation rotation = AnimationUtils.loadAnimation(this, R.anim.clockwise_refresh);
 		rotation.setRepeatCount(Animation.INFINITE);
-		verifyView.startAnimation(rotation);
+		this.buttonVerifyIcon.startAnimation(rotation);
 
 		final Account account = this.makeAccountFromUI();
 		final Operator operator = OperatorFactory.getOperator(account);
-		new VerifyTask(this, operator, verifyView).execute();
+		new VerifyTask(this, operator, this.buttonVerifyIcon).execute();
 	}
 }

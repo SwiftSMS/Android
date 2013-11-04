@@ -4,6 +4,7 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
+        android:id="@+id/actionbar_verify"
         style="?android:actionButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,13 +16,14 @@
         tools:ignore="UseCompoundDrawables" >
 
         <ImageView
-            android:id="@+id/actionbar_verify"
+            android:id="@+id/actionbar_verify_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/verify"
-            android:src="@drawable/ic_action_refresh" />
+            android:src="@drawable/verify_button_selector" />
 
         <TextView
+            android:id="@+id/actionbar_verify_text"
             style="?android:actionButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:clickable="true"
-        android:drawableLeft="@drawable/ic_action_done"
+        android:drawableLeft="@drawable/done_button_selector"
         android:drawablePadding="8dp"
         android:focusable="true"
         android:onClick="addAccount"
