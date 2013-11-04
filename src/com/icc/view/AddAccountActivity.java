@@ -60,13 +60,7 @@ public class AddAccountActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_add_account);
 
-		final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
-		final View customActionBarView = inflater.inflate(R.layout.actionbar_custom_view_done_cancel, null);
-		// Show the custom action bar view and hide the normal Home icon and title.
-		final ActionBar actionBar = this.getActionBar();
-		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-		actionBar.setCustomView(customActionBarView, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.MATCH_PARENT));
+		this.setupCustomActionBar();
 
 		this.textAccName = (TextView) this.findViewById(R.id.text_acc_name);
 		this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
@@ -78,20 +72,7 @@ public class AddAccountActivity extends Activity {
 		this.buttonVerifyText = (TextView) this.findViewById(R.id.actionbar_verify_text);
 		this.buttonDone = (TextView) this.findViewById(R.id.actionbar_done);
 
-		final TextWatcher watcher = new TextWatcher() {
-			@Override
-			public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
-				AddAccountActivity.this.updateDoneButton();
-			}
-
-			@Override
-			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
-			}
-
-			@Override
-			public void afterTextChanged(final Editable s) {
-			}
-		};
+		final TextWatcher watcher = new UpdateButtonsTextWatcher();
 		this.textAccNumber.addTextChangedListener(watcher);
 		this.textAccPassword.addTextChangedListener(watcher);
 
@@ -99,7 +80,23 @@ public class AddAccountActivity extends Activity {
 		this.handleNetworkSelection();
 	}
 
-	protected void updateDoneButton() {
+	/**
+	 * Setup the custom {@link ActionBar} for adding accounts.
+	 */
+	private void setupCustomActionBar() {
+		final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		final View customActionBarView = inflater.inflate(R.layout.actionbar_custom_view_done_cancel, null);
+		// Show the custom action bar view and hide the normal Home icon and title.
+		final ActionBar actionBar = this.getActionBar();
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+		actionBar.setCustomView(customActionBarView, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT));
+	}
+
+	/**
+	 * Set the enabled state or the {@link ActionBar} buttons based on the contents of the phone number & password fields.
+	 */
+	private void updateDoneButton() {
 		final boolean isMessageEmpty = !this.textAccNumber.getText().toString().isEmpty();
 		final boolean isRecipientsEmpty = !this.textAccPassword.getText().toString().isEmpty();
 		this.buttonDone.setEnabled(isMessageEmpty && isRecipientsEmpty);
@@ -179,5 +176,23 @@ public class AddAccountActivity extends Activity {
 		final Account account = this.makeAccountFromUI();
 		final Operator operator = OperatorFactory.getOperator(account);
 		new VerifyTask(this, operator, this.buttonVerifyIcon).execute();
+	}
+
+	/**
+	 * {@link TextWatcher} to update the UI buttons when text in the required fields change.
+	 */
+	private class UpdateButtonsTextWatcher implements TextWatcher {
+		@Override
+		public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+			AddAccountActivity.this.updateDoneButton();
+		}
+
+		@Override
+		public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
+		}
+
+		@Override
+		public void afterTextChanged(final Editable s) {
+		}
 	}
 }
