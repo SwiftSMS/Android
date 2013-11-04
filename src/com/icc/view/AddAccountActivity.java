@@ -51,7 +51,6 @@ public class AddAccountActivity extends Activity {
 	private Network selectedNetwork = null;
 	private TextView buttonDone;
 	private LinearLayout buttonVerify;
-	private TextView buttonVerifyText;
 	private ImageView buttonVerifyIcon;
 
 	@Override
@@ -69,7 +68,6 @@ public class AddAccountActivity extends Activity {
 		this.checkActiveAccount = (CheckBox) this.findViewById(R.id.checkBox_active_acc);
 		this.buttonVerify = (LinearLayout) this.findViewById(R.id.actionbar_verify);
 		this.buttonVerifyIcon = (ImageView) this.findViewById(R.id.actionbar_verify_icon);
-		this.buttonVerifyText = (TextView) this.findViewById(R.id.actionbar_verify_text);
 		this.buttonDone = (TextView) this.findViewById(R.id.actionbar_done);
 
 		final TextWatcher watcher = new UpdateButtonsTextWatcher();
@@ -101,8 +99,6 @@ public class AddAccountActivity extends Activity {
 		final boolean isRecipientsEmpty = !this.textAccPassword.getText().toString().isEmpty();
 		this.buttonDone.setEnabled(isMessageEmpty && isRecipientsEmpty);
 		this.buttonVerify.setEnabled(isMessageEmpty && isRecipientsEmpty);
-		this.buttonVerifyIcon.setEnabled(isMessageEmpty && isRecipientsEmpty);
-		this.buttonVerifyText.setEnabled(isMessageEmpty && isRecipientsEmpty);
 	}
 
 	@Override
