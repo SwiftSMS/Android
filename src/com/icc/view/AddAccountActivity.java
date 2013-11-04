@@ -1,17 +1,26 @@
 package com.icc.view;
 
 import static com.icc.InternalString.PREFS_KEY;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +49,9 @@ public class AddAccountActivity extends Activity {
 	private CheckBox checkActiveAccount;
 	private SharedPreferences preferences;
 	private Network selectedNetwork = null;
+	private TextView buttonDone;
+	private LinearLayout buttonVerify;
+	private ImageView buttonVerifyIcon;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -47,13 +59,46 @@ public class AddAccountActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_add_account);
 
+		this.setupCustomActionBar();
+
 		this.textAccName = (TextView) this.findViewById(R.id.text_acc_name);
 		this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
 		this.textAccPassword = (TextView) this.findViewById(R.id.text_acc_password);
 		this.textViewNetwork = (TextView) this.findViewById(R.id.text_selected_network);
 		this.checkActiveAccount = (CheckBox) this.findViewById(R.id.checkBox_active_acc);
+		this.buttonVerify = (LinearLayout) this.findViewById(R.id.actionbar_verify);
+		this.buttonVerifyIcon = (ImageView) this.findViewById(R.id.actionbar_verify_icon);
+		this.buttonDone = (TextView) this.findViewById(R.id.actionbar_done);
 
+		final TextWatcher watcher = new UpdateButtonsTextWatcher();
+		this.textAccNumber.addTextChangedListener(watcher);
+		this.textAccPassword.addTextChangedListener(watcher);
+
+		this.updateDoneButton();
 		this.handleNetworkSelection();
+	}
+
+	/**
+	 * Setup the custom {@link ActionBar} for adding accounts.
+	 */
+	private void setupCustomActionBar() {
+		final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+		final View customActionBarView = inflater.inflate(R.layout.actionbar_custom_view_done_cancel, null);
+		// Show the custom action bar view and hide the normal Home icon and title.
+		final ActionBar actionBar = this.getActionBar();
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+		actionBar.setCustomView(customActionBarView, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT));
+	}
+
+	/**
+	 * Set the enabled state or the {@link ActionBar} buttons based on the contents of the phone number & password fields.
+	 */
+	private void updateDoneButton() {
+		final boolean isMessageEmpty = !this.textAccNumber.getText().toString().isEmpty();
+		final boolean isRecipientsEmpty = !this.textAccPassword.getText().toString().isEmpty();
+		this.buttonDone.setEnabled(isMessageEmpty && isRecipientsEmpty);
+		this.buttonVerify.setEnabled(isMessageEmpty && isRecipientsEmpty);
 	}
 
 	@Override
@@ -92,7 +137,7 @@ public class AddAccountActivity extends Activity {
 			final Editor editor = this.preferences.edit();
 			editor.putInt(InternalString.LATEST_ACCOUNT, successfullyAddedId);
 
-			if (this.checkActiveAccount.isChecked()) {
+			if (this.checkActiveAccount.isChecked() || successfullyAddedId == 1) {
 				editor.putInt(InternalString.ACTIVE_ACCOUNT, successfullyAddedId);
 			}
 			editor.commit();
@@ -120,8 +165,30 @@ public class AddAccountActivity extends Activity {
 	}
 
 	public void verifyAccount(final View view) {
+		final Animation rotation = AnimationUtils.loadAnimation(this, R.anim.clockwise_refresh);
+		rotation.setRepeatCount(Animation.INFINITE);
+		this.buttonVerifyIcon.startAnimation(rotation);
+
 		final Account account = this.makeAccountFromUI();
 		final Operator operator = OperatorFactory.getOperator(account);
-		new VerifyTask(this, operator).execute();
+		new VerifyTask(this, operator, this.buttonVerifyIcon).execute();
+	}
+
+	/**
+	 * {@link TextWatcher} to update the UI buttons when text in the required fields change.
+	 */
+	private class UpdateButtonsTextWatcher implements TextWatcher {
+		@Override
+		public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
+			AddAccountActivity.this.updateDoneButton();
+		}
+
+		@Override
+		public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after) {
+		}
+
+		@Override
+		public void afterTextChanged(final Editable s) {
+		}
 	}
 }

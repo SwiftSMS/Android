@@ -1,0 +1,51 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/actionbar_verify"
+        style="?android:actionButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:onClick="verifyAccount"
+        tools:ignore="UseCompoundDrawables" >
+
+        <ImageView
+            android:id="@+id/actionbar_verify_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:contentDescription="@string/verify"
+            android:src="@drawable/verify_button_selector" />
+
+        <TextView
+            android:id="@+id/actionbar_verify_text"
+            style="?android:actionButtonStyle"
+            android:duplicateParentState="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/element_margin"
+            android:text="@string/verify" >
+        </TextView>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/actionbar_done"
+        style="?android:actionButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        android:drawableLeft="@drawable/done_button_selector"
+        android:drawablePadding="8dp"
+        android:focusable="true"
+        android:onClick="addAccount"
+        android:paddingRight="20dp"
+        android:text="@string/done" />
+
+</RelativeLayout>

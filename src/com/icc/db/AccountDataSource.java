@@ -1,5 +1,13 @@
 package com.icc.db;
 
+import static com.icc.db.DbManager.COLUMN_ACCOUNT_NAME;
+import static com.icc.db.DbManager.COLUMN_ID;
+import static com.icc.db.DbManager.COLUMN_MOB_NUMBER;
+import static com.icc.db.DbManager.COLUMN_NETWORK;
+import static com.icc.db.DbManager.COLUMN_PASSWORD;
+import static com.icc.db.DbManager.COLUMN_TIMESTAMP;
+import static com.icc.db.DbManager.TABLE_ACCOUNTS;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,16 +63,21 @@ public class AccountDataSource implements IAccountDatabase {
 	}
 
 	private int addAccountToDb(final Account account) {
-
 		final ContentValues dbValues = new ContentValues();
+		final long time = System.currentTimeMillis();
 
-		dbValues.put(DbManager.COLUMN_ACCOUNT_NAME, account.getAccountName());
-		dbValues.put(DbManager.COLUMN_MOB_NUMBER, account.getMobileNumber());
-		dbValues.put(DbManager.COLUMN_NETWORK, account.getOperator().name());
-		dbValues.put(DbManager.COLUMN_PASSWORD, account.getPassword());
-		dbValues.put(DbManager.COLUMN_TIMESTAMP, System.currentTimeMillis());
+		dbValues.put(COLUMN_ACCOUNT_NAME, account.getAccountName());
+		dbValues.put(COLUMN_MOB_NUMBER, account.getMobileNumber());
+		dbValues.put(COLUMN_NETWORK, account.getOperator().name());
+		dbValues.put(COLUMN_PASSWORD, account.getPassword());
+		dbValues.put(COLUMN_TIMESTAMP, time);
 
-		return (int)this.database.insert(DbManager.TABLE_ACCOUNTS, null, dbValues);
+		this.database.insert(TABLE_ACCOUNTS, null, dbValues);
+
+		final String where = COLUMN_TIMESTAMP + " = " + time;
+		final Cursor cursor = this.database.query(TABLE_ACCOUNTS, new String[] { COLUMN_ID }, where, null, null, null, null);
+		cursor.moveToFirst();
+		return cursor.getInt(0);
 	}
 
 	/**
