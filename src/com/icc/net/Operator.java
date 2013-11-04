@@ -2,6 +2,7 @@ package com.icc.net;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.icc.model.Account;
@@ -71,7 +72,7 @@ public abstract class Operator {
 	abstract int doGetRemainingSMS();
 
 	/**
-	 * This method is used for sending an SMS message through the operators website. This method will perform any
+	 * This method is responsible for sending an SMS message through the operators website. This method will perform any
 	 * non-network-specific send actions. Each sub-class of {@link Operator} will implement the specific send algorithm in the
 	 * {@link #doSend(String, String)} method.
 	 * 
@@ -83,12 +84,34 @@ public abstract class Operator {
 	 */
 	public final boolean send(final List<String> list, final String message) {
 		this.login();
-		final boolean sendStatus = this.doSend(list, message);
-		if (!sendStatus) {
-			this.retryLogin();
-			return this.doSend(list, message);
+		final List<String> msgParts = getParts(message, this.getCharacterLimit());
+		boolean sendStatus = false;
+		for (final String msgToSend : msgParts) {
+			sendStatus = this.doSend(list, msgToSend);
+			if (!sendStatus) {
+				this.retryLogin();
+				sendStatus = this.doSend(list, msgToSend);
+			}
 		}
 		return sendStatus;
+	}
+
+	/**
+	 * This method is used to break a String (message) into parts with a maximum length of the partition size provided.
+	 * 
+	 * @param string
+	 *            The message to be split into parts.
+	 * @param partitionSize
+	 *            The maximum size of each part.
+	 * @return A list of strings broken into parts.
+	 */
+	private static List<String> getParts(final String string, final int partitionSize) {
+		final List<String> parts = new ArrayList<String>();
+		final int len = string.length();
+		for (int i = 0; i < len; i += partitionSize) {
+			parts.add(string.substring(i, Math.min(len, i + partitionSize)));
+		}
+		return parts;
 	}
 
 	/**

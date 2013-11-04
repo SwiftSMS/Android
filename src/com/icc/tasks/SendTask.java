@@ -79,10 +79,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	protected Boolean doInBackground(final String... params) {
 		this.message = this.messageEditText.getText().toString();
 		this.recipients = ContactUtils.trimSeparators(this.recipientsEditText.getText().toString());
-		if (this.operator.login()) {
-			return this.operator.send(ContactUtils.getContactsAsList(this.recipients), this.message);
-		}
-		return false;
+		return this.operator.send(ContactUtils.getContactsAsList(this.recipients), this.message);
 	}
 
 	@Override
