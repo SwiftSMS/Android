@@ -14,7 +14,7 @@ import android.widget.TextView;
 public class CharacterCountTextWatcher extends Observable implements TextWatcher {
 
 	private final TextView characterCountTextView;
-	private int maxCharacterCount = 0;
+	private int maxCharCount = 0;
 
 	/**
 	 * Create the character counting {@link TextWatcher}.
@@ -29,12 +29,15 @@ public class CharacterCountTextWatcher extends Observable implements TextWatcher
 	@Override
 	public void afterTextChanged(final Editable s) {
 		if (this.isMaxCharacterCountSet()) {
-			if (s.length() > this.maxCharacterCount) {
-				s.delete(this.maxCharacterCount, s.length());
+			int wrappedCharCount = s.length() % this.maxCharCount;
+			wrappedCharCount = (wrappedCharCount == 0) ? this.maxCharCount : wrappedCharCount;
+			final int charactersRemaining = this.maxCharCount - wrappedCharCount;
+			final StringBuilder countText = new StringBuilder(Integer.toString(charactersRemaining));
+			if (s.length() > this.maxCharCount) {
+				final int numMsgs = (s.length() / this.maxCharCount) + 1;
+				countText.append(" / " + numMsgs);
 			}
-
-			final int charactersRemaining = this.maxCharacterCount - s.length();
-			this.characterCountTextView.setText(Integer.toString(charactersRemaining));
+			this.characterCountTextView.setText(countText.toString());
 
 			if (s.length() > 100) {
 				this.characterCountTextView.setVisibility(View.VISIBLE);
@@ -45,7 +48,7 @@ public class CharacterCountTextWatcher extends Observable implements TextWatcher
 	}
 
 	private boolean isMaxCharacterCountSet() {
-		return this.maxCharacterCount > 0;
+		return this.maxCharCount > 0;
 	}
 
 	@Override
@@ -59,6 +62,6 @@ public class CharacterCountTextWatcher extends Observable implements TextWatcher
 	}
 
 	public void setCharacterLimit(final int result) {
-		this.maxCharacterCount = result;
+		this.maxCharCount = result;
 	}
 }
