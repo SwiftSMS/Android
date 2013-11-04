@@ -13,16 +13,20 @@ import com.icc.R;
 import com.icc.model.Account;
 
 /**
+ * Custom Adapter used to hold and display ICC Account's
+ *
  * @author Rob Powell
  */
 public class AccountAdapter extends BaseAdapter {
 
 	private final List<Account> accounts;
 	private static LayoutInflater layoutInflater;
+    private int activeAccountId = -1;
 
-	public AccountAdapter(final Context context, final List<Account> accounts) {
+	public AccountAdapter(final Context context, final List<Account> accounts, int activeAccountId) {
 		this.accounts = accounts;
 		AccountAdapter.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.activeAccountId = activeAccountId;
 	}
 
 	@Override
@@ -51,5 +55,9 @@ public class AccountAdapter extends BaseAdapter {
 		textViewAccountName.setText(this.accounts.get(position).getAccountName());
 
 		return view;
-	}
+    }
+
+    public void setActiveAccountId(int activeAccountId) {
+        this.activeAccountId = activeAccountId;
+    }
 }

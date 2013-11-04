@@ -7,11 +7,6 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
-    <View
-        android:id="@+id/view_active_account_icon"
-        android:layout_width="1dip"
-        android:layout_height="wrap_content"
-        android:background="#ff16a1b5"/>
 
     <TextView
         android:id="@+id/textview_manage_account_name"
@@ -19,6 +14,11 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/element_margin"
         android:text="hello"/>
-
-
+    <View
+        android:id="@+id/view_list_marker"
+        android:layout_width="wrap_content"
+        android:layout_height="1dip"
+        android:layout_alignParentBottom="true"
+        android:background="#ff16a1b5"
+        android:visibility="gone"/>
 </RelativeLayout>
