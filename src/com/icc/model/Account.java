@@ -64,4 +64,11 @@ public class Account {
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof Account)
+            return this.id == ((Account) o).getId();
+        return super.equals(o);
+    }
 }
