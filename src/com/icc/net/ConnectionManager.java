@@ -9,7 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +17,7 @@ public class ConnectionManager {
 
 	private HttpURLConnection connection;
 	private final String webpageUrl;
-	private final Map<String, String> requestHeaders = new HashMap<String, String>();
+	private final Map<String, String> requestHeaders = new LinkedHashMap<String, String>();
 
 	/**
 	 * Create a new ConnectionManager with the settings provided to open a connection to the URL provided using the
