@@ -3,7 +3,6 @@ package com.icc.view;
 import static com.icc.InternalString.PREFS_KEY;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -15,13 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,13 +42,13 @@ public class AddAccountActivity extends Activity {
 
 	private static int FAILED_DB_ADD = -1;
 	private IAccountDatabase accountDatabase;
-	private TextView textAccNumber, textAccName, textAccPassword, textViewNetwork;
+	private TextView textAccNumber, textAccName, textAccPassword;
 	private CheckBox checkActiveAccount;
 	private SharedPreferences preferences;
-	private Network selectedNetwork = null;
 	private TextView buttonDone;
 	private LinearLayout buttonVerify;
 	private ImageView buttonVerifyIcon;
+	private Spinner spinnerNetwork;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -64,18 +61,18 @@ public class AddAccountActivity extends Activity {
 		this.textAccName = (TextView) this.findViewById(R.id.text_acc_name);
 		this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
 		this.textAccPassword = (TextView) this.findViewById(R.id.text_acc_password);
-		this.textViewNetwork = (TextView) this.findViewById(R.id.text_selected_network);
 		this.checkActiveAccount = (CheckBox) this.findViewById(R.id.checkBox_active_acc);
 		this.buttonVerify = (LinearLayout) this.findViewById(R.id.actionbar_verify);
 		this.buttonVerifyIcon = (ImageView) this.findViewById(R.id.actionbar_verify_icon);
 		this.buttonDone = (TextView) this.findViewById(R.id.actionbar_done);
+		this.spinnerNetwork = (Spinner) this.findViewById(R.id.spinner_add_account_networks);
 
 		final TextWatcher watcher = new UpdateButtonsTextWatcher();
 		this.textAccNumber.addTextChangedListener(watcher);
 		this.textAccPassword.addTextChangedListener(watcher);
+		this.spinnerNetwork.setAdapter(this.getNetworkAdapter());
 
 		this.updateDoneButton();
-		this.handleNetworkSelection();
 	}
 
 	/**
@@ -107,23 +104,6 @@ public class AddAccountActivity extends Activity {
 		super.onResume();
 	}
 
-	private void handleNetworkSelection() {
-		final Dialog dialog = new Dialog(this);
-		final ListView listView = new ListView(this);
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(final AdapterView<?> adapterView, final View view, final int i, final long l) {
-				AddAccountActivity.this.selectedNetwork = Network.values()[i];
-				AddAccountActivity.this.textViewNetwork.setText(AddAccountActivity.this.selectedNetwork + " Network");
-				dialog.dismiss();
-			}
-		});
-		listView.setAdapter(this.getNetworkAdapter());
-		dialog.setTitle("Select Network");
-		dialog.setContentView(listView);
-		dialog.show();
-	}
-
 	private ArrayAdapter<Network> getNetworkAdapter() {
 		return new ArrayAdapter<Network>(this, android.R.layout.simple_list_item_1, Network.values());
 	}
@@ -151,15 +131,16 @@ public class AddAccountActivity extends Activity {
 	 * @return An {@link Account} using the details entered on the UI.
 	 */
 	private Account makeAccountFromUI() {
+		final Network selectedNetwork = (Network) this.spinnerNetwork.getSelectedItem();
 		final String number = this.textAccNumber.getText().toString();
 		final String password = this.textAccPassword.getText().toString();
 
 		final String numberLast4Digits = number.substring(number.length() - Math.min(4, number.length()));
-		final String defaultAccName = this.selectedNetwork + " (" + numberLast4Digits + ")";
+		final String defaultAccName = selectedNetwork + " (" + numberLast4Digits + ")";
 		final String enteredAccName = this.textAccName.getText().toString();
 		final String accountName = enteredAccName.isEmpty() ? defaultAccName : enteredAccName;
 
-		return new Account(number, accountName, password, this.selectedNetwork);
+		return new Account(number, accountName, password, selectedNetwork);
 	}
 
 	public void verifyAccount(final View view) {

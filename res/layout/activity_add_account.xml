@@ -23,17 +23,6 @@
             android:text="@string/text_add_operator"
             android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/text_selected_network"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/textView1"
-            android:gravity="center"
-            android:paddingBottom="@dimen/element_margin"
-            android:paddingTop="@dimen/element_margin"
-            android:textSize="14sp" />
-
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dip"
@@ -46,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/text_selected_network"
+            android:layout_below="@+id/spinner_add_account_networks"
             android:ems="10"
             android:hint="@string/hint_acc_name_opt"
             android:inputType="text"
@@ -87,6 +76,15 @@
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/text_acc_password"
             android:text="@string/active_acc" />
+
+        <Spinner
+            android:id="@+id/spinner_add_account_networks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/textView1" />
+
     </RelativeLayout>
 
 </ScrollView>
