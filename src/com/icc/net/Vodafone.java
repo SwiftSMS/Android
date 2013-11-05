@@ -2,6 +2,9 @@ package com.icc.net;
 
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.icc.model.Account;
 
 public class Vodafone extends Operator {
@@ -63,7 +66,20 @@ public class Vodafone extends Operator {
 
 	@Override
 	int doGetRemainingSMS() {
-		return 0;
+		final ConnectionManager manager = new ConnectionManager("http://www.vodafone.ie/myv/dashboard/webtextdetails.shtml",
+				"GET", false);
+		final String smsHtml = manager.doConnection();
+
+		try {
+			final JSONObject smsJson = new JSONObject(smsHtml);
+			final int totalSms = smsJson.getInt("total");
+			final int usedSms = smsJson.getInt("used");
+			return totalSms - usedSms;
+		} catch (final JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
 	}
 
 	@Override
