@@ -53,15 +53,31 @@ public class Vodafone extends Operator {
 	@Override
 	boolean doSend(final List<String> recipients, final String message) {
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/Process.shtml");
-		manager.addPostHeader("org.apache.struts.taglib.html.TOKEN", "MY TOKEN");
+		manager.addPostHeader("org.apache.struts.taglib.html.TOKEN", this.getToken());
 		manager.addPostHeader("message", message);
+		manager.addPostHeader("futuretime", Boolean.toString(false));
+		manager.addPostHeader("futuredate", Boolean.toString(false));
 		for (int i = 0; i < recipients.size(); i++) {
 			manager.addPostHeader("recipients[" + i + "]", recipients.get(i));
 		}
-		manager.addPostHeader("&jcaptcha_response", "MY CAPTCHA");
+		// manager.addPostHeader("jcaptcha_response", "MY CAPTCHA");
 		final String html = manager.doConnection();
 
-		return html.contains("Sent");
+		return html.contains("Message sent!");
+	}
+
+	private String getToken() {
+		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/index.jsp",
+				"GET", false);
+		final String html = manager.doConnection();
+
+		final String charsText = "org.apache.struts.taglib.html.TOKEN\" value=\"";
+		final int startPos = html.indexOf(charsText) + charsText.length();
+		final int endPos = html.indexOf("\"", startPos);
+		if (startPos > charsText.length()) {
+			return html.substring(startPos, endPos);
+		}
+		return "";
 	}
 
 	@Override
