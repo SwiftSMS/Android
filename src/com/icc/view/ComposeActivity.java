@@ -40,19 +40,20 @@ import com.icc.tasks.SendTask;
 
 public class ComposeActivity extends Activity implements Observer, ActionBar.OnNavigationListener {
 
+	private static final String PERSISTED_RECIPIENT_BASE_KEY = "persisted_recipient_";
+	private static final String PERSISTED_MESSAGE_BASE_KEY = "persisted_message_";
+
 	private static final int ADD_FIRST_ACCOUNT_REQUEST = 23;
 
-	private Operator operator;
 	private CharacterCountTextWatcher charCountWatcher;
 	private EditText messageEditText;
-	private SharedPreferences preferences;
 	private AutoCompleteTextView recipientEdittext;
 	private MenuItem remaingSmsMenuItem;
-
 	private ImageButton sendButton;
 
+	private Operator operator;
+	private SharedPreferences preferences;
 	private IAccountDatabase accountDatabase;
-
 	private RemainingSmsTask task;
 
 	@Override
@@ -90,14 +91,61 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	 */
 	private void handleIntentData() {
 		final Uri intentData = this.getIntent().getData();
+		final String persistedMessage = this.preferences.getString(this.getMessagePrefKey(), null);
+		final String persistedRecipient = this.preferences.getString(this.getRecipientPrefKey(), null);
+
 		if (intentData != null) {
 			final String smsto = intentData.getSchemeSpecificPart();
 			this.recipientEdittext.setText(smsto + CONTACT_SEPARATOR + SPACE);
 			final String smsBody = this.getIntent().getStringExtra(SMS_BODY);
 			if (smsBody != null) {
 				this.messageEditText.setText(smsBody);
+			} else {
+				this.messageEditText.setText(persistedMessage);
 			}
+		} else {
+			this.recipientEdittext.setText(persistedRecipient);
+			this.messageEditText.setText(persistedMessage);
 		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		final String message = this.messageEditText.getText().toString();
+		final String recipient = this.recipientEdittext.getText().toString();
+
+		final Editor editor = this.preferences.edit();
+		editor.putString(this.getMessagePrefKey(), message);
+		editor.putString(this.getRecipientPrefKey(), recipient);
+		editor.apply();
+	}
+
+	/**
+	 * This method gets the key that is used to store the draft message in {@link SharedPreferences}.
+	 * <p>
+	 * There is a different key based on the launch context.
+	 * <ul>
+	 * <li>A default key is used when the {@link Activity} is entered via the launcher.</li>
+	 * <li>There is a unique key for each contact when the {@link Activity} is entered through a send {@link Intent}.</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @return The {@link SharedPreferences} key to persist the message in the current launch context.
+	 */
+	private String getMessagePrefKey() {
+		return PERSISTED_MESSAGE_BASE_KEY + this.getIntent().getData();
+	}
+
+	/**
+	 * This method gets the key that is used to store the draft message recipients in {@link SharedPreferences}.
+	 * 
+	 * @see #getMessagePrefKey() for details on the key.
+	 * 
+	 * @return The {@link SharedPreferences} key to persist the message recipients in the current launch context.
+	 */
+	private String getRecipientPrefKey() {
+		return PERSISTED_RECIPIENT_BASE_KEY + this.getIntent().getData();
 	}
 
 	@Override
@@ -205,6 +253,11 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	public void sendMessage(final View view) {
 		final SendTask sendTask = new SendTask(this, this.operator);
 		sendTask.execute();
+
+		final Editor editor = this.preferences.edit();
+		editor.remove(this.getMessagePrefKey());
+		editor.remove(this.getRecipientPrefKey());
+		editor.apply();
 	}
 
 	/**
