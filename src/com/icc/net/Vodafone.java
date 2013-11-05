@@ -68,6 +68,18 @@ public class Vodafone extends Operator {
 
 	@Override
 	int doGetCharacterLimit() {
-		return 459;
+		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/javascript/section.myv.webtext.js",
+				"GET", false);
+		final String html = manager.doConnection();
+
+		final String charsText = "var char_limit = ";
+		final int startPos = html.indexOf(charsText) + charsText.length();
+		final int endPos = html.indexOf(";", startPos);
+		if (startPos > charsText.length()) {
+			final String characterCount = html.substring(startPos, endPos);
+			return Integer.valueOf(characterCount);
+		} else {
+			return -1;
+		}
 	}
 }
