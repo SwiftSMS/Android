@@ -94,7 +94,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 						Phone.TYPE, Phone.LABEL };
 				final String selection = Data.MIMETYPE + " = ?";
 				final String[] selectionArgs = new String[] { Phone.CONTENT_ITEM_TYPE };
-				final String sortOrder = Contacts.DISPLAY_NAME + " ASC";
+				final String sortOrder = Contacts.SORT_KEY_PRIMARY;
 
 				String searchText = constraint.toString();
 				if (searchText.contains(CONTACT_SEPARATOR)) {
