@@ -23,15 +23,13 @@ public class ManageAccountsActivity extends ListActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
-        accountDatabase = AccountDataSource.getInstance(this);
     }
 
     @Override
     protected void onResume() {
 
-        int activeAccountId = this.preferences.getInt(InternalString.ACTIVE_ACCOUNT, -1);
+        this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+        accountDatabase = AccountDataSource.getInstance(this);
 
         accountAdapter = new AccountAdapter(ManageAccountsActivity.this, accountDatabase.getAllAccounts());
 
@@ -41,6 +39,20 @@ public class ManageAccountsActivity extends ListActivity {
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
+        setActiveAccount(id);
         super.onListItemClick(l, v, position, id);
+    }
+
+    private void setActiveAccount(long id) {
+
+        final int selectedAccountId = (int)id;
+
+        final SharedPreferences.Editor editor = this.preferences.edit();
+        editor.putInt(InternalString.ACTIVE_ACCOUNT, selectedAccountId);
+        editor.apply();
+    }
+
+    private int getActiveAccount() {
+        return this.preferences.getInt(InternalString.ACTIVE_ACCOUNT, -1);
     }
 }
