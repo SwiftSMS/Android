@@ -73,6 +73,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	protected void onPreExecute() {
 		this.progressBar.setVisibility(View.VISIBLE);
 		this.sendButton.setEnabled(false);
+		this.operator.preSend(this.activity);
 	}
 
 	@Override

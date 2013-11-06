@@ -1,10 +1,22 @@
 package com.icc.net;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+
+import com.icc.R;
 import com.icc.model.Account;
 
 public class Vodafone extends Operator {
@@ -48,6 +60,42 @@ public class Vodafone extends Operator {
 		final String loginHtml = loginManager.doConnection();
 
 		return loginHtml.contains("302");
+	}
+
+	@Override
+	public boolean preSend(final Context context) {
+		final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		final View layout = inflater.inflate(R.layout.captcha_dialog, null);
+		final ImageView imageView = (ImageView) layout.findViewById(R.id.image_catpcha_dialog_image);
+
+		new AsyncTask<String, Integer, Drawable>() {
+			@Override
+			protected Drawable doInBackground(final String... params) {
+				try {
+					return Drawable.createFromStream(
+							new URL("https://www.vodafone.ie/myv/messaging/webtext/Challenge.shtml").openStream(), "Captcha");
+				} catch (final MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (final IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(final Drawable result) {
+				imageView.setImageDrawable(result);
+			}
+		}.execute();
+
+		final Dialog dialog = new Dialog(context);
+		dialog.setTitle("Captcha");
+		dialog.setContentView(layout);
+		dialog.setCancelable(true);
+		dialog.show();
+		return false;
 	}
 
 	@Override

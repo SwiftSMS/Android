@@ -5,6 +5,8 @@ import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
+
 import com.icc.model.Account;
 
 /**
@@ -70,6 +72,8 @@ public abstract class Operator {
 	 * @return The remaining SMS count or <code>-1</code> if it can't be determined.
 	 */
 	abstract int doGetRemainingSMS();
+
+	public abstract boolean preSend(final Context context);
 
 	/**
 	 * This method is responsible for sending an SMS message through the operators website. This method will perform any

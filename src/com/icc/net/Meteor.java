@@ -5,6 +5,8 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+
 import com.icc.model.Account;
 
 public class Meteor extends Operator {
@@ -62,6 +64,11 @@ public class Meteor extends Operator {
 			e.printStackTrace();
 			return -1;
 		}
+	}
+
+	@Override
+	public boolean preSend(final Context context) {
+		return false;
 	}
 
 	@Override
