@@ -1,25 +1,30 @@
 package com.icc.net;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Dialog;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.icc.InternalString;
 import com.icc.R;
 import com.icc.model.Account;
+import com.icc.tasks.DownloadImageTask;
 
 public class Vodafone extends Operator {
+
+	private final Semaphore lock = new Semaphore(1);;
+	private EditText answerEditText;
 
 	public Vodafone(final Account account) {
 		super(account);
@@ -64,53 +69,49 @@ public class Vodafone extends Operator {
 
 	@Override
 	public boolean preSend(final Context context) {
+		this.lock.acquireUninterruptibly();
+
 		final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		final View layout = inflater.inflate(R.layout.captcha_dialog, null);
-		final ImageView imageView = (ImageView) layout.findViewById(R.id.image_catpcha_dialog_image);
+		this.answerEditText = (EditText) layout.findViewById(R.id.text_captcha_dialog);
+		final ImageView imageView = (ImageView) layout.findViewById(R.id.image_captcha_dialog);
+		new DownloadImageTask(imageView).execute("https://www.vodafone.ie/myv/messaging/webtext/Challenge.shtml");
 
-		new AsyncTask<String, Integer, Drawable>() {
-			@Override
-			protected Drawable doInBackground(final String... params) {
-				try {
-					return Drawable.createFromStream(
-							new URL("https://www.vodafone.ie/myv/messaging/webtext/Challenge.shtml").openStream(), "Captcha");
-				} catch (final MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (final IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
-			}
-
-			@Override
-			protected void onPostExecute(final Drawable result) {
-				imageView.setImageDrawable(result);
-			}
-		}.execute();
-
-		final Dialog dialog = new Dialog(context);
+		final Builder dialog = new AlertDialog.Builder(context);
 		dialog.setTitle("Captcha");
-		dialog.setContentView(layout);
-		dialog.setCancelable(true);
+		dialog.setView(layout);
+		dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(final DialogInterface dialog, final int which) {
+				dialog.dismiss();
+				Vodafone.this.lock.release();
+			}
+		});
 		dialog.show();
-		return false;
+		return true;
 	}
 
 	@Override
 	boolean doSend(final List<String> recipients, final String message) {
+		Log.d(InternalString.LOG_TAG, "doSend - wait for captcha dialog");
+		this.lock.acquireUninterruptibly();
+		Log.d(InternalString.LOG_TAG, "doSend - captcha dialog done: " + this.answerEditText.getText().toString());
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/Process.shtml");
-		manager.addPostHeader("org.apache.struts.taglib.html.TOKEN", this.getToken());
+		Log.d(InternalString.LOG_TAG, "doSend - get TOKEN");
+		final String token = this.getToken();
+		manager.addPostHeader("org.apache.struts.taglib.html.TOKEN", token);
+		Log.d(InternalString.LOG_TAG, "doSend - TOKEN generated: " + token);
 		manager.addPostHeader("message", message);
-		manager.addPostHeader("futuretime", Boolean.toString(false));
-		manager.addPostHeader("futuredate", Boolean.toString(false));
 		for (int i = 0; i < recipients.size(); i++) {
 			manager.addPostHeader("recipients[" + i + "]", recipients.get(i));
 		}
-		// manager.addPostHeader("jcaptcha_response", "MY CAPTCHA");
+		manager.addPostHeader("jcaptcha_response", this.answerEditText.getText().toString());
+		Log.d(InternalString.LOG_TAG, "doSend - try send SMS");
 		final String html = manager.doConnection();
+		Log.d(InternalString.LOG_TAG, "doSend - SMS sent:");
+		Log.d(InternalString.LOG_TAG, html);
 
+		this.lock.release();
 		return html.contains("Message sent!");
 	}
 
@@ -130,7 +131,7 @@ public class Vodafone extends Operator {
 
 	@Override
 	int doGetRemainingSMS() {
-		final ConnectionManager manager = new ConnectionManager("http://www.vodafone.ie/myv/dashboard/webtextdetails.shtml",
+		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/dashboard/webtextdetails.shtml",
 				"GET", false);
 		final String smsHtml = manager.doConnection();
 

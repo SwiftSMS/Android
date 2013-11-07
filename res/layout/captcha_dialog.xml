@@ -4,18 +4,18 @@
     android:layout_height="match_parent" >
 
     <ImageView
-        android:id="@+id/image_catpcha_dialog_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/image_captcha_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_launcher"
         android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="wrap_content"
+        android:id="@+id/text_captcha_dialog"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/image_catpcha_dialog_image"
+        android:layout_below="@+id/image_captcha_dialog"
         android:layout_centerHorizontal="true"
         android:hint="@string/type_message" />
 
