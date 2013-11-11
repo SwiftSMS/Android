@@ -2,8 +2,6 @@ package com.icc.net;
 
 import java.util.List;
 
-import android.content.Context;
-
 import com.icc.model.Account;
 
 /**
@@ -23,11 +21,6 @@ public class Three extends Operator {
 		final String loginHtml = loginManager.doConnection();
 
 		return loginHtml.contains("Logout");
-	}
-
-	@Override
-	public boolean preSend(final Context context) {
-		return false;
 	}
 
 	@Override

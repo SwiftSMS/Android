@@ -73,7 +73,8 @@ public abstract class Operator {
 	 */
 	abstract int doGetRemainingSMS();
 
-	public abstract boolean preSend(final Context context);
+	public void preSend(final Context context) {
+	}
 
 	/**
 	 * This method is responsible for sending an SMS message through the operators website. This method will perform any

@@ -69,7 +69,7 @@ public class Vodafone extends Operator {
 	}
 
 	@Override
-	public boolean preSend(final Context context) {
+	public void preSend(final Context context) {
 		this.lock.acquireUninterruptibly();
 
 		final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -89,7 +89,6 @@ public class Vodafone extends Operator {
 			}
 		});
 		dialog.show();
-		return true;
 	}
 
 	@Override
