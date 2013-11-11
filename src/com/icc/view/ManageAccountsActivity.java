@@ -27,7 +27,6 @@ public class ManageAccountsActivity extends ListActivity {
 
     @Override
     protected void onResume() {
-
         this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
         accountDatabase = AccountDataSource.getInstance(this);
 
@@ -50,9 +49,5 @@ public class ManageAccountsActivity extends ListActivity {
         final SharedPreferences.Editor editor = this.preferences.edit();
         editor.putInt(InternalString.ACTIVE_ACCOUNT, selectedAccountId);
         editor.apply();
-    }
-
-    private int getActiveAccount() {
-        return this.preferences.getInt(InternalString.ACTIVE_ACCOUNT, -1);
     }
 }

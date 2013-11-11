@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.icc.InternalString;
 import com.icc.model.Account;
 
 /**
@@ -158,6 +160,7 @@ public abstract class Operator {
 	 * This method will removed the cached login and make a login attempt.
 	 */
 	private void retryLogin() {
+		Log.d(InternalString.LOG_TAG, "retryLogin - Login expired");
 		this.isLoggedIn = false;
 		this.login();
 	}

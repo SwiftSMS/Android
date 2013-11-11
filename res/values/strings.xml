@@ -19,5 +19,6 @@
     <string name="message_sent">Message sent!</string>
     <string name="send">Send</string>
     <string name="done">Done</string>
+    <string name="captcha">Captcha</string>
 
 </resources>
