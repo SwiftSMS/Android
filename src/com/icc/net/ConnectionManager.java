@@ -70,7 +70,8 @@ public class ConnectionManager {
 
 	public String connect() {
 		String responseHtml = this.doConnection();
-		while (this.getResponseStatus() == HttpURLConnection.HTTP_MOVED_TEMP) {
+		while (this.getResponseStatus() == HttpURLConnection.HTTP_MOVED_TEMP
+				|| this.getResponseStatus() == HttpURLConnection.HTTP_MOVED_PERM) {
 			this.webpageUrl = this.connection.getHeaderField("Location");
 			this.initalize();
 			responseHtml = this.doConnection();
