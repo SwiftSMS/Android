@@ -18,7 +18,7 @@ public class Three extends Operator {
 		final ConnectionManager loginManager = new ConnectionManager("https://webtexts.three.ie/webtext/users/login");
 		loginManager.addPostHeader("UserTelephoneNo", this.getAccount().getMobileNumber());
 		loginManager.addPostHeader("UserPin", this.getAccount().getPassword());
-		final String loginHtml = loginManager.doConnection();
+		final String loginHtml = loginManager.connect();
 
 		return loginHtml.contains("Logout");
 	}

@@ -43,7 +43,7 @@ public class Meteor extends Operator {
 		final ConnectionManager loginManager = new ConnectionManager(Meteor.LOGIN_URL);
 		loginManager.addPostHeader(Meteor.POST_USERNAME, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(Meteor.POST_PASSWORD, this.getAccount().getPassword());
-		final String loginHtml = loginManager.doConnection();
+		final String loginHtml = loginManager.connect();
 
 		return loginHtml.contains(Meteor.LOGIN_SUCCESS_TEXT);
 	}
@@ -51,7 +51,7 @@ public class Meteor extends Operator {
 	@Override
 	int doGetRemainingSMS() {
 		final ConnectionManager manager = new ConnectionManager(Meteor.REMAINING_SMS_URL, Meteor.GET_REQUEST_METHOD, false);
-		final String smsHtml = manager.doConnection();
+		final String smsHtml = manager.connect();
 
 		try {
 			final JSONObject smsJson = new JSONObject(smsHtml);
@@ -73,7 +73,7 @@ public class Meteor extends Operator {
 		final ConnectionManager sendManager = new ConnectionManager(Meteor.SMS_URL);
 		sendManager.addPostHeader(Meteor.POST_AJAX_REQUEST, Meteor.POST_VALUE_SEND_SMS);
 		sendManager.addPostHeader(Meteor.POST_MESSAGE_TEXT, message);
-		final String html = sendManager.doConnection();
+		final String html = sendManager.connect();
 
 		return html.contains(Meteor.SEND_SUCCESS_TEXT);
 	}
@@ -84,13 +84,13 @@ public class Meteor extends Operator {
 		addManager.addPostHeader(Meteor.POST_AJAX_REQUEST, Meteor.POST_VALUE_ADD_RECIPIENT);
 		addManager.addPostHeader(Meteor.POST_REMOVE, Meteor.POST_VALUE_NONE);
 		addManager.addPostHeader(Meteor.POST_ADD, Meteor.POST_VALUE_NO_ID + recipient);
-		addManager.doConnection();
+		addManager.connect();
 	}
 
 	@Override
 	int doGetCharacterLimit() {
 		final ConnectionManager manager = new ConnectionManager(Meteor.CHARACTER_COUNT_URL, Meteor.GET_REQUEST_METHOD, false);
-		final String html = manager.doConnection();
+		final String html = manager.connect();
 
 		final String charsText = "charsLeft\" value='";
 		final int startPos = html.indexOf(charsText) + charsText.length();

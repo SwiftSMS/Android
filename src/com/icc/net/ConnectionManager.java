@@ -16,8 +16,10 @@ import java.util.Map;
 public class ConnectionManager {
 
 	private HttpURLConnection connection;
-	private final String webpageUrl;
+	private String webpageUrl;
 	private final Map<String, String> requestHeaders = new LinkedHashMap<String, String>();
+	private final boolean doOutput;
+	private final String method;
 
 	/**
 	 * Create a new ConnectionManager with the settings provided to open a connection to the URL provided using the
@@ -32,7 +34,9 @@ public class ConnectionManager {
 	 */
 	public ConnectionManager(final String webpageUrl, final String requestMethod, final boolean doOutput) {
 		this.webpageUrl = webpageUrl;
-		this.initalize(requestMethod, doOutput);
+		this.method = requestMethod;
+		this.doOutput = doOutput;
+		this.initalize();
 	}
 
 	/**
@@ -47,13 +51,13 @@ public class ConnectionManager {
 		this(webpageUrl, "POST", true);
 	}
 
-	private void initalize(final String method, final boolean doOutput) {
+	private void initalize() {
 		try {
 			final URL url = new URL(this.webpageUrl);
 			this.connection = (HttpURLConnection) url.openConnection();
 			// this.connection.setChunkedStreamingMode(0);
-			this.connection.setRequestMethod(method);
-			this.connection.setDoOutput(doOutput);
+			this.connection.setRequestMethod(this.method);
+			this.connection.setDoOutput(this.doOutput);
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,7 +68,17 @@ public class ConnectionManager {
 		this.requestHeaders.put(key, value);
 	}
 
-	public String doConnection() {
+	public String connect() {
+		String responseHtml = this.doConnection();
+		while (this.getResponseStatus() == HttpURLConnection.HTTP_MOVED_TEMP) {
+			this.webpageUrl = this.connection.getHeaderField("Location");
+			this.initalize();
+			responseHtml = this.doConnection();
+		}
+		return responseHtml;
+	}
+
+	private String doConnection() {
 		final StringBuilder result = new StringBuilder();
 		try {
 			if (this.connection.getDoOutput()) {

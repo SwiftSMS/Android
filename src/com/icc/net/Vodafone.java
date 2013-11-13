@@ -63,9 +63,9 @@ public class Vodafone extends Operator {
 		final ConnectionManager loginManager = new ConnectionManager("https://www.vodafone.ie/myv/services/login/Login.shtml");
 		loginManager.addPostHeader("username", this.getAccount().getMobileNumber());
 		loginManager.addPostHeader("password", this.getAccount().getPassword());
-		final String loginHtml = loginManager.doConnection();
+		final String loginHtml = loginManager.connect();
 
-		return loginHtml.contains("302");
+		return loginHtml.contains("Sign out");
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class Vodafone extends Operator {
 		}
 		manager.addPostHeader("jcaptcha_response", this.answerEditText.getText().toString());
 		Log.d(InternalString.LOG_TAG, "doSend - try send SMS");
-		final String html = manager.doConnection();
+		final String html = manager.connect();
 		Log.d(InternalString.LOG_TAG, "doSend - SMS sent:");
 		Log.d(InternalString.LOG_TAG, html);
 
@@ -121,7 +121,7 @@ public class Vodafone extends Operator {
 	private String getToken() {
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/index.jsp",
 				"GET", false);
-		final String html = manager.doConnection();
+		final String html = manager.connect();
 
 		final String charsText = "org.apache.struts.taglib.html.TOKEN\" value=\"";
 		final int startPos = html.indexOf(charsText) + charsText.length();
@@ -136,7 +136,7 @@ public class Vodafone extends Operator {
 	int doGetRemainingSMS() {
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/dashboard/webtextdetails.shtml",
 				"GET", false);
-		final String smsHtml = manager.doConnection();
+		final String smsHtml = manager.connect();
 
 		try {
 			final JSONObject smsJson = new JSONObject(smsHtml);
@@ -154,10 +154,10 @@ public class Vodafone extends Operator {
 	int doGetCharacterLimit() {
 		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/javascript/section.myv.webtext.js",
 				"GET", false);
-		final String html = manager.doConnection();
+		final String html = manager.connect();
 
 		final String charsText = "var char_limit = ";
-		final int startPos = html.indexOf(charsText) + charsText.length();
+		final int startPos = html.lastIndexOf(charsText) + charsText.length();
 		final int endPos = html.indexOf(";", startPos);
 		if (startPos > charsText.length()) {
 			final String characterCount = html.substring(startPos, endPos);
