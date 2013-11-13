@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,7 +69,7 @@ public class Vodafone extends Operator {
 	}
 
 	@Override
-	public boolean preSend(final Context context) {
+	public void preSend(final Context context) {
 		this.lock.acquireUninterruptibly();
 
 		final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -88,7 +89,6 @@ public class Vodafone extends Operator {
 			}
 		});
 		dialog.show();
-		return true;
 	}
 
 	@Override
@@ -96,20 +96,23 @@ public class Vodafone extends Operator {
 		Log.d(InternalString.LOG_TAG, "doSend - wait for captcha dialog");
 		this.lock.acquireUninterruptibly();
 		Log.d(InternalString.LOG_TAG, "doSend - captcha dialog done: " + this.answerEditText.getText().toString());
-		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/Process.shtml");
 		Log.d(InternalString.LOG_TAG, "doSend - get TOKEN");
 		final String token = this.getToken();
-		manager.addPostHeader("org.apache.struts.taglib.html.TOKEN", token);
 		Log.d(InternalString.LOG_TAG, "doSend - TOKEN generated: " + token);
-		manager.addPostHeader("message", message);
+		final ConnectionManager manager = new ConnectionManager("https://www.vodafone.ie/myv/messaging/webtext/Process.shtml");
+		manager.addPostHeader("org.apache.struts.taglib.html.TOKEN", token);
+		Log.d(InternalString.LOG_TAG, "doSend - message: " + Uri.encode(message));
+		manager.addPostHeader("message", Uri.encode(message));
 		for (int i = 0; i < recipients.size(); i++) {
-			manager.addPostHeader("recipients[" + i + "]", recipients.get(i));
+			manager.addPostHeader(Uri.encode("recipients[" + i + "]"), Uri.encode(recipients.get(i)));
 		}
 		manager.addPostHeader("jcaptcha_response", this.answerEditText.getText().toString());
 		Log.d(InternalString.LOG_TAG, "doSend - try send SMS");
 		final String html = manager.doConnection();
 		Log.d(InternalString.LOG_TAG, "doSend - SMS sent:");
 		Log.d(InternalString.LOG_TAG, html);
+
+		Log.d(InternalString.LOG_TAG, "doSend - send Response Status: " + manager.getResponseStatus());
 
 		this.lock.release();
 		return html.contains("Message sent!");

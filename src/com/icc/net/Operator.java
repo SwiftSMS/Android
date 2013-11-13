@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.icc.InternalString;
 import com.icc.model.Account;
 
 /**
@@ -73,7 +75,8 @@ public abstract class Operator {
 	 */
 	abstract int doGetRemainingSMS();
 
-	public abstract boolean preSend(final Context context);
+	public void preSend(final Context context) {
+	}
 
 	/**
 	 * This method is responsible for sending an SMS message through the operators website. This method will perform any
@@ -157,6 +160,7 @@ public abstract class Operator {
 	 * This method will removed the cached login and make a login attempt.
 	 */
 	private void retryLogin() {
+		Log.d(InternalString.LOG_TAG, "retryLogin - Login expired");
 		this.isLoggedIn = false;
 		this.login();
 	}

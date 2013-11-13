@@ -1,5 +1,6 @@
 package com.icc.view;
 
+import static com.icc.InternalString.PREFS_KEY;
 import android.app.ListActivity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,49 +11,43 @@ import com.icc.InternalString;
 import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
 
-import static com.icc.InternalString.PREFS_KEY;
-
 /**
  * @author Rob Powell
  */
 public class ManageAccountsActivity extends ListActivity {
 
-    private IAccountDatabase accountDatabase;
-    private AccountAdapter accountAdapter;
-    private SharedPreferences preferences;
+	private IAccountDatabase accountDatabase;
+	private AccountAdapter accountAdapter;
+	private SharedPreferences preferences;
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+	@Override
+	public void onCreate(final Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+	}
 
-    @Override
-    protected void onResume() {
+	@Override
+	protected void onResume() {
+		this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
+		this.accountDatabase = AccountDataSource.getInstance(this);
 
-        this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
-        accountDatabase = AccountDataSource.getInstance(this);
+		this.accountAdapter = new AccountAdapter(ManageAccountsActivity.this, this.accountDatabase.getAllAccounts());
 
-        accountAdapter = new AccountAdapter(ManageAccountsActivity.this, accountDatabase.getAllAccounts());
+		this.setListAdapter(this.accountAdapter);
+		super.onResume();
+	}
 
-        setListAdapter(accountAdapter);
-        super.onResume();
-    }
+	@Override
+	protected void onListItemClick(final ListView l, final View v, final int position, final long itemId) {
+		this.setActiveAccount(itemId);
+		super.onListItemClick(l, v, position, itemId);
+	}
 
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        setActiveAccount(id);
-        super.onListItemClick(l, v, position, id);
-    }
+	private void setActiveAccount(final long id) {
 
-    private void setActiveAccount(long id) {
+		final int selectedAccountId = (int) id;
 
-        final int selectedAccountId = (int)id;
-
-        final SharedPreferences.Editor editor = this.preferences.edit();
-        editor.putInt(InternalString.ACTIVE_ACCOUNT, selectedAccountId);
-        editor.apply();
-    }
-
-    private int getActiveAccount() {
-        return this.preferences.getInt(InternalString.ACTIVE_ACCOUNT, -1);
-    }
+		final SharedPreferences.Editor editor = this.preferences.edit();
+		editor.putInt(InternalString.ACTIVE_ACCOUNT, selectedAccountId);
+		editor.apply();
+	}
 }
