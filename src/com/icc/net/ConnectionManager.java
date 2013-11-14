@@ -68,6 +68,10 @@ public class ConnectionManager {
 		this.requestHeaders.put(key, value);
 	}
 
+	public void setRequestHeader(final String field, final String value) {
+		this.connection.setRequestProperty(field, value);
+	}
+
 	public String connect() {
 		String responseHtml = this.doConnection();
 		while (this.getResponseStatus() == HttpURLConnection.HTTP_MOVED_TEMP
