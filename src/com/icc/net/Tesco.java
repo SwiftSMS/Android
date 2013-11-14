@@ -50,12 +50,24 @@ public class Tesco extends Operator {
 
 	@Override
 	boolean doSend(final List<String> list, final String message) {
-		return false;
+		final ConnectionManager manager = new ConnectionManager(
+				"https://app.tescomobile.ie/MyTM/restws/webtext/0892088841/send", "GET", false);
+		manager.setRequestHeader("User-Agent", "MyTescoApp/1.1");
+		manager.setRequestHeader("Authorization", this.auth);
+		final String rawJson = manager.connect();
+		try {
+			final JSONObject json = new JSONObject(rawJson);
+			return json.getBoolean("status");
+		} catch (final JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	@Override
 	int doGetCharacterLimit() {
-		return -1;
+		return 160;
 	}
 
 }
