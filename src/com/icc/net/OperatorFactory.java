@@ -11,7 +11,7 @@ public class OperatorFactory {
 		case METEOR:
 			return new Meteor(account);
 		case O2:
-			return null;
+			return new O2(account);
 		case TESCO:
 			return null;
 		case THREE:

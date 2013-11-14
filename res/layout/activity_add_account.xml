@@ -50,7 +50,6 @@
             android:layout_below="@+id/text_acc_name"
             android:ems="10"
             android:hint="@string/hint_mob_number"
-            android:inputType="phone"
             android:paddingBottom="@dimen/element_margin"
             android:paddingTop="@dimen/element_margin" >
 
