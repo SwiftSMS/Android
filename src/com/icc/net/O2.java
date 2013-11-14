@@ -45,7 +45,24 @@ public class O2 extends Operator {
 
 	@Override
 	int doGetRemainingSMS() {
-		return -1;
+		final ConnectionManager manager = new ConnectionManager("http://messaging.o2online.ie/o2om_smscenter_new.osp?SID=_",
+				"GET", false);
+		final String html = manager.connect();
+
+		int remainingSmsCount = -1;
+		final String startText = "spn_WebtextFree\">";
+		final int startPos = html.indexOf(startText) + startText.length();
+		final int endPos = html.indexOf("</span>", startPos);
+
+		Log.d(InternalString.LOG_TAG, "doGetRemainingSMS - startPos = " + startPos);
+		Log.d(InternalString.LOG_TAG, "doGetRemainingSMS - endPos = " + endPos);
+
+		if (startPos > startText.length()) {
+			remainingSmsCount = Integer.parseInt(html.substring(startPos, endPos));
+		}
+		// <input type="hidden" name="request_id" value="-3152757608710563281">
+		Log.d(InternalString.LOG_TAG, "doGetRemainingSMS - remainingSmsCount = " + remainingSmsCount);
+		return remainingSmsCount;
 	}
 
 	@Override
