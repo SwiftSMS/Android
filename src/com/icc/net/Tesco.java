@@ -1,12 +1,17 @@
 package com.icc.net;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Base64;
+import android.util.Log;
 
+import com.icc.InternalString;
 import com.icc.model.Account;
 
 public class Tesco extends Operator {
@@ -51,10 +56,23 @@ public class Tesco extends Operator {
 	@Override
 	boolean doSend(final List<String> list, final String message) {
 		final ConnectionManager manager = new ConnectionManager(
-				"https://app.tescomobile.ie/MyTM/restws/webtext/0892088841/send", "GET", false);
+				"https://app.tescomobile.ie/MyTM/restws/webtext/0892088841/send");
 		manager.setRequestHeader("User-Agent", "MyTescoApp/1.1");
 		manager.setRequestHeader("Authorization", this.auth);
+
+		// "{"message":"sdf","contacts":[],"groups":[],"msisdns":["0857855532"]}"
+		final Map<String, Object> copyFrom = new LinkedHashMap<String, Object>();
+		copyFrom.put("message", message);
+		copyFrom.put("contacts", new JSONArray());
+		copyFrom.put("groups", new JSONArray());
+		copyFrom.put("msisdns", new JSONArray(list));
+
+		final JSONObject requestJson = new JSONObject(copyFrom);
+		Log.d(InternalString.LOG_TAG, "doSend - request json: " + requestJson.toString());
+		manager.addRequestBody(requestJson.toString());
 		final String rawJson = manager.connect();
+		Log.d(InternalString.LOG_TAG, "doSend - returned json: " + rawJson.toString());
+
 		try {
 			final JSONObject json = new JSONObject(rawJson);
 			return json.getBoolean("status");
