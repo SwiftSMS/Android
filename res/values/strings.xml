@@ -2,11 +2,10 @@
 <resources>
 
     <string name="app_name">Ice-Cream Cabbage</string>
-    <string name="action_settings">Settings</string>
     <string name="type_message">Type message</string>
     <string name="to">To</string>
     <string name="action_add_account">Add Account</string>
-    <string name="hint_mob_number">Mobile Number</string>
+    <string name="hint_mob_number">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_acc_name_opt">Account name (optional)</string>
     <string name="text_add_operator">Add Account</string>

@@ -70,6 +70,7 @@ public class AddAccountActivity extends Activity {
 		final TextView labelSelectedNetwork = (TextView) this.findViewById(R.id.text_add_account_selected_network);
 		this.selectedNetwork = Network.valueOf(this.getIntent().getStringExtra(InternalString.OPERATOR).toUpperCase(Locale.UK));
 		labelSelectedNetwork.setText(this.selectedNetwork.toString());
+		this.textAccNumber.setInputType(this.selectedNetwork.getInputType());
 
 		final TextWatcher watcher = new UpdateButtonsTextWatcher();
 		this.textAccNumber.addTextChangedListener(watcher);
