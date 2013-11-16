@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.icc.R;
@@ -45,7 +46,9 @@ public class NetworkSelectionAdapter extends BaseAdapter {
 		}
 
 		final TextView textViewAccountName = (TextView) view.findViewById(R.id.text_network_selection_operator_name);
+		final ImageView imageView = (ImageView) view.findViewById(R.id.image_network_selection_operator);
 		textViewAccountName.setText(this.accounts[position].toString());
+		imageView.setImageResource(this.accounts[position].getLogo());
 
 		return view;
 	}

@@ -1,5 +1,7 @@
 package com.icc.model;
 
+import com.icc.R;
+
 /**
  * Simple enum to hold the current Network operators ICC will support.
  * 
@@ -7,16 +9,24 @@ package com.icc.model;
  * @version 1.1
  */
 public enum Network {
-	O2("O2"), METEOR("Meteor"), VODAFONE("Vodafone"), TESCO("Tesco"), EMOBILE("EMobile"), THREE("Three");
+	O2("O2", R.drawable.operator_logo_o2), METEOR("Meteor", R.drawable.operator_logo_o2), VODAFONE("Vodafone",
+			R.drawable.operator_logo_o2), TESCO("Tesco", R.drawable.operator_logo_o2), EMOBILE("EMobile",
+			R.drawable.operator_logo_o2), THREE("Three", R.drawable.operator_logo_o2);
 
-    private final String network;
+	private final String network;
+	private int logo;
 
-    private Network(String network) {
-        this.network = network;
-    }
+	private Network(final String network, final int logo) {
+		this.network = network;
+		this.logo = logo;
+	}
 
-    @Override
-    public String toString() {
-        return this.network;
-    }
+	public int getLogo() {
+		return this.logo;
+	}
+
+	@Override
+	public String toString() {
+		return this.network;
+	}
 }
