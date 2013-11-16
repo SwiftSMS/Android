@@ -10,7 +10,7 @@ import com.icc.R;
  */
 public enum Network {
 	O2("O2", R.drawable.operator_logo_o2), METEOR("Meteor", R.drawable.operator_logo_meteor), VODAFONE("Vodafone",
-			R.drawable.operator_logo_vodafone), TESCO("Tesco", R.drawable.operator_logo_o2), EMOBILE("EMobile",
+			R.drawable.operator_logo_vodafone), TESCO("Tesco", R.drawable.operator_logo_tesco), EMOBILE("EMobile",
 			R.drawable.operator_logo_o2), THREE("Three", R.drawable.operator_logo_three);
 
 	private final String network;
