@@ -221,7 +221,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 			if (this.task != null) {
 				this.task.cancel(true);
 			}
-			this.task = new RemainingSmsTask(this.operator, this.preferences, this.remaingSmsMenuItem);
+			this.task = new RemainingSmsTask(this.themedContext, this.operator, this.preferences, this.remaingSmsMenuItem);
 			this.task.execute();
 		}
 	}

@@ -1,10 +1,13 @@
 package com.icc.tasks;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 
+import com.icc.R;
 import com.icc.net.Operator;
 
 public class RemainingSmsTask extends AsyncTask<String, Integer, Integer> {
@@ -17,7 +20,11 @@ public class RemainingSmsTask extends AsyncTask<String, Integer, Integer> {
 
 	private final String key;
 
-	public RemainingSmsTask(final Operator operator, final SharedPreferences preferences, final MenuItem actionBarRemainingSms) {
+	private final LayoutInflater inflater;
+
+	public RemainingSmsTask(final Context context, final Operator operator, final SharedPreferences preferences,
+			final MenuItem actionBarRemainingSms) {
+		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.operator = operator;
 		this.preferences = preferences;
 		this.actionBarItem = actionBarRemainingSms;
@@ -38,6 +45,7 @@ public class RemainingSmsTask extends AsyncTask<String, Integer, Integer> {
 	@Override
 	protected void onPostExecute(final Integer result) {
 		this.setTitle(result);
+		this.actionBarItem.setActionView(null);
 		final Editor editor = this.preferences.edit();
 		editor.putInt(this.key, result);
 		editor.commit();
@@ -45,6 +53,7 @@ public class RemainingSmsTask extends AsyncTask<String, Integer, Integer> {
 
 	private void setTitle(final int remaining) {
 		if (remaining == -1) {
+			this.actionBarItem.setActionView(this.inflater.inflate(R.layout.progress_view, null));
 			this.actionBarItem.setTitle("?");
 		} else {
 			this.actionBarItem.setTitle(Integer.toString(remaining));
