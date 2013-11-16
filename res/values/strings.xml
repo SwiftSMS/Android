@@ -20,5 +20,7 @@
     <string name="send">Send</string>
     <string name="done">Done</string>
     <string name="captcha">Captcha</string>
+    <string name="select_network">Select network</string>
+    <string name="operator_image">Operator image</string>
 
 </resources>

@@ -1,0 +1,38 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".NetworkSelectionActivity" >
+
+    <TextView
+        android:id="@+id/text_network_selection_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="@dimen/element_margin"
+        android:paddingTop="@dimen/element_margin"
+        android:text="@string/select_network"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_alignBottom="@+id/text_network_selection_title"
+        android:layout_alignParentLeft="true"
+        android:background="#ff16a1b5" />
+
+    <ListView
+        android:id="@+id/list_network_selection_items"
+        android:layout_width="match_parent"
+        android:paddingLeft="@dimen/element_margin"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/text_network_selection_title" >
+    </ListView>
+
+</RelativeLayout>

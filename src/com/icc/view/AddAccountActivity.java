@@ -1,6 +1,9 @@
 package com.icc.view;
 
 import static com.icc.InternalString.PREFS_KEY;
+
+import java.util.Locale;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -14,11 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +49,7 @@ public class AddAccountActivity extends Activity {
 	private TextView buttonDone;
 	private LinearLayout buttonVerify;
 	private ImageView buttonVerifyIcon;
-	private Spinner spinnerNetwork;
+	private Network selectedNetwork;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -65,14 +66,17 @@ public class AddAccountActivity extends Activity {
 		this.buttonVerify = (LinearLayout) this.findViewById(R.id.actionbar_verify);
 		this.buttonVerifyIcon = (ImageView) this.findViewById(R.id.actionbar_verify_icon);
 		this.buttonDone = (TextView) this.findViewById(R.id.actionbar_done);
-		this.spinnerNetwork = (Spinner) this.findViewById(R.id.spinner_add_account_networks);
+
+		final TextView labelSelectedNetwork = (TextView) this.findViewById(R.id.text_add_account_selected_network);
+		this.selectedNetwork = Network.valueOf(this.getIntent().getStringExtra(InternalString.OPERATOR).toUpperCase(Locale.UK));
+		labelSelectedNetwork.setText(this.selectedNetwork.toString());
 
 		final TextWatcher watcher = new UpdateButtonsTextWatcher();
 		this.textAccNumber.addTextChangedListener(watcher);
 		this.textAccPassword.addTextChangedListener(watcher);
-		this.spinnerNetwork.setAdapter(this.getNetworkAdapter());
 
 		this.updateDoneButton();
+		this.setResult(RESULT_CANCELED);
 	}
 
 	/**
@@ -104,10 +108,6 @@ public class AddAccountActivity extends Activity {
 		super.onResume();
 	}
 
-	private ArrayAdapter<Network> getNetworkAdapter() {
-		return new ArrayAdapter<Network>(this, android.R.layout.simple_list_item_1, Network.values());
-	}
-
 	public void addAccount(final View view) {
 		final Account account = this.makeAccountFromUI();
 		final int successfullyAddedId = this.accountDatabase.addAccount(account);
@@ -131,16 +131,15 @@ public class AddAccountActivity extends Activity {
 	 * @return An {@link Account} using the details entered on the UI.
 	 */
 	private Account makeAccountFromUI() {
-		final Network selectedNetwork = (Network) this.spinnerNetwork.getSelectedItem();
 		final String number = this.textAccNumber.getText().toString();
 		final String password = this.textAccPassword.getText().toString();
 
 		final String numberLast4Digits = number.substring(number.length() - Math.min(4, number.length()));
-		final String defaultAccName = selectedNetwork + " (" + numberLast4Digits + ")";
+		final String defaultAccName = this.selectedNetwork + " (" + numberLast4Digits + ")";
 		final String enteredAccName = this.textAccName.getText().toString();
 		final String accountName = enteredAccName.isEmpty() ? defaultAccName : enteredAccName;
 
-		return new Account(number, accountName, password, selectedNetwork);
+		return new Account(number, accountName, password, this.selectedNetwork);
 	}
 
 	public void verifyAccount(final View view) {

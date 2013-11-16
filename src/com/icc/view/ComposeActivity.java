@@ -43,7 +43,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private static final String PERSISTED_RECIPIENT_BASE_KEY = "persisted_recipient_";
 	private static final String PERSISTED_MESSAGE_BASE_KEY = "persisted_message_";
 
-	private static final int ADD_FIRST_ACCOUNT_REQUEST = 23;
+	private static final int ADD_ACCOUNT_REQUEST = 23;
 
 	private CharacterCountTextWatcher charCountWatcher;
 	private EditText messageEditText;
@@ -156,7 +156,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 
 		final int accountId = this.preferences.getInt(ACTIVE_ACCOUNT, -1);
 		if (accountId == -1) {
-			this.startActivityForResult(new Intent(this.themedContext, AddAccountActivity.class), ADD_FIRST_ACCOUNT_REQUEST);
+			this.startActivityForResult(new Intent(this.themedContext, NetworkSelectionActivity.class), ADD_ACCOUNT_REQUEST);
 		} else {
 			if (this.operator == null || this.operator.getAccount().getId() != accountId) {
 				final Account account = this.accountDatabase.getAccountById(accountId);
@@ -213,7 +213,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	 * In normal operation this method will not execute it's task until {@link #onCreateOptionsMenu(Menu)} calls it as then both
 	 * prerequisites will be satisfied.<br />
 	 * However in the case of the App being run for the first time onResume needs to call this method as the prerequisites will
-	 * not be satisfied until the onResume has run after the {@link AddAccountActivity} has completed successfully.
+	 * not be satisfied until the onResume has run after the {@link NetworkSelectionActivity} has completed successfully.
 	 * </p>
 	 */
 	public void retrieveRemainingSmsCount() {
@@ -237,7 +237,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 
 	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-		if (requestCode == ADD_FIRST_ACCOUNT_REQUEST) {
+		if (requestCode == ADD_ACCOUNT_REQUEST) {
 			if (resultCode == Activity.RESULT_CANCELED) {
 				this.finish();
 			}
@@ -281,7 +281,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add_account:
-			this.startActivity(new Intent(this.themedContext, AddAccountActivity.class));
+			this.startActivity(new Intent(this.themedContext, NetworkSelectionActivity.class));
 			break;
 		case R.id.action_manage_account:
 			this.startActivity(new Intent(this.themedContext, ManageAccountsActivity.class));

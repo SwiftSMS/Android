@@ -1,6 +1,8 @@
 package com.icc;
 
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 
 /**
  * Internal Strings used in the application that are not applicable to the String.xml resource
@@ -73,4 +75,9 @@ public class InternalString {
 	 * The tag to use when logging messages.
 	 */
 	public static final String LOG_TAG = "com.icc.log";
+
+	/**
+	 * Key used to pass an operator object in an {@link Intent}'s {@link Bundle}.
+	 */
+	public static final String OPERATOR = "network_operator";
 }
