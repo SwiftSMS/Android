@@ -55,18 +55,20 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private SharedPreferences preferences;
 	private IAccountDatabase accountDatabase;
 	private RemainingSmsTask task;
+	private Context themedContext;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_compose);
 
+		this.themedContext = this.getActionBarThemedContextCompat();
 		final ActionBar actionBar = this.getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
-		this.accountDatabase = AccountDataSource.getInstance(this.getApplicationContext());
+		this.accountDatabase = AccountDataSource.getInstance(this.themedContext);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		this.sendButton = (ImageButton) this.findViewById(R.id.button_compose_send);
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
@@ -75,7 +77,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		final ContactSuggestionClickListener itemClickTextWatcher = new ContactSuggestionClickListener();
 
 		this.sendButton.setEnabled(false);
-		this.recipientEdittext.setAdapter(new ContactAdapter(this));
+		this.recipientEdittext.setAdapter(new ContactAdapter(this.themedContext));
 		this.recipientEdittext.setThreshold(1);
 		itemClickTextWatcher.addObserver(this);
 		this.recipientEdittext.addTextChangedListener(itemClickTextWatcher);
@@ -154,7 +156,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 
 		final int accountId = this.preferences.getInt(ACTIVE_ACCOUNT, -1);
 		if (accountId == -1) {
-			this.startActivityForResult(new Intent(this, AddAccountActivity.class), ADD_FIRST_ACCOUNT_REQUEST);
+			this.startActivityForResult(new Intent(this.themedContext, AddAccountActivity.class), ADD_FIRST_ACCOUNT_REQUEST);
 		} else {
 			if (this.operator == null || this.operator.getAccount().getId() != accountId) {
 				final Account account = this.accountDatabase.getAccountById(accountId);
@@ -180,9 +182,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 				break;
 			}
 		}
-		final Context context = this.getActionBarThemedContextCompat();
-
-		final AccountSpinnerAdapter adapter = new AccountSpinnerAdapter(context, accounts);
+		final AccountSpinnerAdapter adapter = new AccountSpinnerAdapter(this.themedContext, accounts);
 		final ActionBar actionBar = this.getActionBar();
 		actionBar.setListNavigationCallbacks(adapter, this);
 		actionBar.setSelectedNavigationItem(activeAccountIndex);
@@ -281,10 +281,10 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add_account:
-			this.startActivity(new Intent(this, AddAccountActivity.class));
+			this.startActivity(new Intent(this.themedContext, AddAccountActivity.class));
 			break;
 		case R.id.action_manage_account:
-			this.startActivity(new Intent(this, ManageAccountsActivity.class));
+			this.startActivity(new Intent(this.themedContext, ManageAccountsActivity.class));
 			break;
 		}
 		return super.onMenuItemSelected(featureId, item);
