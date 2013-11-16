@@ -7,4 +7,5 @@
     <dimen name="element_size">48dp</dimen>
     <dimen name="activity_margin">16dp</dimen>
     <dimen name="element_margin">8dp</dimen>
+    <dimen name="element_margin_half">4dp</dimen>
 </resources>
