@@ -11,12 +11,12 @@ import com.icc.R;
  * @version 1.1
  */
 public enum Network {
-	
-	O2("O2", R.drawable.operator_logo_o2, InputType.TYPE_CLASS_TEXT), 
-	METEOR("Meteor", R.drawable.operator_logo_meteor, InputType.TYPE_CLASS_PHONE), 
-	VODAFONE("Vodafone", R.drawable.operator_logo_vodafone, InputType.TYPE_CLASS_PHONE), 
-	TESCO("Tesco", R.drawable.operator_logo_tesco, InputType.TYPE_CLASS_PHONE), 
-	EMOBILE("EMobile", R.drawable.operator_logo_emobile, InputType.TYPE_CLASS_PHONE), 
+
+	O2("O2", R.drawable.operator_logo_o2, InputType.TYPE_CLASS_TEXT),
+	METEOR("Meteor", R.drawable.operator_logo_meteor, InputType.TYPE_CLASS_PHONE),
+	VODAFONE("Vodafone", R.drawable.operator_logo_vodafone, InputType.TYPE_CLASS_PHONE),
+	TESCO("Tesco", R.drawable.operator_logo_tesco, InputType.TYPE_CLASS_PHONE),
+	EMOBILE("EMobile", R.drawable.operator_logo_emobile, InputType.TYPE_CLASS_PHONE),
 	THREE("Three", R.drawable.operator_logo_three, InputType.TYPE_CLASS_PHONE);
 
 	private final String network;
@@ -29,12 +29,22 @@ public enum Network {
 		this.inputType = inputType;
 	}
 
+	/**
+	 * This method returns the default logo for the network Operator.
+	 * 
+	 * @return The drawable id of the Operators logo.
+	 */
 	public int getLogo() {
 		return this.logo;
 	}
-	
+
+	/**
+	 * This method returns the {@link InputType} that most closely matches the login username for the Operator.
+	 * 
+	 * @return The InputType to be used for the Operators username.
+	 */
 	public int getInputType() {
-		return inputType;
+		return this.inputType;
 	}
 
 	@Override
