@@ -41,7 +41,9 @@
             android:name="com.icc.view.AddAccountActivity"
             android:windowSoftInputMode="stateAlwaysVisible" />
         <activity android:name="com.icc.view.ManageAccountsActivity" />
-        <activity android:name="com.icc.view.NetworkSelectionActivity" />
+        <activity
+            android:name="com.icc.view.NetworkSelectionActivity"
+            android:label="@string/select_network" />
     </application>
 
 </manifest>
