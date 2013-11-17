@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/element_margin_half" >
+    android:layout_height="match_parent" >
+
+    <View
+        android:id="@+id/view_network_selection_selected_indicator"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:background="#ff16a1b5" />
 
     <TextView
         android:id="@+id/text_network_selection_operator_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/view_network_selection_selected_indicator"
+        android:paddingLeft="@dimen/element_margin_half"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <ImageView

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.icc.R;
@@ -14,7 +15,7 @@ import com.icc.model.Account;
 
 /**
  * Custom Adapter used to hold and display ICC Account's
- *
+ * 
  * @author Rob Powell
  */
 public class AccountAdapter extends BaseAdapter {
@@ -46,12 +47,20 @@ public class AccountAdapter extends BaseAdapter {
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		View view = convertView;
 		if (view == null) {
-			view = AccountAdapter.layoutInflater.inflate(R.layout.manage_account_list_item, null);
+			view = AccountAdapter.layoutInflater.inflate(R.layout.layout_network_selection_item, null);
 		}
+		final Account account = this.accounts.get(position);
 
-		final TextView textViewAccountName = (TextView) view.findViewById(R.id.textview_manage_account_name);
-		textViewAccountName.setText(this.accounts.get(position).getAccountName());
+		final TextView textViewAccountName = (TextView) view.findViewById(R.id.text_network_selection_operator_name);
+		textViewAccountName.setText(account.getAccountName());
+		final ImageView imageView = (ImageView) view.findViewById(R.id.image_network_selection_operator);
+		imageView.setImageResource(account.getOperator().getLogo());
+
+		// if (account.getId() == 1) {
+		// final View selectedIndicator = view.findViewById(R.id.view_network_selection_selected_indicator);
+		// selectedIndicator.setVisibility(View.VISIBLE);
+		// }
 
 		return view;
-    }
+	}
 }
