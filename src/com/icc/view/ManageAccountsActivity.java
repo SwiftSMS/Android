@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.icc.InternalString;
-import com.icc.R;
 import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
 
@@ -24,7 +23,6 @@ public class ManageAccountsActivity extends ListActivity {
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		super.setContentView(R.layout.activity_network_selection);
 	}
 
 	@Override

@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
-import com.icc.R;
 import com.icc.model.Network;
 
 public class NetworkSelectionActivity extends ListActivity {
@@ -21,7 +20,6 @@ public class NetworkSelectionActivity extends ListActivity {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.activity_network_selection);
 
 		this.setListAdapter(new NetworkSelectionAdapter(this.getActionBarThemedContext()));
 		this.setResult(RESULT_CANCELED);
