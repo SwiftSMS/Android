@@ -12,7 +12,7 @@ import com.icc.R;
  */
 public enum Network {
 
-	O2("O2", R.drawable.operator_logo_o2, InputType.TYPE_CLASS_TEXT),
+	O2("O2", R.drawable.operator_logo_o2, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS),
 	METEOR("Meteor", R.drawable.operator_logo_meteor, InputType.TYPE_CLASS_PHONE),
 	VODAFONE("Vodafone", R.drawable.operator_logo_vodafone, InputType.TYPE_CLASS_PHONE),
 	TESCO("Tesco", R.drawable.operator_logo_tesco, InputType.TYPE_CLASS_PHONE),
