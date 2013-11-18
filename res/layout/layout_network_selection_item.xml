@@ -1,30 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
 
     <View
         android:id="@+id/view_network_selection_selected_indicator"
         android:layout_width="4dp"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:background="#ff16a1b5" />
+        android:background="#ff16a1b5"
+        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/text_network_selection_operator_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/view_network_selection_selected_indicator"
-        android:paddingLeft="@dimen/element_margin_half"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/element_margin"
+        android:paddingTop="@dimen/element_margin" >
 
-    <ImageView
-        android:id="@+id/image_network_selection_operator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:contentDescription="@string/operator_image" />
+        <ImageView
+            android:id="@+id/image_network_selection_operator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/element_margin"
+            android:contentDescription="@string/operator_image" />
 
-</RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/image_network_selection_operator"
+            android:gravity="center_vertical"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/text_network_selection_operator_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/text_network_selection_account_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

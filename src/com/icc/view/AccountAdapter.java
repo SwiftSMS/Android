@@ -52,14 +52,17 @@ public class AccountAdapter extends BaseAdapter {
 		final Account account = this.accounts.get(position);
 
 		final TextView textViewAccountName = (TextView) view.findViewById(R.id.text_network_selection_operator_name);
-		textViewAccountName.setText(account.getAccountName());
+		final TextView textAccountUsername = (TextView) view.findViewById(R.id.text_network_selection_account_username);
 		final ImageView imageView = (ImageView) view.findViewById(R.id.image_network_selection_operator);
+		textViewAccountName.setText(account.getAccountName());
+		textAccountUsername.setVisibility(View.VISIBLE);
+		textAccountUsername.setText(account.getMobileNumber());
 		imageView.setImageResource(account.getOperator().getLogo());
 
-		// if (account.getId() == 1) {
-		// final View selectedIndicator = view.findViewById(R.id.view_network_selection_selected_indicator);
-		// selectedIndicator.setVisibility(View.VISIBLE);
-		// }
+		if (account.getId() == 1) {
+			final View selectedIndicator = view.findViewById(R.id.view_network_selection_selected_indicator);
+			selectedIndicator.setVisibility(View.VISIBLE);
+		}
 
 		return view;
 	}
