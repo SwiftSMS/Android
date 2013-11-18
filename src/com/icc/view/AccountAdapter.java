@@ -3,6 +3,7 @@ package com.icc.view;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.icc.InternalString;
 import com.icc.R;
 import com.icc.model.Account;
 
@@ -21,10 +23,12 @@ import com.icc.model.Account;
 public class AccountAdapter extends BaseAdapter {
 
 	final List<Account> accounts;
+	private final SharedPreferences prefs;
 	static LayoutInflater layoutInflater;
 
-	public AccountAdapter(final Context context, final List<Account> accounts) {
+	public AccountAdapter(final Context context, final SharedPreferences preferences, final List<Account> accounts) {
 		this.accounts = accounts;
+		this.prefs = preferences;
 		AccountAdapter.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
@@ -59,9 +63,11 @@ public class AccountAdapter extends BaseAdapter {
 		textAccountUsername.setText(account.getMobileNumber());
 		imageView.setImageResource(account.getOperator().getLogo());
 
-		if (account.getId() == 1) {
-			final View selectedIndicator = view.findViewById(R.id.view_network_selection_selected_indicator);
-			selectedIndicator.setVisibility(View.VISIBLE);
+		final View selectedIndicator = view.findViewById(R.id.view_network_selection_selected_indicator);
+		if (account.getId() == this.prefs.getInt(InternalString.ACTIVE_ACCOUNT, -1)) {
+			selectedIndicator.setBackgroundResource(R.color.holo_light_blue);
+		} else {
+			selectedIndicator.setBackgroundResource(0);
 		}
 
 		return view;

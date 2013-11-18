@@ -19,7 +19,7 @@ import com.icc.model.Account;
 public class AccountSpinnerAdapter extends AccountAdapter {
 
 	public AccountSpinnerAdapter(final Context context, final List<Account> accounts) {
-		super(context, accounts);
+		super(context, null, accounts);
 	}
 
 	@Override

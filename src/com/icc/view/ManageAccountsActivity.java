@@ -32,9 +32,9 @@ public class ManageAccountsActivity extends ListActivity {
 		this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
 		this.accountDatabase = AccountDataSource.getInstance(this);
 
-		this.accountAdapter = new AccountAdapter(ManageAccountsActivity.this, this.accountDatabase.getAllAccounts());
-
+		this.accountAdapter = new AccountAdapter(this, this.preferences, this.accountDatabase.getAllAccounts());
 		this.setListAdapter(this.accountAdapter);
+
 		super.onResume();
 	}
 
@@ -46,6 +46,7 @@ public class ManageAccountsActivity extends ListActivity {
 
 	private void setActiveAccount(final long id) {
 		final int selectedAccountId = (int) id;
+		this.accountAdapter.notifyDataSetChanged();
 
 		final SharedPreferences.Editor editor = this.preferences.edit();
 		editor.putInt(InternalString.ACTIVE_ACCOUNT, selectedAccountId);

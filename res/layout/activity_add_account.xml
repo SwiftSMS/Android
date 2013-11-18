@@ -28,7 +28,7 @@
             android:layout_height="1dip"
             android:layout_alignBottom="@+id/text_add_account_title"
             android:layout_alignParentLeft="true"
-            android:background="#ff16a1b5" />
+            android:background="@color/holo_light_blue" />
 
         <TextView
             android:id="@+id/text_add_account_selected_network"

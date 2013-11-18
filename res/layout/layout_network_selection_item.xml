@@ -7,9 +7,7 @@
     <View
         android:id="@+id/view_network_selection_selected_indicator"
         android:layout_width="4dp"
-        android:layout_height="match_parent"
-        android:background="#ff16a1b5"
-        android:visibility="gone" />
+        android:layout_height="match_parent" />
 
     <RelativeLayout
         android:layout_width="match_parent"
