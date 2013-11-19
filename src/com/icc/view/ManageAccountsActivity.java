@@ -60,6 +60,17 @@ public class ManageAccountsActivity extends ListActivity {
 		this.accountAdapter.notifyDataSetChanged();
 	}
 
+	/**
+	 * Method to handle a click event of an operators image.
+	 * 
+	 * @param view
+	 *            The clicked view.
+	 */
+	public void onImageClicked(final View view) {
+		final int clickedViewPosition = this.getListView().getPositionForView(view);
+		this.getListView().setItemChecked(clickedViewPosition, !view.isActivated());
+	}
+
 	public class MultiChoiceListener implements MultiChoiceModeListener {
 
 		private final List<Account> selectedAccounts = new ArrayList<Account>();

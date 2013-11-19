@@ -23,6 +23,7 @@
             android:id="@+id/image_network_selection_operator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onImageClicked"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/element_margin"
