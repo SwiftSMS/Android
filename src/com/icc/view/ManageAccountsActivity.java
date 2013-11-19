@@ -1,5 +1,6 @@
 package com.icc.view;
 
+import static com.icc.InternalString.ACTIVE_ACCOUNT;
 import static com.icc.InternalString.PREFS_KEY;
 
 import java.util.ArrayList;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
 
-import com.icc.InternalString;
 import com.icc.R;
 import com.icc.db.AccountDataSource;
 import com.icc.db.IAccountDatabase;
@@ -54,7 +54,7 @@ public class ManageAccountsActivity extends ListActivity {
 		final int selectedAccountId = (int) id;
 
 		final SharedPreferences.Editor editor = this.preferences.edit();
-		editor.putInt(InternalString.ACTIVE_ACCOUNT, selectedAccountId);
+		editor.putInt(ACTIVE_ACCOUNT, selectedAccountId);
 		editor.apply();
 
 		this.accountAdapter.notifyDataSetChanged();
@@ -68,9 +68,19 @@ public class ManageAccountsActivity extends ListActivity {
 		public boolean onActionItemClicked(final ActionMode mode, final MenuItem item) {
 			if (item.getItemId() == R.id.action_manage_accounts_delete) {
 				if (item.getItemId() == R.id.action_manage_accounts_delete) {
+					final int activeAccountId = ManageAccountsActivity.this.preferences.getInt(ACTIVE_ACCOUNT, -1);
+					boolean isActiveAccountRemove = false;
 					for (final Account acc : this.selectedAccounts) {
 						ManageAccountsActivity.this.accountDatabase.removeAccount(acc);
 						ManageAccountsActivity.this.accountAdapter.accounts.remove(acc);
+						isActiveAccountRemove = acc.getId() == activeAccountId ? true : isActiveAccountRemove;
+					}
+					if (isActiveAccountRemove) {
+						long idOfFirstAccount = -1;
+						if (!ManageAccountsActivity.this.accountAdapter.isEmpty()) {
+							idOfFirstAccount = ManageAccountsActivity.this.accountAdapter.getItemId(0);
+						}
+						ManageAccountsActivity.this.setActiveAccount(idOfFirstAccount);
 					}
 					mode.finish();
 					return true;
