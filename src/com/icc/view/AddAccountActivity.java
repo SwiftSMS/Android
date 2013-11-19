@@ -21,7 +21,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.icc.InternalString;
 import com.icc.R;
@@ -114,7 +113,6 @@ public class AddAccountActivity extends Activity {
 		final int successfullyAddedId = this.accountDatabase.addAccount(account);
 
 		if (successfullyAddedId != FAILED_DB_ADD) {
-			Toast.makeText(this, "Accounted Added", Toast.LENGTH_SHORT).show();
 			if (this.checkActiveAccount.isChecked() || successfullyAddedId == 1) {
 				final Editor editor = this.preferences.edit();
 				editor.putInt(InternalString.ACTIVE_ACCOUNT, successfullyAddedId);
