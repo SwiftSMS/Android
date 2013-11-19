@@ -144,10 +144,7 @@ public class AddAccountActivity extends Activity {
 	}
 
 	public void verifyAccount(final View view) {
-		if (this.verifyTask != null) {
-			this.verifyTask.cancel(true);
-			this.buttonVerifyIcon.clearAnimation();
-		}
+		this.cancelOngoingVerifyTask();
 		final Animation rotation = AnimationUtils.loadAnimation(this, R.anim.clockwise_refresh);
 		rotation.setRepeatCount(Animation.INFINITE);
 		this.buttonVerifyIcon.startAnimation(rotation);
@@ -158,12 +155,24 @@ public class AddAccountActivity extends Activity {
 	}
 
 	/**
+	 * This method will cancel the ongoing {@link VerifyTask} if there is currently one running.
+	 */
+	private void cancelOngoingVerifyTask() {
+		if (this.verifyTask != null) {
+			this.verifyTask.cancel(true);
+			this.verifyTask = null;
+			this.buttonVerifyIcon.clearAnimation();
+		}
+	}
+
+	/**
 	 * {@link TextWatcher} to update the UI buttons when text in the required fields change.
 	 */
 	private class UpdateButtonsTextWatcher implements TextWatcher {
 		@Override
 		public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
 			AddAccountActivity.this.updateDoneButton();
+			AddAccountActivity.this.cancelOngoingVerifyTask();
 		}
 
 		@Override
