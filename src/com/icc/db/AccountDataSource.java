@@ -89,7 +89,11 @@ public class AccountDataSource implements IAccountDatabase {
 	 */
 	@Override
 	public boolean removeAccount(final Account account) {
-		return false;
+		final String where = COLUMN_ID + " = ?";
+		final String[] whereArgs = new String[] { Integer.toString(account.getId()) };
+		final int deletedRows = this.database.delete(TABLE_ACCOUNTS, where, whereArgs);
+
+		return deletedRows == 1;
 	}
 
 	/**
