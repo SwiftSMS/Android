@@ -2,5 +2,5 @@
 <resources>
 
     <color name="holo_light_blue">#ff16a1b5</color>
-
-</resources>
+    <color name="transparent">#00000000</color>
+</resources>
