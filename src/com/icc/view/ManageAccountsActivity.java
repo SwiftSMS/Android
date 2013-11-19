@@ -52,11 +52,12 @@ public class ManageAccountsActivity extends ListActivity {
 
 	private void setActiveAccount(final long id) {
 		final int selectedAccountId = (int) id;
-		this.accountAdapter.notifyDataSetChanged();
 
 		final SharedPreferences.Editor editor = this.preferences.edit();
 		editor.putInt(InternalString.ACTIVE_ACCOUNT, selectedAccountId);
 		editor.apply();
+
+		this.accountAdapter.notifyDataSetChanged();
 	}
 
 	public class MultiChoiceListener implements MultiChoiceModeListener {
@@ -69,8 +70,9 @@ public class ManageAccountsActivity extends ListActivity {
 				if (item.getItemId() == R.id.action_manage_accounts_delete) {
 					for (final Account acc : this.selectedAccounts) {
 						ManageAccountsActivity.this.accountDatabase.removeAccount(acc);
+						ManageAccountsActivity.this.accountAdapter.accounts.remove(acc);
 					}
-					ManageAccountsActivity.this.accountAdapter.notifyDataSetChanged();
+					mode.finish();
 					return true;
 				}
 			}
