@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,6 +50,7 @@ public class AddAccountActivity extends Activity {
 	private LinearLayout buttonVerify;
 	private ImageView buttonVerifyIcon;
 	private Network selectedNetwork;
+	private AsyncTask<String, Integer, Boolean> verifyTask;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -142,13 +144,17 @@ public class AddAccountActivity extends Activity {
 	}
 
 	public void verifyAccount(final View view) {
+		if (this.verifyTask != null) {
+			this.verifyTask.cancel(true);
+			this.buttonVerifyIcon.clearAnimation();
+		}
 		final Animation rotation = AnimationUtils.loadAnimation(this, R.anim.clockwise_refresh);
 		rotation.setRepeatCount(Animation.INFINITE);
 		this.buttonVerifyIcon.startAnimation(rotation);
 
 		final Account account = this.makeAccountFromUI();
 		final Operator operator = OperatorFactory.getOperator(account);
-		new VerifyTask(this, operator, this.buttonVerifyIcon).execute();
+		this.verifyTask = new VerifyTask(this, operator, this.buttonVerifyIcon).execute();
 	}
 
 	/**
