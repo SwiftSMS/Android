@@ -118,6 +118,13 @@ public class AccountDataSource implements IAccountDatabase {
 	}
 
 	@Override
+	public boolean isEmpty() {
+		final Cursor cursor = this.database
+				.query(TABLE_ACCOUNTS, new String[] { COLUMN_ID }, null, null, null, null, null, "1");
+		return cursor.getCount() == 0;
+	}
+
+	@Override
 	public Account getAccountById(final int id) {
 		final String where = DbManager.COLUMN_ID + " = " + id;
 		final Cursor cursor = this.database.query(DbManager.TABLE_ACCOUNTS, null, where, null, null, null, null);

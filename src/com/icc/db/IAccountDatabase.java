@@ -37,6 +37,13 @@ public interface IAccountDatabase {
 	public List<Account> getAllAccounts();
 
 	/**
+	 * Check is there is any accounts registered in the database.
+	 * 
+	 * @return true is there is no accounts in the database, otherwise false.
+	 */
+	public boolean isEmpty();
+
+	/**
 	 * Get a stored account based on it's id.
 	 * 
 	 * @param id

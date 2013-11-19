@@ -77,7 +77,7 @@ public class AddAccountActivity extends Activity {
 		this.textAccNumber.addTextChangedListener(watcher);
 		this.textAccPassword.addTextChangedListener(watcher);
 
-		if (this.accountDatabase.getAllAccounts().size() == 0) {
+		if (this.accountDatabase.isEmpty()) {
 			this.checkActiveAccount.setEnabled(false);
 			this.checkActiveAccount.setChecked(true);
 		}
