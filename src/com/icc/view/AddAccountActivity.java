@@ -66,6 +66,7 @@ public class AddAccountActivity extends Activity {
 		this.buttonVerify = (LinearLayout) this.findViewById(R.id.actionbar_verify);
 		this.buttonVerifyIcon = (ImageView) this.findViewById(R.id.actionbar_verify_icon);
 		this.buttonDone = (TextView) this.findViewById(R.id.actionbar_done);
+		this.accountDatabase = AccountDataSource.getInstance(this);
 
 		final TextView labelSelectedNetwork = (TextView) this.findViewById(R.id.text_add_account_selected_network);
 		this.selectedNetwork = Network.valueOf(this.getIntent().getStringExtra(InternalString.OPERATOR).toUpperCase(Locale.UK));
@@ -75,6 +76,11 @@ public class AddAccountActivity extends Activity {
 		final TextWatcher watcher = new UpdateButtonsTextWatcher();
 		this.textAccNumber.addTextChangedListener(watcher);
 		this.textAccPassword.addTextChangedListener(watcher);
+
+		if (this.accountDatabase.getAllAccounts().size() == 0) {
+			this.checkActiveAccount.setEnabled(false);
+			this.checkActiveAccount.setChecked(true);
+		}
 
 		this.updateDoneButton();
 		this.setResult(RESULT_CANCELED);
@@ -101,12 +107,6 @@ public class AddAccountActivity extends Activity {
 		final boolean isRecipientsEmpty = !this.textAccPassword.getText().toString().isEmpty();
 		this.buttonDone.setEnabled(isMessageEmpty && isRecipientsEmpty);
 		this.buttonVerify.setEnabled(isMessageEmpty && isRecipientsEmpty);
-	}
-
-	@Override
-	protected void onResume() {
-		this.accountDatabase = AccountDataSource.getInstance(this);
-		super.onResume();
 	}
 
 	public void addAccount(final View view) {
