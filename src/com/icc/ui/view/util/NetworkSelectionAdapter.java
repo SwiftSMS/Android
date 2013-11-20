@@ -42,7 +42,7 @@ public class NetworkSelectionAdapter extends BaseAdapter {
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		View view = convertView;
 		if (view == null) {
-			view = this.layoutInflater.inflate(R.layout.layout_network_selection_item, null);
+			view = this.layoutInflater.inflate(R.layout.layout_operator_list_item, null);
 		}
 
 		final TextView textViewAccountName = (TextView) view.findViewById(R.id.text_network_selection_operator_name);

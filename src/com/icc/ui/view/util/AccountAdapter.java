@@ -68,7 +68,7 @@ public class AccountAdapter extends BaseAdapter {
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		View view = convertView;
 		if (view == null) {
-			view = AccountAdapter.layoutInflater.inflate(R.layout.layout_network_selection_item, null);
+			view = AccountAdapter.layoutInflater.inflate(R.layout.layout_operator_list_item, null);
 		}
 		final Account account = this.accounts.get(position);
 
