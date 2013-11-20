@@ -109,9 +109,13 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 			} else {
 				this.messageEditText.setText(persistedMessage);
 			}
+			this.messageEditText.requestFocus();
 		} else {
 			this.recipientEdittext.setText(persistedRecipient);
 			this.messageEditText.setText(persistedMessage);
+			if (!persistedRecipient.isEmpty()) {
+				this.messageEditText.requestFocus();
+			}
 		}
 	}
 
