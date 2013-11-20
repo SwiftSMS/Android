@@ -16,6 +16,8 @@ import com.icc.model.Account;
  */
 public abstract class Operator {
 
+	public static final int DEFAULT_CHAR_LIMIT = 160;
+
 	private final Account account;
 	private boolean isLoggedIn = false;
 	private int characterLimit = -1;
@@ -141,7 +143,7 @@ public abstract class Operator {
 				this.characterLimit = this.doGetCharacterLimit();
 			}
 		}
-		return this.characterLimit;
+		return (this.characterLimit == -1) ? DEFAULT_CHAR_LIMIT : this.characterLimit;
 	}
 
 	abstract int doGetCharacterLimit();
