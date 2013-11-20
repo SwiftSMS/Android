@@ -1,4 +1,4 @@
-package com.icc.view;
+package com.icc.ui.view;
 
 import static com.icc.InternalString.ACTIVE_ACCOUNT;
 import static com.icc.InternalString.PREFS_KEY;
@@ -18,9 +18,10 @@ import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.ListView;
 
 import com.icc.R;
-import com.icc.db.AccountDataSource;
-import com.icc.db.IAccountDatabase;
+import com.icc.io.db.AccountDataSource;
+import com.icc.io.db.IAccountDatabase;
 import com.icc.model.Account;
+import com.icc.ui.view.util.AccountAdapter;
 
 /**
  * @author Rob Powell
@@ -83,7 +84,7 @@ public class ManageAccountsActivity extends ListActivity {
 					boolean isActiveAccountRemove = false;
 					for (final Account acc : this.selectedAccounts) {
 						ManageAccountsActivity.this.accountDatabase.removeAccount(acc);
-						ManageAccountsActivity.this.accountAdapter.accounts.remove(acc);
+						ManageAccountsActivity.this.accountAdapter.removeAccount(acc);
 						isActiveAccountRemove = acc.getId() == activeAccountId ? true : isActiveAccountRemove;
 					}
 					if (isActiveAccountRemove) {

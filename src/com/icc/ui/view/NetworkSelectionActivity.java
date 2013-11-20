@@ -1,4 +1,4 @@
-package com.icc.view;
+package com.icc.ui.view;
 
 import static com.icc.InternalString.OPERATOR;
 import android.annotation.TargetApi;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.icc.model.Network;
+import com.icc.ui.view.util.NetworkSelectionAdapter;
 
 public class NetworkSelectionActivity extends ListActivity {
 

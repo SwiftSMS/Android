@@ -1,4 +1,4 @@
-package com.icc.view;
+package com.icc.ui.view.util;
 
 import static com.icc.InternalString.CONTACT_SEPARATOR;
 import static com.icc.InternalString.EMPTY_STRING;

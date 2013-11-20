@@ -1,4 +1,4 @@
-package com.icc.net;
+package com.icc.io.net;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

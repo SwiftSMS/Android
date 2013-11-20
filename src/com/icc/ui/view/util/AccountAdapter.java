@@ -1,4 +1,4 @@
-package com.icc.view;
+package com.icc.ui.view.util;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import com.icc.model.Account;
  */
 public class AccountAdapter extends BaseAdapter {
 
-	final List<Account> accounts;
+	private final List<Account> accounts;
 	private final SharedPreferences prefs;
 	static LayoutInflater layoutInflater;
 
@@ -30,6 +30,23 @@ public class AccountAdapter extends BaseAdapter {
 		this.accounts = accounts;
 		this.prefs = preferences;
 		AccountAdapter.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	}
+
+	/**
+	 * Removes the first occurrence of the specified account object from this List. Effectively removing the account from the
+	 * UI.
+	 * 
+	 * @param account
+	 *            the account object to remove.
+	 * 
+	 * @return <code>true</code> if account was removed, <code>false</code> otherwise.
+	 */
+	public boolean removeAccount(final Account account) {
+		return this.accounts.remove(account);
+	}
+
+	List<Account> getAccounts() {
+		return this.accounts;
 	}
 
 	@Override

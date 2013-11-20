@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.icc.R;
-import com.icc.net.Operator;
+import com.icc.io.net.Operator;
 
 /**
  * This class is an {@link AsyncTask} responsible for testing if the login details provided by the user are valid.

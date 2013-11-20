@@ -1,4 +1,4 @@
-package com.icc.view;
+package com.icc.ui.view.util;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class AccountSpinnerAdapter extends AccountAdapter {
 		}
 
 		final TextView textViewAccountName = (TextView) view.findViewById(android.R.id.text1);
-		textViewAccountName.setText(this.accounts.get(position).getAccountName());
+		textViewAccountName.setText(this.getAccounts().get(position).getAccountName());
 
 		return view;
 	}

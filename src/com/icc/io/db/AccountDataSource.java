@@ -1,12 +1,12 @@
-package com.icc.db;
+package com.icc.io.db;
 
-import static com.icc.db.DbManager.COLUMN_ACCOUNT_NAME;
-import static com.icc.db.DbManager.COLUMN_ID;
-import static com.icc.db.DbManager.COLUMN_MOB_NUMBER;
-import static com.icc.db.DbManager.COLUMN_NETWORK;
-import static com.icc.db.DbManager.COLUMN_PASSWORD;
-import static com.icc.db.DbManager.COLUMN_TIMESTAMP;
-import static com.icc.db.DbManager.TABLE_ACCOUNTS;
+import static com.icc.io.db.DbManager.COLUMN_ACCOUNT_NAME;
+import static com.icc.io.db.DbManager.COLUMN_ID;
+import static com.icc.io.db.DbManager.COLUMN_MOB_NUMBER;
+import static com.icc.io.db.DbManager.COLUMN_NETWORK;
+import static com.icc.io.db.DbManager.COLUMN_PASSWORD;
+import static com.icc.io.db.DbManager.COLUMN_TIMESTAMP;
+import static com.icc.io.db.DbManager.TABLE_ACCOUNTS;
 
 import java.util.ArrayList;
 import java.util.List;

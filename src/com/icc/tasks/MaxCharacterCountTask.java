@@ -5,8 +5,8 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.widget.EditText;
 
-import com.icc.net.Operator;
-import com.icc.view.CharacterCountTextWatcher;
+import com.icc.io.net.Operator;
+import com.icc.ui.view.util.CharacterCountTextWatcher;
 
 public class MaxCharacterCountTask extends AsyncTask<String, Integer, Integer> {
 

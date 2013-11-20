@@ -1,4 +1,4 @@
-package com.icc.view;
+package com.icc.ui.view.util;
 
 import java.util.Observable;
 

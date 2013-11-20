@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 
 import com.icc.R;
-import com.icc.net.Operator;
+import com.icc.io.net.Operator;
 
 public class RemainingSmsTask extends AsyncTask<String, Integer, Integer> {
 

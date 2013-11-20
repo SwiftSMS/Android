@@ -1,4 +1,4 @@
-package com.icc.view;
+package com.icc.ui.view;
 
 import static com.icc.InternalString.PREFS_KEY;
 
@@ -26,12 +26,12 @@ import android.widget.TextView;
 
 import com.icc.InternalString;
 import com.icc.R;
-import com.icc.db.AccountDataSource;
-import com.icc.db.IAccountDatabase;
+import com.icc.io.db.AccountDataSource;
+import com.icc.io.db.IAccountDatabase;
+import com.icc.io.net.Operator;
+import com.icc.io.net.OperatorFactory;
 import com.icc.model.Account;
 import com.icc.model.Network;
-import com.icc.net.Operator;
-import com.icc.net.OperatorFactory;
 import com.icc.tasks.VerifyTask;
 
 /**

@@ -30,9 +30,9 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.icc.R;
-import com.icc.net.Operator;
+import com.icc.io.net.Operator;
+import com.icc.ui.view.ComposeActivity;
 import com.icc.utils.ContactUtils;
-import com.icc.view.ComposeActivity;
 
 /**
  * This class is an {@link AsyncTask} responsible for sending a web text using the provided operator.

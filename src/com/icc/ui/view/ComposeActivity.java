@@ -1,4 +1,4 @@
-package com.icc.view;
+package com.icc.ui.view;
 
 import static com.icc.InternalString.ACTIVE_ACCOUNT;
 import static com.icc.InternalString.CONTACT_SEPARATOR;
@@ -29,14 +29,18 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.icc.R;
-import com.icc.db.AccountDataSource;
-import com.icc.db.IAccountDatabase;
+import com.icc.io.db.AccountDataSource;
+import com.icc.io.db.IAccountDatabase;
+import com.icc.io.net.Operator;
+import com.icc.io.net.OperatorFactory;
 import com.icc.model.Account;
-import com.icc.net.Operator;
-import com.icc.net.OperatorFactory;
 import com.icc.tasks.MaxCharacterCountTask;
 import com.icc.tasks.RemainingSmsTask;
 import com.icc.tasks.SendTask;
+import com.icc.ui.view.util.AccountSpinnerAdapter;
+import com.icc.ui.view.util.CharacterCountTextWatcher;
+import com.icc.ui.view.util.ContactAdapter;
+import com.icc.ui.view.util.ContactSuggestionClickListener;
 
 public class ComposeActivity extends Activity implements Observer, ActionBar.OnNavigationListener {
 
