@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -108,6 +109,7 @@ public class AddAccountActivity extends Activity {
 		final boolean isRecipientsEmpty = !this.textAccPassword.getText().toString().isEmpty();
 		this.buttonDone.setEnabled(isMessageEmpty && isRecipientsEmpty);
 		this.buttonVerify.setEnabled(isMessageEmpty && isRecipientsEmpty);
+		this.buttonVerifyIcon.setColorFilter(Color.TRANSPARENT);
 	}
 
 	public void addAccount(final View view) {

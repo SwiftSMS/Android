@@ -1,11 +1,11 @@
 package com.icc.tasks;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.icc.R;
 import com.icc.net.Operator;
 
 /**
@@ -13,9 +13,10 @@ import com.icc.net.Operator;
  */
 public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
 
-	private final Context context;
 	private final Operator operator;
 	private final ImageView verifyImage;
+	private final int green;
+	private final int red;
 
 	/**
 	 * Create a new instance of the verify Task.
@@ -28,9 +29,10 @@ public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
 	 *            The verify image, rotates once task is complete should be stopped.
 	 */
 	public VerifyTask(final Activity context, final Operator operator, final ImageView verifyImage) {
-		this.context = context;
 		this.operator = operator;
 		this.verifyImage = verifyImage;
+		this.red = context.getResources().getColor(R.color.red);
+		this.green = context.getResources().getColor(R.color.green);
 	}
 
 	@Override
@@ -44,12 +46,11 @@ public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
 
 	@Override
 	protected void onPostExecute(final Boolean result) {
-		if (result) {
-			Toast.makeText(this.context, "Account verified successfully!", Toast.LENGTH_LONG).show();
-		} else {
-			Toast.makeText(this.context, "Could not verify account details!", Toast.LENGTH_LONG).show();
-		}
 		this.verifyImage.clearAnimation();
+		if (result) {
+			this.verifyImage.setColorFilter(this.green);
+		} else {
+			this.verifyImage.setColorFilter(this.red);
+		}
 	}
-
 }
