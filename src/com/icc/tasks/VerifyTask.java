@@ -2,6 +2,7 @@ package com.icc.tasks;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -47,10 +48,11 @@ public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
 	@Override
 	protected void onPostExecute(final Boolean result) {
 		this.verifyImage.clearAnimation();
+		final View layout = (View) this.verifyImage.getParent();
 		if (result) {
-			this.verifyImage.setColorFilter(this.green);
+			layout.setBackgroundColor(this.green);
 		} else {
-			this.verifyImage.setColorFilter(this.red);
+			layout.setBackgroundColor(this.red);
 		}
 	}
 }

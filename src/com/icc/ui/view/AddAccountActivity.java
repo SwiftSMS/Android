@@ -109,7 +109,7 @@ public class AddAccountActivity extends Activity {
 		final boolean isRecipientsEmpty = !this.textAccPassword.getText().toString().isEmpty();
 		this.buttonDone.setEnabled(isMessageEmpty && isRecipientsEmpty);
 		this.buttonVerify.setEnabled(isMessageEmpty && isRecipientsEmpty);
-		this.buttonVerifyIcon.setColorFilter(Color.TRANSPARENT);
+		this.buttonVerify.setBackgroundColor(Color.TRANSPARENT);
 	}
 
 	public void addAccount(final View view) {
