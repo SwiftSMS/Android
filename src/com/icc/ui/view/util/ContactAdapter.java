@@ -1,7 +1,5 @@
 package com.icc.ui.view.util;
 
-import static com.icc.InternalString.CONTACT_SEPARATOR;
-
 import java.util.ArrayList;
 
 import android.content.ContentResolver;
@@ -23,6 +21,7 @@ import android.widget.TextView;
 
 import com.icc.R;
 import com.icc.model.Contact;
+import com.icc.utils.ContactUtils;
 
 public class ContactAdapter extends BaseAdapter implements Filterable {
 
@@ -96,10 +95,7 @@ public class ContactAdapter extends BaseAdapter implements Filterable {
 				final String[] selectionArgs = new String[] { Phone.CONTENT_ITEM_TYPE };
 				final String sortOrder = Contacts.SORT_KEY_PRIMARY;
 
-				String searchText = constraint.toString();
-				if (searchText.contains(CONTACT_SEPARATOR)) {
-					searchText = searchText.substring(searchText.lastIndexOf(CONTACT_SEPARATOR) + 1);
-				}
+				final String searchText = ContactUtils.getLastContact(constraint.toString());
 				final Uri contentUri = Uri.withAppendedPath(Phone.CONTENT_FILTER_URI, Uri.encode(searchText));
 
 				final ContentResolver resolver = ContactAdapter.this.context.getContentResolver();

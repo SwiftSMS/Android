@@ -43,6 +43,22 @@ public class ContactUtils {
 	}
 
 	/**
+	 * This method returns the text that follows the last contact separator in the string. If no separators exist in the string
+	 * the string itself will be returned.
+	 * 
+	 * @param recipients
+	 *            The string to search.
+	 * @return The last contact in the string.
+	 */
+	public static String getLastContact(final String recipients) {
+		if (hasMultipleContacts(recipients)) {
+			final int lastComma = getPositionOfLastSeparator(recipients);
+			return recipients.substring(lastComma + 1);
+		}
+		return recipients;
+	}
+
+	/**
 	 * This method is used to convert a String version of a list of contacts to an array of formatted numbers that can be used
 	 * for sending an SMS.
 	 * 
