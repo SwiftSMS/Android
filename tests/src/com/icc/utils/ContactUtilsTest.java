@@ -42,8 +42,7 @@ public class ContactUtilsTest extends TestCase {
 		assertEquals("", ContactUtils.getAllButLastContacts(this.tStrOneContact));
 		assertEquals("first contact, ", ContactUtils.getAllButLastContacts(this.tStrTwoContacts));
 		assertEquals(this.tStrThreeContactsNoLast, ContactUtils.getAllButLastContacts(this.tStrThreeContactsNoLast));
-		assertEquals("a#contact, two-contacts, three&contacts, ",
-				ContactUtils.getAllButLastContacts(this.tStrFourContactsWithChars));
+		assertEquals("a#contact, two-contacts, three&contacts, ", ContactUtils.getAllButLastContacts(this.tStrFourContactsWithChars));
 		assertEquals("", ContactUtils.getAllButLastContacts(this.tStrWithAllNonSeparators));
 	}
 
@@ -51,8 +50,7 @@ public class ContactUtilsTest extends TestCase {
 		assertEquals("first contact, ", ContactUtils.getAllButLastContacts(this.tStrTwoContactsWithSemi));
 		assertEquals("first contact, second contact, ", ContactUtils.getAllButLastContacts(this.tStrThreeContactsWithSemiAtEnd));
 		assertEquals("first contact; second contact, ", ContactUtils.getAllButLastContacts(this.tStrThreeContactsWithSemi));
-		assertEquals("a#contact; two-contacts, three&contacts, ",
-				ContactUtils.getAllButLastContacts(this.tStrFourContactsWithCharsAndSemi));
+		assertEquals("a#contact; two-contacts, three&contacts, ", ContactUtils.getAllButLastContacts(this.tStrFourContactsWithCharsAndSemi));
 	}
 
 	public void testGetLastContact() {
@@ -77,25 +75,19 @@ public class ContactUtilsTest extends TestCase {
 
 	public void testTrimSeparators() {
 		assertEquals("", ContactUtils.trimSeparators(this.tStrNoContacts));
-		assertEquals("first contact, second contact, another contact",
-				ContactUtils.trimSeparators(this.tStrContactsWithPointlessSeparators));
+		assertEquals("first contact, second contact, another contact", ContactUtils.trimSeparators(this.tStrContactsWithPointlessSeparators));
 		assertEquals("first contact", ContactUtils.trimSeparators(this.tStrOneContact));
 		assertEquals("first contact, last contact", ContactUtils.trimSeparators(this.tStrTwoContacts));
 		assertEquals("first contact, second contact", ContactUtils.trimSeparators(this.tStrThreeContactsNoLast));
-		assertEquals("a#contact, two-contacts, three&contacts, fo*r<contacts>",
-				ContactUtils.trimSeparators(this.tStrFourContactsWithChars));
-		assertEquals("a!c\"m£c$a%m^c&a*e(m)c-e_m+c=a{e}m[c]a:e'm@c#a~e<m>c.a?e/m\\c|a`a¬o1b",
-				ContactUtils.trimSeparators(this.tStrWithAllNonSeparators));
+		assertEquals("a#contact, two-contacts, three&contacts, fo*r<contacts>", ContactUtils.trimSeparators(this.tStrFourContactsWithChars));
+		assertEquals("a!c\"m£c$a%m^c&a*e(m)c-e_m+c=a{e}m[c]a:e'm@c#a~e<m>c.a?e/m\\c|a`a¬o1b", ContactUtils.trimSeparators(this.tStrWithAllNonSeparators));
 	}
 
 	public void testTrimSeparatorsWithSemiColon() {
-		assertEquals("first contact, second contact, another contact",
-				ContactUtils.trimSeparators(this.tStrContactsWithPointlessSeparatorsAndSemi));
+		assertEquals("first contact, second contact, another contact", ContactUtils.trimSeparators(this.tStrContactsWithPointlessSeparatorsAndSemi));
 		assertEquals("first contact, last contact", ContactUtils.trimSeparators(this.tStrTwoContactsWithSemi));
 		assertEquals("first contact, second contact, last contact", ContactUtils.trimSeparators(this.tStrThreeContactsWithSemi));
-		assertEquals("first contact, second contact, last contact",
-				ContactUtils.trimSeparators(this.tStrThreeContactsWithSemiAtEnd));
-		assertEquals("a#contact, two-contacts, three&contacts, fo*r<contacts>",
-				ContactUtils.trimSeparators(this.tStrFourContactsWithCharsAndSemi));
+		assertEquals("first contact, second contact, last contact", ContactUtils.trimSeparators(this.tStrThreeContactsWithSemiAtEnd));
+		assertEquals("a#contact, two-contacts, three&contacts, fo*r<contacts>", ContactUtils.trimSeparators(this.tStrFourContactsWithCharsAndSemi));
 	}
 }
