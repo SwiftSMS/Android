@@ -16,6 +16,7 @@ public class ContactUtilsTest extends TestCase {
 	private final String tStrThreeContactsWithSemi = "first contact; second contact, last contact";
 	private final String tStrThreeContactsWithSemiAtEnd = "first contact, second contact; last contact";
 	private final String tStrFourContactsWithCharsAndSemi = "a#contact; two-contacts, three&contacts; fo*r<contacts>";
+	private final String tStrContactsWithPointlessSeparatorsAndSemi = ", ;first contact; second contact,;, another contact, , ;";
 
 	public void testHasMultipleContacts() {
 		assertTrue(ContactUtils.hasMultipleContacts(this.tStrTwoContacts));
@@ -87,4 +88,14 @@ public class ContactUtilsTest extends TestCase {
 				ContactUtils.trimSeparators(this.tStrWithAllNonSeparators));
 	}
 
+	public void testTrimSeparatorsWithSemiColon() {
+		assertEquals("first contact, second contact, another contact",
+				ContactUtils.trimSeparators(this.tStrContactsWithPointlessSeparatorsAndSemi));
+		assertEquals("first contact, last contact", ContactUtils.trimSeparators(this.tStrTwoContactsWithSemi));
+		assertEquals("first contact, second contact, last contact", ContactUtils.trimSeparators(this.tStrThreeContactsWithSemi));
+		assertEquals("first contact, second contact, last contact",
+				ContactUtils.trimSeparators(this.tStrThreeContactsWithSemiAtEnd));
+		assertEquals("a#contact, two-contacts, three&contacts, fo*r<contacts>",
+				ContactUtils.trimSeparators(this.tStrFourContactsWithCharsAndSemi));
+	}
 }
