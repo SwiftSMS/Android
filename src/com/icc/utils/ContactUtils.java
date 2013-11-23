@@ -101,11 +101,12 @@ public class ContactUtils {
 		for (final String token : tokens) {
 			final String recipient = token.trim();
 			if (!recipient.equals(EMPTY_STRING)) {
+				if (result.length() > 0) {
+					result.append(CONTACT_SEPARATOR + SPACE);
+				}
 				result.append(recipient);
-				result.append(CONTACT_SEPARATOR + SPACE);
 			}
 		}
-		result.delete(result.length() - 2, result.length()); // remove last trailing separator
 		return result.toString();
 	}
 }
