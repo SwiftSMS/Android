@@ -53,7 +53,7 @@ public class ContactUtils {
 	public static String getLastContact(final String recipients) {
 		if (hasMultipleContacts(recipients)) {
 			final int lastComma = getPositionOfLastSeparator(recipients);
-			return recipients.substring(lastComma + 1);
+			return recipients.substring(lastComma + 1).trim();
 		}
 		return recipients;
 	}
