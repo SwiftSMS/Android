@@ -10,6 +10,7 @@ public class ContactUtilsTest extends TestCase {
 	private final String tStrTwoContacts = "first contact, last contact";
 	private final String tStrThreeContactsNoLast = "first contact, second contact, ";
 	private final String tStrFourContactsWithChars = "a#contact, two-contacts, three&contacts, fo*r<contacts>";
+	private final String tStrContactsWithPointlessSeparators = ", ,first contact, second contact,,, another contact, , ,";
 
 	private final String tStrTwoContactsWithSemi = "first contact; last contact";
 	private final String tStrThreeContactsWithSemi = "first contact; second contact, last contact";
@@ -74,7 +75,16 @@ public class ContactUtilsTest extends TestCase {
 	}
 
 	public void testTrimSeparators() {
-		fail("Not yet implemented");
+		assertEquals("", ContactUtils.trimSeparators(this.tStrNoContacts));
+		assertEquals("first contact, second contact, another contact",
+				ContactUtils.trimSeparators(this.tStrContactsWithPointlessSeparators));
+		assertEquals("first contact", ContactUtils.trimSeparators(this.tStrOneContact));
+		assertEquals("first contact, last contact", ContactUtils.trimSeparators(this.tStrTwoContacts));
+		assertEquals("first contact, second contact", ContactUtils.trimSeparators(this.tStrThreeContactsNoLast));
+		assertEquals("a#contact, two-contacts, three&contacts, fo*r<contacts>",
+				ContactUtils.trimSeparators(this.tStrFourContactsWithChars));
+		assertEquals("a!c\"m£c$a%m^c&a*e(m)c-e_m+c=a{e}m[c]a:e'm@c#a~e<m>c.a?e/m\\c|a`a¬o1b",
+				ContactUtils.trimSeparators(this.tStrWithAllNonSeparators));
 	}
 
 }
