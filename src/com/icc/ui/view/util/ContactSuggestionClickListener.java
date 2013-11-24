@@ -2,7 +2,6 @@ package com.icc.ui.view.util;
 
 import static com.icc.InternalString.DEFAULT_CONTACT_SEPARATOR;
 import static com.icc.InternalString.EMPTY_STRING;
-import static com.icc.InternalString.SPACE;
 
 import java.util.Observable;
 
@@ -28,7 +27,7 @@ public class ContactSuggestionClickListener extends Observable implements TextWa
 		// When an item from the contacts suggestion is clicked place the original contacts before the new one
 		this.editable.insert(0, this.oldText);
 		this.oldText = EMPTY_STRING;
-		this.editable.append(DEFAULT_CONTACT_SEPARATOR + SPACE);
+		this.editable.append(DEFAULT_CONTACT_SEPARATOR);
 	}
 
 	@Override

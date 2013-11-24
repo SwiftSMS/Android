@@ -125,7 +125,7 @@ public class ContactUtils {
 			final String recipient = token.trim();
 			if (!recipient.equals(EMPTY_STRING)) {
 				if (result.length() > 0) {
-					result.append(DEFAULT_CONTACT_SEPARATOR + SPACE);
+					result.append(DEFAULT_CONTACT_SEPARATOR);
 				}
 				result.append(recipient);
 			}

@@ -24,7 +24,7 @@ public class InternalString {
 	/**
 	 * This is the default character used to separate contacts when entering multiple recipients.
 	 */
-	public static final String DEFAULT_CONTACT_SEPARATOR = ",";
+	public static final String DEFAULT_CONTACT_SEPARATOR = ", ";
 
 	/**
 	 * This is a list of all possible contact separator characters
