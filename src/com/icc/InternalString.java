@@ -24,7 +24,7 @@ public class InternalString {
 	/**
 	 * This is the character used to separate contacts when entering multiple recipients.
 	 */
-	public static final String CONTACT_SEPARATOR = ",";
+	public static final String[] CONTACT_SEPARATOR = new String[] { ",", ";" };
 
 	/**
 	 * The space character.

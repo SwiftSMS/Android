@@ -6,11 +6,26 @@ import static com.icc.InternalString.SPACE;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A utility class to help with entering multiple contacts in the UI Recipients EditText.
  */
 public class ContactUtils {
+
+	private static final String NON_NUMBER_PATTERN = "[^\\d\\+]";
+	private final static String SEPARATOR_PATTERN;
+
+	static {
+		final StringBuilder pattern = new StringBuilder();
+		pattern.append("[");
+		for (final String s : CONTACT_SEPARATOR) {
+			pattern.append(s);
+		}
+		pattern.append("]");
+		SEPARATOR_PATTERN = pattern.toString();
+	}
 
 	/**
 	 * This method determines if there is more than one contact entered in a String. This is determined by the separator
@@ -66,9 +81,9 @@ public class ContactUtils {
 	 */
 	public static List<String> getContactsAsList(final String recipients) {
 		final List<String> listOfRecip = new ArrayList<String>();
-		final String[] tokens = trimSeparators(recipients).split(CONTACT_SEPARATOR);
+		final String[] tokens = trimSeparators(recipients).split(SEPARATOR_PATTERN);
 		for (final String unformattedRecipient : tokens) {
-			final String recipient = unformattedRecipient.replaceAll("[^\\d\\+]", "");
+			final String recipient = unformattedRecipient.replaceAll(NON_NUMBER_PATTERN, EMPTY_STRING);
 			if (!recipient.isEmpty()) {
 				listOfRecip.add(recipient);
 			}
@@ -84,7 +99,14 @@ public class ContactUtils {
 	 * @return The position of the last comma in this string.
 	 */
 	private static int getPositionOfLastSeparator(final String recipients) {
-		return recipients.lastIndexOf(CONTACT_SEPARATOR);
+		final Pattern pattern = Pattern.compile(".*" + SEPARATOR_PATTERN);
+		final Matcher matcher = pattern.matcher(recipients);
+
+		if (matcher.find()) {
+			return matcher.end() - 1;
+		} else {
+			return -1;
+		}
 	}
 
 	/**
@@ -97,12 +119,12 @@ public class ContactUtils {
 	 */
 	public static String trimSeparators(final String recipients) {
 		final StringBuilder result = new StringBuilder();
-		final String[] tokens = recipients.trim().split(CONTACT_SEPARATOR);
+		final String[] tokens = recipients.trim().split(SEPARATOR_PATTERN);
 		for (final String token : tokens) {
 			final String recipient = token.trim();
 			if (!recipient.equals(EMPTY_STRING)) {
 				if (result.length() > 0) {
-					result.append(CONTACT_SEPARATOR + SPACE);
+					result.append(CONTACT_SEPARATOR[0] + SPACE);
 				}
 				result.append(recipient);
 			}
