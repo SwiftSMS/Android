@@ -70,7 +70,12 @@ public class ContactUtilsTest extends TestCase {
 	}
 
 	public void testGetContactsAsList() {
-		fail("Not yet implemented");
+		assertEquals("[]", ContactUtils.getContactsAsList(this.tStrNoContacts).toString());
+		assertEquals("[]", ContactUtils.getContactsAsList(this.tStrOneContact).toString());
+		assertEquals("[]", ContactUtils.getContactsAsList(this.tStrTwoContacts).toString());
+		assertEquals("[]", ContactUtils.getContactsAsList(this.tStrThreeContactsNoLast).toString());
+		assertEquals("[]", ContactUtils.getContactsAsList(this.tStrFourContactsWithChars).toString());
+		assertEquals("[+1]", ContactUtils.getContactsAsList(this.tStrWithAllNonSeparators).toString());
 	}
 
 	public void testTrimSeparators() {
