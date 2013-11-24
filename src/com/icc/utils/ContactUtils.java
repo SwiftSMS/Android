@@ -32,7 +32,7 @@ public class ContactUtils {
 	 * character. If the separator character exists in the string it is assumed more than one contact exists in the string.
 	 * 
 	 * @param recipients
-	 *            A string containing one or more contacts separated by commas (,).
+	 *            A string containing one or more contacts.
 	 * @return <code>true</code> if there is more than one contact, otherwise <code>false</code>.
 	 */
 	public static boolean hasMultipleContacts(final String recipients) {
@@ -40,11 +40,11 @@ public class ContactUtils {
 	}
 
 	/**
-	 * This method is used to get only the fully entered contacts from a string. It returns everything up to the last comma (,)
-	 * in the string. It does no validation that the contacts are valid.
+	 * This method is used to get only the fully entered contacts from a string. It returns everything up to the last separator
+	 * character. It does no validation that the contacts are valid.
 	 * 
 	 * @param recipients
-	 *            A string containing one or more contacts separated by commas (,).
+	 *            A string containing one or more contacts.
 	 * @return A String containing all the fully entered contacts.
 	 */
 	public static String getAllButLastContacts(final String recipients) {
@@ -76,7 +76,7 @@ public class ContactUtils {
 	 * for sending an SMS.
 	 * 
 	 * @param recipients
-	 *            A string containing one or more contacts separated by commas (,).
+	 *            A string containing one or more contacts.
 	 * @return A list of numbers taken from the contacts in String.
 	 */
 	public static List<String> getContactsAsList(final String recipients) {
@@ -92,11 +92,11 @@ public class ContactUtils {
 	}
 
 	/**
-	 * This method finds the position of the last comma (,) in a string.
+	 * This method finds the position of the last separator character in a string.
 	 * 
 	 * @param recipients
-	 *            A string containing one or more contacts separated by commas (,).
-	 * @return The position of the last comma in this string.
+	 *            A string containing one or more contacts.
+	 * @return The position of the last separator character in this string.
 	 */
 	private static int getPositionOfLastSeparator(final String recipients) {
 		final Pattern pattern = Pattern.compile(".*" + SEPARATOR_PATTERN);
@@ -110,12 +110,12 @@ public class ContactUtils {
 	}
 
 	/**
-	 * This method is used to remove unneeded contact separator characters (comma) from a String. It will remove all contact
-	 * separator characters from the string if they are 'empty'.
+	 * This method is used to remove unneeded contact separator characters from a String. It will remove all contact separator
+	 * characters from the string if they are 'empty'.
 	 * 
 	 * @param recipients
-	 *            A string containing one or more contacts separated by commas (,).
-	 * @return A String containing the recipients without trailing commas (,).
+	 *            A string containing one or more contacts.
+	 * @return A String containing the recipients without leading or trailing separator characters.
 	 */
 	public static String trimSeparators(final String recipients) {
 		final StringBuilder result = new StringBuilder();
