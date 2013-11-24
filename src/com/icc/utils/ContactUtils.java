@@ -1,6 +1,7 @@
 package com.icc.utils;
 
 import static com.icc.InternalString.CONTACT_SEPARATOR;
+import static com.icc.InternalString.DEFAULT_CONTACT_SEPARATOR;
 import static com.icc.InternalString.EMPTY_STRING;
 import static com.icc.InternalString.SPACE;
 
@@ -124,7 +125,7 @@ public class ContactUtils {
 			final String recipient = token.trim();
 			if (!recipient.equals(EMPTY_STRING)) {
 				if (result.length() > 0) {
-					result.append(CONTACT_SEPARATOR[0] + SPACE);
+					result.append(DEFAULT_CONTACT_SEPARATOR + SPACE);
 				}
 				result.append(recipient);
 			}

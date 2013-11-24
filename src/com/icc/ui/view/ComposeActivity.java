@@ -1,7 +1,7 @@
 package com.icc.ui.view;
 
 import static com.icc.InternalString.ACTIVE_ACCOUNT;
-import static com.icc.InternalString.CONTACT_SEPARATOR;
+import static com.icc.InternalString.DEFAULT_CONTACT_SEPARATOR;
 import static com.icc.InternalString.PREFS_KEY;
 import static com.icc.InternalString.SMS_BODY;
 import static com.icc.InternalString.SPACE;
@@ -102,7 +102,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 
 		if (intentData != null) {
 			final String smsto = intentData.getSchemeSpecificPart();
-			this.recipientEdittext.setText(smsto + CONTACT_SEPARATOR + SPACE);
+			this.recipientEdittext.setText(smsto + DEFAULT_CONTACT_SEPARATOR + SPACE);
 			final String smsBody = this.getIntent().getStringExtra(SMS_BODY);
 			if (smsBody != null) {
 				this.messageEditText.setText(smsBody);
@@ -238,8 +238,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	 * This method queries the Network provides web API for the maximum character count of a message.
 	 */
 	private void getMaxCharacterCount() {
-		final MaxCharacterCountTask task = new MaxCharacterCountTask(this.operator, this.preferences, this.charCountWatcher,
-				this.messageEditText);
+		final MaxCharacterCountTask task = new MaxCharacterCountTask(this.operator, this.preferences, this.charCountWatcher, this.messageEditText);
 		task.execute();
 	}
 

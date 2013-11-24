@@ -22,7 +22,12 @@ public class InternalString {
 	public static final String ACTIVE_ACCOUNT = "activeAccount";
 
 	/**
-	 * This is the character used to separate contacts when entering multiple recipients.
+	 * This is the default character used to separate contacts when entering multiple recipients.
+	 */
+	public static final String DEFAULT_CONTACT_SEPARATOR = ",";
+
+	/**
+	 * This is a list of all possible contact separator characters
 	 */
 	public static final String[] CONTACT_SEPARATOR = new String[] { ",", ";" };
 
