@@ -47,10 +47,10 @@ public class ContactUtilsTest extends TestCase {
 	}
 
 	public void testGetAllButLastContactsWithSemiColon() {
-		assertEquals("first contact, ", ContactUtils.getAllButLastContacts(this.tStrTwoContactsWithSemi));
-		assertEquals("first contact(+35385114411), second contact, ", ContactUtils.getAllButLastContacts(this.tStrThreeContactsWithSemiAtEnd));
+		assertEquals("first contact; ", ContactUtils.getAllButLastContacts(this.tStrTwoContactsWithSemi));
+		assertEquals("first contact(+35385114411), second contact; ", ContactUtils.getAllButLastContacts(this.tStrThreeContactsWithSemiAtEnd));
 		assertEquals("first_0847898789_contact; second co086131313ntact, ", ContactUtils.getAllButLastContacts(this.tStrThreeContactsWithSemi));
-		assertEquals("a#contact; two-contacts, three&contacts, ", ContactUtils.getAllButLastContacts(this.tStrFourContactsWithCharsAndSemi));
+		assertEquals("a#contact; two-contacts, three&contacts; ", ContactUtils.getAllButLastContacts(this.tStrFourContactsWithCharsAndSemi));
 	}
 
 	public void testGetLastContact() {
