@@ -7,8 +7,6 @@ import static com.icc.InternalString.SPACE;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.telephony.PhoneNumberUtils;
-
 /**
  * A utility class to help with entering multiple contacts in the UI Recipients EditText.
  */
@@ -70,8 +68,10 @@ public class ContactUtils {
 		final List<String> listOfRecip = new ArrayList<String>();
 		final String[] tokens = trimSeparators(recipients).split(CONTACT_SEPARATOR);
 		for (final String unformattedRecipient : tokens) {
-			final String recipient = PhoneNumberUtils.stripSeparators(unformattedRecipient);
-			listOfRecip.add(recipient);
+			final String recipient = unformattedRecipient.replaceAll("[^\\d\\+]", "");
+			if (!recipient.isEmpty()) {
+				listOfRecip.add(recipient);
+			}
 		}
 		return listOfRecip;
 	}
