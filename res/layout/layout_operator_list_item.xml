@@ -10,7 +10,8 @@
         android:id="@+id/view_network_selection_selected_indicator"
         android:layout_width="@dimen/element_margin_half"
         android:layout_height="match_parent"
-        android:layout_marginRight="@dimen/element_margin_half" />
+        android:layout_marginRight="@dimen/element_margin_half"
+        android:background="@drawable/operator_list_item_selector" />
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -82,9 +82,9 @@ public class AccountAdapter extends BaseAdapter {
 
 		final View selectedIndicator = view.findViewById(R.id.view_network_selection_selected_indicator);
 		if (account.getId() == this.prefs.getInt(InternalString.ACTIVE_ACCOUNT, -1)) {
-			selectedIndicator.setBackgroundResource(R.color.holo_light_blue);
+			selectedIndicator.setSelected(true);
 		} else {
-			selectedIndicator.setBackgroundResource(0);
+			selectedIndicator.setSelected(false);
 		}
 
 		return view;

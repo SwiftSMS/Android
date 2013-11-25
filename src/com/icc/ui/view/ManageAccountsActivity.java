@@ -48,7 +48,6 @@ public class ManageAccountsActivity extends ListActivity {
 	@Override
 	protected void onListItemClick(final ListView l, final View v, final int position, final long itemId) {
 		this.setActiveAccount(itemId);
-		super.onListItemClick(l, v, position, itemId);
 	}
 
 	private void setActiveAccount(final long id) {
