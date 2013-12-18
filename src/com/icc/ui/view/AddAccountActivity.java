@@ -96,9 +96,9 @@ public class AddAccountActivity extends Activity {
 		final View customActionBarView = inflater.inflate(R.layout.actionbar_custom_view_done_cancel, null);
 		// Show the custom action bar view and hide the normal Home icon and title.
 		final ActionBar actionBar = this.getActionBar();
+		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
-		actionBar.setCustomView(customActionBarView, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.MATCH_PARENT));
+		actionBar.setCustomView(customActionBarView, new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 	}
 
 	/**
