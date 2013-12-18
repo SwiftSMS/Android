@@ -88,14 +88,13 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		this.progressBar.setVisibility(View.GONE);
 		this.sendButton.setEnabled(true);
 		if (result) {
-			Toast.makeText(this.activity, this.getStringRes(R.string.message_sent), Toast.LENGTH_LONG).show();
+            this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_SUCCESSFUL);
 			this.activity.retrieveRemainingSmsCount();
 			this.recipientsEditText.setText(EMPTY_STRING);
 			this.messageEditText.setText(EMPTY_STRING);
 			this.insertMessageInSmsDb();
 		} else {
-			Toast.makeText(this.activity, this.getStringRes(R.string.message_failed_to_send), Toast.LENGTH_LONG).show();
-
+		    this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_FAIL);
 			final Notification notif = this.buildFailureNotification();
 			final NotificationManager service = (NotificationManager) this.activity
 					.getSystemService(Context.NOTIFICATION_SERVICE);

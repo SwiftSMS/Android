@@ -19,12 +19,16 @@ import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.icc.R;
@@ -36,10 +40,12 @@ import com.icc.model.Account;
 import com.icc.tasks.MaxCharacterCountTask;
 import com.icc.tasks.RemainingSmsTask;
 import com.icc.tasks.SendTask;
+import com.icc.ui.view.anim.AnimationRunner;
 import com.icc.ui.view.util.AccountSpinnerAdapter;
 import com.icc.ui.view.util.CharacterCountTextWatcher;
 import com.icc.ui.view.util.ContactAdapter;
 import com.icc.ui.view.util.ContactSuggestionClickListener;
+import com.icc.utils.Notification;
 
 public class ComposeActivity extends Activity implements Observer, ActionBar.OnNavigationListener {
 
@@ -53,6 +59,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private AutoCompleteTextView recipientEdittext;
 	private MenuItem remaingSmsMenuItem;
 	private ImageButton sendButton;
+    private RelativeLayout notificationArea;
 
 	private Operator operator;
 	private SharedPreferences preferences;
@@ -74,6 +81,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.accountDatabase = AccountDataSource.getInstance(this.themedContext);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		this.sendButton = (ImageButton) this.findViewById(R.id.button_compose_send);
+        this.notificationArea = (RelativeLayout) this.findViewById(R.id.view_notification_area);
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
@@ -314,4 +322,30 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		editor.commit();
 		return true;
 	}
+
+    /**
+     * Method to displays notifications on the main compose activity
+     *
+     * @param paramNotification
+     *              Predefined Notification objects for different event's
+     */
+    public void addNotification(Notification paramNotification) {
+
+        final TextView notificationText = (TextView) this.findViewById(R.id.textview_notification_area);
+
+        final Animation fadeInAnim = new AlphaAnimation(0.0f, 1.0f);
+        final Animation fadeOutAnim = new AlphaAnimation(1.0f,0.0f);
+
+        if(paramNotification.equals(Notification.SMS_SEND_SUCCESSFUL)){
+            notificationArea.setBackgroundColor(this.getResources().getColor(R.color.green));
+        } else if(paramNotification.equals(Notification.SMS_SEND_FAIL)) {
+            notificationArea.setBackgroundColor(this.getResources().getColor(R.color.red));
+        }
+
+        notificationText.setText(paramNotification.toString());
+
+        Handler postAnimationHandler = new Handler();
+        postAnimationHandler.post(new AnimationRunner(this.notificationArea, 500, fadeInAnim, View.VISIBLE));
+        postAnimationHandler.postDelayed(new AnimationRunner(this.notificationArea, 500, fadeOutAnim, View.GONE), 2000);
+    }
 }
