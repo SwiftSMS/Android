@@ -22,5 +22,6 @@
     <string name="select_network">Select network</string>
     <string name="operator_image">Operator image</string>
     <string name="delete">Delete</string>
-
+    <string name="ok">OK</string>
+    
 </resources>
