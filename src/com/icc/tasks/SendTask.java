@@ -27,7 +27,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.icc.R;
 import com.icc.io.net.Operator;
@@ -94,7 +93,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 			this.messageEditText.setText(EMPTY_STRING);
 			this.insertMessageInSmsDb();
 		} else {
-		    this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_FAIL);
+		    this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_FAILURE);
 			final Notification notif = this.buildFailureNotification();
 			final NotificationManager service = (NotificationManager) this.activity
 					.getSystemService(Context.NOTIFICATION_SERVICE);

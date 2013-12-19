@@ -324,28 +324,25 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	}
 
     /**
-     * Method to displays notifications on the main compose activity
+     * Method used to display notifications on the main compose activity
      *
      * @param paramNotification
-     *              Predefined Notification objects for different event's
+     *              Notification objects for different event's
      */
     public void addNotification(Notification paramNotification) {
+
+        final int FADE_DURATION = 500;
 
         final TextView notificationText = (TextView) this.findViewById(R.id.textview_notification_area);
 
         final Animation fadeInAnim = new AlphaAnimation(0.0f, 1.0f);
         final Animation fadeOutAnim = new AlphaAnimation(1.0f,0.0f);
 
-        if(paramNotification.equals(Notification.SMS_SEND_SUCCESSFUL)){
-            notificationArea.setBackgroundColor(this.getResources().getColor(R.color.green));
-        } else if(paramNotification.equals(Notification.SMS_SEND_FAIL)) {
-            notificationArea.setBackgroundColor(this.getResources().getColor(R.color.red));
-        }
-
-        notificationText.setText(paramNotification.toString());
+        notificationText.setText(this.getResources().getString(paramNotification.getStringResource()));
+        notificationArea.setBackgroundColor(this.getResources().getColor(paramNotification.getColourResource()));
 
         Handler postAnimationHandler = new Handler();
-        postAnimationHandler.post(new AnimationRunner(this.notificationArea, 500, fadeInAnim, View.VISIBLE));
-        postAnimationHandler.postDelayed(new AnimationRunner(this.notificationArea, 500, fadeOutAnim, View.GONE), 2000);
+        postAnimationHandler.post(new AnimationRunner(this.notificationArea, FADE_DURATION, fadeInAnim, View.VISIBLE));
+        postAnimationHandler.postDelayed(new AnimationRunner(this.notificationArea, FADE_DURATION, fadeOutAnim, View.GONE), 2000);
     }
 }

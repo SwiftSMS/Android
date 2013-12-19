@@ -21,6 +21,7 @@ public class Three extends Operator {
     private static final String POST_MESSAGE_TEXT = "data[Message][message]";
     private static final String POST_RECIPIENT_INDIVIDUAL = "data[Message][recipients_individual]";
     private static final String SMS_SEND_SUCCESS_TEXT = "Message sent!";
+    private static final String SMS_REMAINING_END_TEXT = "(of 333)</p>";
 
     // contact/recipients
     private static final String RECIPIENTS_SEPARATOR = ",";
@@ -78,11 +79,31 @@ public class Three extends Operator {
 
         final String html = manager.connect();
 
-		return 0;
+		return getRemainingSmsFromHTML(html);
 	}
 
 	@Override
 	int doGetCharacterLimit() {
 		return 160;
+    }
+
+    private int getRemainingSmsFromHTML(String html) {
+
+        int remainingTexts = -1;
+        final String endText = Three.SMS_REMAINING_END_TEXT;
+
+        final int index = html.indexOf(endText);
+
+        final int startPos = index - 4;
+        final int endPos = index;
+
+        if(startPos > endText.length()) {
+            try {
+                String remainingSmsString = html.substring(startPos,endPos).replaceAll("[<p>]","");
+                remainingTexts = Integer.parseInt(remainingSmsString.trim());
+            } catch (Exception ex){}
+        }
+
+        return remainingTexts;
     }
 }

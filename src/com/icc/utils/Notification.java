@@ -1,5 +1,7 @@
 package com.icc.utils;
 
+import com.icc.R;
+
 /**
  * Notifications for ICC Activities
  *
@@ -7,16 +9,22 @@ package com.icc.utils;
  */
 public enum Notification {
 
-    SMS_SEND_SUCCESSFUL("Message Sent!"), SMS_SEND_FAIL("Message not sent!");
+    SMS_SEND_SUCCESSFUL(R.string.message_sent, R.color.green),
+    SMS_SEND_FAILURE(R.string.message_failed_to_send, R.color.red);
 
-    private final String notification;
+    private final int stringResource;
+    private final int colourResource;
 
-    Notification(final String notification) {
-        this.notification = notification;
+    Notification(final int stringResource, final int colourResource) {
+        this.stringResource = stringResource;
+        this.colourResource = colourResource;
     }
 
-    @Override
-    public String toString() {
-        return this.notification;
+    public int getStringResource() {
+        return this.stringResource;
+    }
+
+    public int getColourResource() {
+        return this.colourResource;
     }
 }
