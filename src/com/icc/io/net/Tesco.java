@@ -31,6 +31,7 @@ public class Tesco extends Operator {
 		final ConnectionManager manager = new ConnectionManager("https://app.tescomobile.ie/MyTM/restws/user/permissions/"
 				+ this.getAccount().getMobileNumber(), "GET", false);
 		manager.setRequestHeader("User-Agent", "MyTescoApp/1.1");
+		manager.setRequestHeader("Accept", "application/json");
 		manager.setRequestHeader("Authorization", this.auth);
 		final String html = manager.connect();
 		return html.contains("msisdn");
@@ -41,6 +42,7 @@ public class Tesco extends Operator {
 		final ConnectionManager manager = new ConnectionManager("https://app.tescomobile.ie/MyTM/restws/webtext/"
 				+ this.getAccount().getMobileNumber() + "/balance", "GET", false);
 		manager.setRequestHeader("User-Agent", "MyTescoApp/1.1");
+		manager.setRequestHeader("Accept", "application/json");
 		manager.setRequestHeader("Authorization", this.auth);
 		final String rawJson = manager.connect();
 		try {
@@ -58,6 +60,7 @@ public class Tesco extends Operator {
 		final ConnectionManager manager = new ConnectionManager(
 				"https://app.tescomobile.ie/MyTM/restws/webtext/0892088841/send");
 		manager.setRequestHeader("User-Agent", "MyTescoApp/1.1");
+		manager.setRequestHeader("Accept", "application/json");
 		manager.setRequestHeader("Authorization", this.auth);
 
 		// "{"message":"sdf","contacts":[],"groups":[],"msisdns":["0857855532"]}"
@@ -87,5 +90,4 @@ public class Tesco extends Operator {
 	int doGetCharacterLimit() {
 		return 160;
 	}
-
 }
