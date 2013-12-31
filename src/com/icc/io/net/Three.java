@@ -17,11 +17,12 @@ public class Three extends Operator {
     private static final String SUCCESS_LOGIN = "Logout";
 
     // sms related strings values
-    private static final String POST_SMS_URL = "https://webtexts.three.ie/webtext/messages/send";
+    private static final String SMS_URL = "https://webtexts.three.ie/webtext/messages/send";
     private static final String POST_MESSAGE_TEXT = "data[Message][message]";
     private static final String POST_RECIPIENT_INDIVIDUAL = "data[Message][recipients_individual]";
     private static final String SMS_SEND_SUCCESS_TEXT = "Message sent!";
     private static final String SMS_REMAINING_END_TEXT = "(of 333)</p>";
+    private static final String SMS_REMAINING_CHARS_START_TEXT = "'characterNumber'>";
 
     // contact/recipients
     private static final String RECIPIENTS_SEPARATOR = ",";
@@ -47,7 +48,7 @@ public class Three extends Operator {
 	@Override
 	boolean doSend(final List<String> recipients, final String message) {
 
-        final ConnectionManager smsSendManager = new ConnectionManager(Three.POST_SMS_URL);
+        final ConnectionManager smsSendManager = new ConnectionManager(Three.SMS_URL);
 
         smsSendManager.addPostHeader(Three.POST_RECIPIENT_INDIVIDUAL, parseRecipients(recipients));
         smsSendManager.addPostHeader(Three.POST_MESSAGE_TEXT, message);
@@ -74,7 +75,7 @@ public class Three extends Operator {
     @Override
 	int doGetRemainingSMS() {
 
-        final ConnectionManager manager = new ConnectionManager(POST_SMS_URL,
+        final ConnectionManager manager = new ConnectionManager(SMS_URL,
                 Three.GET_REQUEST_METHOD, false);
 
         final String html = manager.connect();
@@ -84,7 +85,31 @@ public class Three extends Operator {
 
 	@Override
 	int doGetCharacterLimit() {
-		return 160;
+
+        final ConnectionManager manager = new ConnectionManager(SMS_URL,
+                Three.GET_REQUEST_METHOD, false);
+
+        final String html = manager.connect();
+
+        return getRemainingCharactersHTML(html);
+    }
+
+    private int getRemainingCharactersHTML(String html) {
+
+        int remainingChars = -1;
+        final String startText = Three.SMS_REMAINING_CHARS_START_TEXT;
+
+        final int index = html.indexOf(startText);
+
+        final int startPos = index;
+        final int endPos = index + 5;
+
+        try {
+            String remainingCharsStr = html.substring(startPos,endPos).replaceAll("[</span>]","");
+            remainingChars = Integer.parseInt(remainingCharsStr.trim());
+        } catch (Exception ex){}
+
+        return remainingChars;
     }
 
     private int getRemainingSmsFromHTML(String html) {

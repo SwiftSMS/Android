@@ -17,6 +17,8 @@ public class ContactUtils {
 
 	private static final String NON_NUMBER_PATTERN = "[^\\d\\+]";
 	private final static String SEPARATOR_PATTERN;
+    private final static String IRISH_PREFIX = "+353";
+    private final static String ZERO = "0";
 
 	static {
 		final StringBuilder pattern = new StringBuilder();
@@ -132,4 +134,19 @@ public class ContactUtils {
 		}
 		return result.toString();
 	}
+
+    /**
+     *
+     * @param recipients
+     *          Recipient List to remove irish prefix from, '+353' to '0'.
+     * @return A List containing the recipients with the new prefix of zero.
+     */
+    public static List<String> removeIrishPrefixFromRecipients(final List<String> recipients) {
+        List<String> newRecipients = new ArrayList<String>();
+
+        for(String recipient : recipients) {
+            newRecipients.add(recipient.replace(IRISH_PREFIX, ZERO));
+        } 
+        return newRecipients;
+    }
 }
