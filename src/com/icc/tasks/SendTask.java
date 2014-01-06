@@ -95,6 +95,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 			this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_SUCCESSFUL);
 			this.activity.retrieveRemainingSmsCount();
 			this.recipientsEditText.setText(EMPTY_STRING);
+			this.recipientsEditText.requestFocus();
 			this.messageEditText.setText(EMPTY_STRING);
 			this.insertMessageInSmsDb();
 		} else {
