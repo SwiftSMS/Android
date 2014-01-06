@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.icc.R;
 import com.icc.model.Account;
@@ -51,6 +52,7 @@ public class Vodafone extends Operator {
 	private EditText answerEditText;
 	private ImageView imageView;
 	private Handler handler;
+	private ProgressBar progessBar;
 
 	public Vodafone(final Account account) {
 		super(account);
@@ -75,6 +77,7 @@ public class Vodafone extends Operator {
 		final View layout = inflater.inflate(R.layout.captcha_dialog, null);
 		this.answerEditText = (EditText) layout.findViewById(R.id.text_captcha_dialog);
 		this.imageView = (ImageView) layout.findViewById(R.id.image_captcha_dialog);
+		this.progessBar = (ProgressBar) layout.findViewById(R.id.image_captcha_progress);
 
 		final Builder dialog = new AlertDialog.Builder(context);
 		dialog.setTitle(R.string.captcha);
@@ -119,6 +122,7 @@ public class Vodafone extends Operator {
 			this.handler.post(new Runnable() {
 				@Override
 				public void run() {
+					Vodafone.this.progessBar.setVisibility(View.GONE);
 					Vodafone.this.imageView.setImageBitmap(image);
 				}
 			});

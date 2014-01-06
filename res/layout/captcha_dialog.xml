@@ -3,21 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ImageView
-        android:id="@+id/image_captcha_dialog"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:contentDescription="@string/captcha"
+    <RelativeLayout
+        android:id="@+id/image_captcha_image_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_launcher"
-        android:layout_centerHorizontal="true" />
+        android:paddingTop="@dimen/element_margin_half" >
+
+        <ImageView
+            android:id="@+id/image_captcha_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:contentDescription="@string/captcha" />
+
+        <ProgressBar
+            android:id="@+id/image_captcha_progress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
 
     <EditText
-        android:layout_width="wrap_content"
         android:id="@+id/text_captcha_dialog"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/image_captcha_dialog"
+        android:layout_below="@+id/image_captcha_image_layout"
         android:layout_centerHorizontal="true"
-        android:hint="@string/captcha" />
+        android:ems="10"
+        android:hint="@string/captcha" >
+
+        <requestFocus />
+    </EditText>
 
 </RelativeLayout>
