@@ -98,9 +98,11 @@ public class Vodafone extends Operator {
 
 		final ConnectionManager manager = new ConnectionManager(SEND_URL);
 		manager.addPostHeader(SEND_POST_TOKEN, token);
-		manager.addPostHeader(SEND_POST_MESSAGE, Uri.encode(message));
+		manager.addPostHeader(SEND_POST_MESSAGE, message);
 		for (int i = 0; i < recipients.size(); i++) {
-			manager.addPostHeader(Uri.encode("recipients[" + i + "]"), Uri.encode(recipients.get(i)));
+			final String key = Uri.encode("recipients[" + i + "]");
+			final String value = Uri.encode(recipients.get(i));
+			manager.addPostHeader(key, value);
 		}
 		manager.addPostHeader(SEND_POST_CAPTCHA, this.answerEditText.getText().toString());
 		final String html = manager.connect();
