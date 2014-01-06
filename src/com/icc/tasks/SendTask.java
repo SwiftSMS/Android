@@ -9,6 +9,9 @@ import static com.icc.InternalString.SMS_PROVIDER_FAILURE;
 import static com.icc.InternalString.SMS_PROVIDER_MESSAGE_ADDRESS;
 import static com.icc.InternalString.SMS_PROVIDER_MESSAGE_BODY;
 import static com.icc.InternalString.SMS_PROVIDER_SENTBOX_URI;
+
+import java.util.List;
+
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.Notification.BigTextStyle;
@@ -77,9 +80,11 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 
 	@Override
 	protected Boolean doInBackground(final String... params) {
-		this.message = Uri.encode(this.messageEditText.getText().toString());
+		this.message = this.messageEditText.getText().toString();
 		this.recipients = ContactUtils.trimSeparators(this.recipientsEditText.getText().toString());
-		return this.operator.send(ContactUtils.getContactsAsList(this.recipients), this.message);
+		final String encodedMsg = Uri.encode(this.message);
+		final List<String> recipList = ContactUtils.getContactsAsList(this.recipients);
+		return this.operator.send(recipList, encodedMsg);
 	}
 
 	@Override
