@@ -77,7 +77,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 
 	@Override
 	protected Boolean doInBackground(final String... params) {
-		this.message = this.messageEditText.getText().toString();
+		this.message = Uri.encode(this.messageEditText.getText().toString());
 		this.recipients = ContactUtils.trimSeparators(this.recipientsEditText.getText().toString());
 		return this.operator.send(ContactUtils.getContactsAsList(this.recipients), this.message);
 	}
@@ -87,13 +87,13 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 		this.progressBar.setVisibility(View.GONE);
 		this.sendButton.setEnabled(true);
 		if (result) {
-            this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_SUCCESSFUL);
+			this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_SUCCESSFUL);
 			this.activity.retrieveRemainingSmsCount();
 			this.recipientsEditText.setText(EMPTY_STRING);
 			this.messageEditText.setText(EMPTY_STRING);
 			this.insertMessageInSmsDb();
 		} else {
-		    this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_FAILURE);
+			this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_FAILURE);
 			final Notification notif = this.buildFailureNotification();
 			final NotificationManager service = (NotificationManager) this.activity
 					.getSystemService(Context.NOTIFICATION_SERVICE);
