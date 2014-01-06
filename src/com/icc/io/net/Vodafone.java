@@ -79,6 +79,7 @@ public class Vodafone extends Operator {
 		final Builder dialog = new AlertDialog.Builder(context);
 		dialog.setTitle(R.string.captcha);
 		dialog.setView(layout);
+		dialog.setCancelable(false);
 		dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(final DialogInterface dialog, final int which) {
