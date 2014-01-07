@@ -6,6 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.icc.model.Account;
+import com.icc.tasks.Status;
 
 public class Meteor extends Operator {
 
@@ -65,7 +66,7 @@ public class Meteor extends Operator {
 	}
 
 	@Override
-	boolean doSend(final List<String> recipients, final String message) {
+	Status doSend(final List<String> recipients, final String message) {
 		for (final String recipient : recipients) {
 			this.addRecipient(recipient);
 		}
@@ -73,9 +74,9 @@ public class Meteor extends Operator {
 		final ConnectionManager sendManager = new ConnectionManager(Meteor.SMS_URL);
 		sendManager.addPostHeader(Meteor.POST_AJAX_REQUEST, Meteor.POST_VALUE_SEND_SMS);
 		sendManager.addPostHeader(Meteor.POST_MESSAGE_TEXT, message);
-		final String html = sendManager.connect();
+		final boolean isSent = sendManager.connect().contains(Meteor.SEND_SUCCESS_TEXT);
 
-		return html.contains(Meteor.SEND_SUCCESS_TEXT);
+		return isSent ? Status.SUCCESS : Status.FAILED;
 	}
 
 	private void addRecipient(final String recipient) {

@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +12,6 @@ import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -26,6 +24,7 @@ import android.widget.ProgressBar;
 
 import com.icc.R;
 import com.icc.model.Account;
+import com.icc.tasks.Status;
 
 public class Vodafone extends Operator {
 
@@ -48,7 +47,6 @@ public class Vodafone extends Operator {
 	private static final String LOGIN_POST_USERNAME = "username";
 	private static final String LOGIN_URL = "https://www.vodafone.ie/myv/services/login/Login.shtml";
 
-	private final Semaphore lock = new Semaphore(1);
 	private EditText answerEditText;
 	private ImageView imageView;
 	private Handler handler;
@@ -70,7 +68,6 @@ public class Vodafone extends Operator {
 
 	@Override
 	public void preSend(final Context context) {
-		this.lock.acquireUninterruptibly();
 		this.handler = new Handler(context.getMainLooper());
 
 		final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -82,22 +79,19 @@ public class Vodafone extends Operator {
 		final Builder dialog = new AlertDialog.Builder(context);
 		dialog.setTitle(R.string.captcha);
 		dialog.setView(layout);
-		dialog.setCancelable(false);
-		dialog.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(final DialogInterface dialog, final int which) {
-				dialog.dismiss();
-				Vodafone.this.lock.release();
-			}
-		});
+		dialog.setPositiveButton(R.string.ok, null);
 		dialog.show();
 	}
 
 	@Override
-	boolean doSend(final List<String> recipients, final String message) {
+	Status doSend(final List<String> recipients, final String message) {
 		final String token = this.getToken();
 		this.downloadCaptcha();
-		this.lock.acquireUninterruptibly(); // wait here for the user to solve the captcha
+
+		final String captcha = this.getCaptchaResponse();
+		if (captcha.isEmpty()) {
+			return Status.CANCELLED;
+		}
 
 		final ConnectionManager manager = new ConnectionManager(SEND_URL);
 		manager.addPostHeader(SEND_POST_TOKEN, token);
@@ -107,11 +101,21 @@ public class Vodafone extends Operator {
 			final String value = Uri.encode(recipients.get(i));
 			manager.addPostHeader(key, value);
 		}
-		manager.addPostHeader(SEND_POST_CAPTCHA, this.answerEditText.getText().toString());
-		final String html = manager.connect();
+		manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
+		final boolean isSent = manager.connect().contains(SEND_SUCCESS_STRING);
 
-		this.lock.release();
-		return html.contains(SEND_SUCCESS_STRING);
+		return isSent ? Status.SUCCESS : Status.FAILED;
+	}
+
+	private String getCaptchaResponse() {
+		while (this.answerEditText.isShown()) {
+			try {
+				Thread.sleep(100);
+			} catch (final InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return this.answerEditText.getText().toString();
 	}
 
 	private void downloadCaptcha() {

@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.icc.model.Account;
+import com.icc.tasks.Status;
 
 /**
  * Created by Rob Powell on 04/10/13.
@@ -45,15 +46,14 @@ public class Three extends Operator {
 	}
 
 	@Override
-	boolean doSend(final List<String> recipients, final String message) {
-
+	Status doSend(final List<String> recipients, final String message) {
 		final ConnectionManager smsSendManager = new ConnectionManager(Three.SMS_URL);
 
 		smsSendManager.addPostHeader(Three.POST_RECIPIENT_INDIVIDUAL, this.parseRecipients(recipients));
 		smsSendManager.addPostHeader(Three.POST_MESSAGE_TEXT, message);
-		final String html = smsSendManager.connect();
+		final boolean isSent = smsSendManager.connect().contains(Three.SMS_SEND_SUCCESS_TEXT);
 
-		return html.contains(Three.SMS_SEND_SUCCESS_TEXT);
+		return isSent ? Status.SUCCESS : Status.FAILED;
 	}
 
 	private String parseRecipients(final List<String> recipients) {

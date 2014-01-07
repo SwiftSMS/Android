@@ -39,7 +39,7 @@ import com.icc.utils.ContactUtils;
 /**
  * This class is an {@link AsyncTask} responsible for sending a web text using the provided operator.
  */
-public class SendTask extends AsyncTask<String, Integer, Boolean> {
+public class SendTask extends AsyncTask<String, Integer, Status> {
 
 	private static int FAILURE_NOTIFICATION = 127;
 
@@ -79,7 +79,7 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	}
 
 	@Override
-	protected Boolean doInBackground(final String... params) {
+	protected com.icc.tasks.Status doInBackground(final String... params) {
 		this.message = this.messageEditText.getText().toString();
 		this.recipients = ContactUtils.trimSeparators(this.recipientsEditText.getText().toString());
 		final String encodedMsg = Uri.encode(this.message);
@@ -88,21 +88,20 @@ public class SendTask extends AsyncTask<String, Integer, Boolean> {
 	}
 
 	@Override
-	protected void onPostExecute(final Boolean result) {
+	protected void onPostExecute(final com.icc.tasks.Status result) {
 		this.progressBar.setVisibility(View.GONE);
 		this.sendButton.setEnabled(true);
-		if (result) {
+		if (result == com.icc.tasks.Status.SUCCESS) {
 			this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_SUCCESSFUL);
 			this.activity.retrieveRemainingSmsCount();
 			this.recipientsEditText.setText(EMPTY_STRING);
 			this.recipientsEditText.requestFocus();
 			this.messageEditText.setText(EMPTY_STRING);
 			this.insertMessageInSmsDb();
-		} else {
+		} else if (result == com.icc.tasks.Status.FAILED) {
 			this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_FAILURE);
 			final Notification notif = this.buildFailureNotification();
-			final NotificationManager service = (NotificationManager) this.activity
-					.getSystemService(Context.NOTIFICATION_SERVICE);
+			final NotificationManager service = (NotificationManager) this.activity.getSystemService(Context.NOTIFICATION_SERVICE);
 			service.notify(++FAILURE_NOTIFICATION, notif);
 		}
 	}

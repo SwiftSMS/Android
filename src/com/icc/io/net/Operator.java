@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.icc.InternalString;
 import com.icc.model.Account;
+import com.icc.tasks.Status;
 
 /**
  * This class contains all of the generic methods and actions needed for interaction with an operators website.
@@ -91,13 +92,13 @@ public abstract class Operator {
 	 *            The message to send.
 	 * @return <code>true</code> if the message was sent successfully else <code>false</code>
 	 */
-	public final boolean send(final List<String> list, final String message) {
+	public final Status send(final List<String> list, final String message) {
 		this.login();
 		final List<String> msgParts = getParts(message, this.getCharacterLimit());
-		boolean sendStatus = false;
+		Status sendStatus = Status.FAILED;
 		for (final String msgToSend : msgParts) {
 			sendStatus = this.doSend(list, msgToSend);
-			if (!sendStatus) {
+			if (sendStatus == Status.FAILED) {
 				this.retryLogin();
 				sendStatus = this.doSend(list, msgToSend);
 			}
@@ -132,7 +133,7 @@ public abstract class Operator {
 	 *            The message to send.
 	 * @return <code>true</code> if the message was sent successfully else <code>false</code>
 	 */
-	abstract boolean doSend(final List<String> list, final String message);
+	abstract Status doSend(final List<String> list, final String message);
 
 	public final int getCharacterLimit() {
 		if (this.characterLimit == -1) {
@@ -143,7 +144,7 @@ public abstract class Operator {
 				this.characterLimit = this.doGetCharacterLimit();
 			}
 		}
-		return (this.characterLimit == -1) ? DEFAULT_CHAR_LIMIT : this.characterLimit;
+		return this.characterLimit == -1 ? DEFAULT_CHAR_LIMIT : this.characterLimit;
 	}
 
 	abstract int doGetCharacterLimit();

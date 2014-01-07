@@ -13,6 +13,7 @@ import android.util.Log;
 
 import com.icc.InternalString;
 import com.icc.model.Account;
+import com.icc.tasks.Status;
 
 public class Tesco extends Operator {
 
@@ -39,8 +40,8 @@ public class Tesco extends Operator {
 
 	@Override
 	int doGetRemainingSMS() {
-		final ConnectionManager manager = new ConnectionManager("https://app.tescomobile.ie/MyTM/restws/webtext/"
-				+ this.getAccount().getMobileNumber() + "/balance", "GET", false);
+		final ConnectionManager manager = new ConnectionManager("https://app.tescomobile.ie/MyTM/restws/webtext/" + this.getAccount().getMobileNumber()
+				+ "/balance", "GET", false);
 		manager.setRequestHeader("User-Agent", "MyTescoApp/1.1");
 		manager.setRequestHeader("Accept", "application/json");
 		manager.setRequestHeader("Authorization", this.auth);
@@ -56,9 +57,8 @@ public class Tesco extends Operator {
 	}
 
 	@Override
-	boolean doSend(final List<String> list, final String message) {
-		final ConnectionManager manager = new ConnectionManager(
-				"https://app.tescomobile.ie/MyTM/restws/webtext/0892088841/send");
+	Status doSend(final List<String> list, final String message) {
+		final ConnectionManager manager = new ConnectionManager("https://app.tescomobile.ie/MyTM/restws/webtext/0892088841/send");
 		manager.setRequestHeader("User-Agent", "MyTescoApp/1.1");
 		manager.setRequestHeader("Accept", "application/json");
 		manager.setRequestHeader("Authorization", this.auth);
@@ -78,11 +78,13 @@ public class Tesco extends Operator {
 
 		try {
 			final JSONObject json = new JSONObject(rawJson);
-			return json.getBoolean("status");
+			final boolean isSent = json.getBoolean("status");
+
+			return isSent ? Status.SUCCESS : Status.FAILED;
 		} catch (final JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
+			return Status.FAILED;
 		}
 	}
 

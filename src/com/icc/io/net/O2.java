@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.icc.InternalString;
 import com.icc.model.Account;
+import com.icc.tasks.Status;
 
 public class O2 extends Operator {
 
@@ -45,8 +46,7 @@ public class O2 extends Operator {
 
 	@Override
 	int doGetRemainingSMS() {
-		final ConnectionManager manager = new ConnectionManager("http://messaging.o2online.ie/o2om_smscenter_new.osp?SID=_",
-				"GET", false);
+		final ConnectionManager manager = new ConnectionManager("http://messaging.o2online.ie/o2om_smscenter_new.osp?SID=_", "GET", false);
 		final String html = manager.connect();
 
 		int remainingSmsCount = -1;
@@ -66,8 +66,8 @@ public class O2 extends Operator {
 	}
 
 	@Override
-	boolean doSend(final List<String> list, final String message) {
-		return false;
+	Status doSend(final List<String> list, final String message) {
+		return Status.FAILED;
 	}
 
 	@Override
