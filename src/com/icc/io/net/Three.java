@@ -10,26 +10,25 @@ import com.icc.model.Account;
  */
 public class Three extends Operator {
 
-    // login strings/ values
-    private static final String LOGIN_URL = "https://webtexts.three.ie/webtext/users/login";
-    private static final String POST_USER = "data[User][telephoneNo]";
-    private static final String POST_PASS = "data[User][pin]";
-    private static final String SUCCESS_LOGIN = "Logout";
+	// login strings/ values
+	private static final String LOGIN_URL = "https://webtexts.three.ie/webtext/users/login";
+	private static final String POST_USER = "data[User][telephoneNo]";
+	private static final String POST_PASS = "data[User][pin]";
+	private static final String SUCCESS_LOGIN = "Logout";
 
-    // sms related strings values
-    private static final String SMS_URL = "https://webtexts.three.ie/webtext/messages/send";
-    private static final String POST_MESSAGE_TEXT = "data[Message][message]";
-    private static final String POST_RECIPIENT_INDIVIDUAL = "data[Message][recipients_individual]";
-    private static final String SMS_SEND_SUCCESS_TEXT = "Message sent!";
-    private static final String SMS_REMAINING_END_TEXT = "(of 333)</p>";
-    private static final String SMS_REMAINING_CHARS_START_TEXT = "'characterNumber'>";
+	// sms related strings values
+	private static final String SMS_URL = "https://webtexts.three.ie/webtext/messages/send";
+	private static final String POST_MESSAGE_TEXT = "data[Message][message]";
+	private static final String POST_RECIPIENT_INDIVIDUAL = "data[Message][recipients_individual]";
+	private static final String SMS_SEND_SUCCESS_TEXT = "Message sent!";
+	private static final String SMS_REMAINING_END_TEXT = "(of 333)</p>";
+	private static final String SMS_REMAINING_CHARS_START_TEXT = "'characterNumber'>";
 
-    // contact/recipients
-    private static final String RECIPIENTS_SEPARATOR = ",";
+	// contact/recipients
+	private static final String RECIPIENTS_SEPARATOR = ",";
 
-    //
-    private static final String GET_REQUEST_METHOD = "GET";
-
+	//
+	private static final String GET_REQUEST_METHOD = "GET";
 
 	public Three(final Account account) {
 		super(account);
@@ -48,87 +47,88 @@ public class Three extends Operator {
 	@Override
 	boolean doSend(final List<String> recipients, final String message) {
 
-        final ConnectionManager smsSendManager = new ConnectionManager(Three.SMS_URL);
+		final ConnectionManager smsSendManager = new ConnectionManager(Three.SMS_URL);
 
-        smsSendManager.addPostHeader(Three.POST_RECIPIENT_INDIVIDUAL, parseRecipients(recipients));
-        smsSendManager.addPostHeader(Three.POST_MESSAGE_TEXT, message);
-        final String html = smsSendManager.connect();
+		smsSendManager.addPostHeader(Three.POST_RECIPIENT_INDIVIDUAL, this.parseRecipients(recipients));
+		smsSendManager.addPostHeader(Three.POST_MESSAGE_TEXT, message);
+		final String html = smsSendManager.connect();
 
-        return html.contains(Three.SMS_SEND_SUCCESS_TEXT);
+		return html.contains(Three.SMS_SEND_SUCCESS_TEXT);
 	}
 
-    private String parseRecipients(List<String> recipients) {
+	private String parseRecipients(final List<String> recipients) {
 
-        String recipientsString = "";
+		String recipientsString = "";
 
-        Iterator<String> recipientIterator = recipients.iterator();
+		final Iterator<String> recipientIterator = recipients.iterator();
 
-        while(recipientIterator.hasNext()) {
-            recipientsString += recipientIterator.next();
+		while (recipientIterator.hasNext()) {
+			recipientsString += recipientIterator.next();
 
-            if(recipientIterator.hasNext())
-                recipientsString += RECIPIENTS_SEPARATOR;
-        }
-        return recipientsString;
-    }
+			if (recipientIterator.hasNext()) {
+				recipientsString += RECIPIENTS_SEPARATOR;
+			}
+		}
+		return recipientsString;
+	}
 
-    @Override
+	@Override
 	int doGetRemainingSMS() {
 
-        final ConnectionManager manager = new ConnectionManager(SMS_URL,
-                Three.GET_REQUEST_METHOD, false);
+		final ConnectionManager manager = new ConnectionManager(SMS_URL, Three.GET_REQUEST_METHOD, false);
 
-        final String html = manager.connect();
+		final String html = manager.connect();
 
-		return getRemainingSmsFromHTML(html);
+		return this.getRemainingSmsFromHTML(html);
 	}
 
 	@Override
 	int doGetCharacterLimit() {
 
-        final ConnectionManager manager = new ConnectionManager(SMS_URL,
-                Three.GET_REQUEST_METHOD, false);
+		final ConnectionManager manager = new ConnectionManager(SMS_URL, Three.GET_REQUEST_METHOD, false);
 
-        final String html = manager.connect();
+		final String html = manager.connect();
 
-        return getRemainingCharactersHTML(html);
-    }
+		return this.getRemainingCharactersHTML(html);
+	}
 
-    private int getRemainingCharactersHTML(String html) {
+	private int getRemainingCharactersHTML(final String html) {
 
-        int remainingChars = -1;
-        final String startText = Three.SMS_REMAINING_CHARS_START_TEXT;
+		int remainingChars = -1;
+		final String startText = Three.SMS_REMAINING_CHARS_START_TEXT;
 
-        final int index = html.indexOf(startText);
+		final int index = html.indexOf(startText);
 
-        final int startPos = index;
-        final int endPos = index + 5;
+		final int startPos = index;
+		final int endPos = index + 5;
 
-        try {
-            String remainingCharsStr = html.substring(startPos,endPos).replaceAll("[</span>]","");
-            remainingChars = Integer.parseInt(remainingCharsStr.trim());
-        } catch (Exception ex){}
+		try {
+			final String remainingCharsStr = html.substring(startPos, endPos).replaceAll("[</span>]", "");
+			remainingChars = Integer.parseInt(remainingCharsStr.trim());
+		} catch (final Exception ex) {
+		}
 
-        return remainingChars;
-    }
+		return remainingChars;
+	}
 
-    private int getRemainingSmsFromHTML(String html) {
+	private int getRemainingSmsFromHTML(final String html) {
 
-        int remainingTexts = -1;
-        final String endText = Three.SMS_REMAINING_END_TEXT;
+		int remainingTexts = -1;
+		final String endText = Three.SMS_REMAINING_END_TEXT;
 
-        final int index = html.indexOf(endText);
+		final int index = html.indexOf(endText);
 
-        final int startPos = index - 4;
-        final int endPos = index;
+		final int startPos = index - 4;
+		final int endPos = index;
 
-        if(startPos > endText.length()) {
-            try {
-                String remainingSmsString = html.substring(startPos,endPos).replaceAll("[<p>]","");
-                remainingTexts = Integer.parseInt(remainingSmsString.trim());
-            } catch (Exception ex){}
-        }
+		if (startPos > endText.length()) {
+			try {
+				final String remainingSmsString = html.substring(startPos, endPos).replaceAll("[<p>]", "");
+				remainingTexts = Integer.parseInt(remainingSmsString.trim());
+			} catch (final Exception ex) {
+			}
+		}
 
-        return remainingTexts;
-    }
+		return remainingTexts;
+	}
 }
