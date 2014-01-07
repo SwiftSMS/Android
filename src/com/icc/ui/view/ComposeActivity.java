@@ -59,7 +59,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private AutoCompleteTextView recipientEdittext;
 	private MenuItem remaingSmsMenuItem;
 	private ImageButton sendButton;
-    private RelativeLayout notificationArea;
+	private RelativeLayout notificationArea;
 
 	private Operator operator;
 	private SharedPreferences preferences;
@@ -81,7 +81,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.accountDatabase = AccountDataSource.getInstance(this.themedContext);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		this.sendButton = (ImageButton) this.findViewById(R.id.button_compose_send);
-        this.notificationArea = (RelativeLayout) this.findViewById(R.id.view_notification_area);
+		this.notificationArea = (RelativeLayout) this.findViewById(R.id.view_notification_area);
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
@@ -323,26 +323,26 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		return true;
 	}
 
-    /**
-     * Method used to display notifications on the main compose activity
-     *
-     * @param paramNotification
-     *              Notification objects for different event's
-     */
-    public void addNotification(Notification paramNotification) {
+	/**
+	 * Method used to display notifications on the main compose activity
+	 * 
+	 * @param paramNotification
+	 *            Notification objects for different event's
+	 */
+	public void addNotification(final Notification paramNotification) {
 
-        final int FADE_DURATION = 500;
+		final int FADE_DURATION = 500;
 
-        final TextView notificationText = (TextView) this.findViewById(R.id.textview_notification_area);
+		final TextView notificationText = (TextView) this.findViewById(R.id.textview_notification_area);
 
-        final Animation fadeInAnim = new AlphaAnimation(0.0f, 1.0f);
-        final Animation fadeOutAnim = new AlphaAnimation(1.0f,0.0f);
+		final Animation fadeInAnim = new AlphaAnimation(0.0f, 1.0f);
+		final Animation fadeOutAnim = new AlphaAnimation(1.0f, 0.0f);
 
-        notificationText.setText(this.getResources().getString(paramNotification.getStringResource()));
-        notificationArea.setBackgroundColor(this.getResources().getColor(paramNotification.getColourResource()));
+		notificationText.setText(this.getResources().getString(paramNotification.getStringResource()));
+		this.notificationArea.setBackgroundColor(this.getResources().getColor(paramNotification.getColourResource()));
 
-        Handler postAnimationHandler = new Handler();
-        postAnimationHandler.post(new AnimationRunner(this.notificationArea, FADE_DURATION, fadeInAnim, View.VISIBLE));
-        postAnimationHandler.postDelayed(new AnimationRunner(this.notificationArea, FADE_DURATION, fadeOutAnim, View.GONE), 2000);
-    }
+		final Handler postAnimationHandler = new Handler();
+		postAnimationHandler.post(new AnimationRunner(this.notificationArea, FADE_DURATION, fadeInAnim, View.VISIBLE));
+		postAnimationHandler.postDelayed(new AnimationRunner(this.notificationArea, FADE_DURATION, fadeOutAnim, View.GONE), 2000);
+	}
 }
