@@ -39,7 +39,7 @@ import com.icc.utils.ContactUtils;
 /**
  * This class is an {@link AsyncTask} responsible for sending a web text using the provided operator.
  */
-public class SendTask extends AsyncTask<String, Integer, Status> {
+public class SendTask extends AsyncTask<String, Integer, com.icc.tasks.Status> {
 
 	private static int FAILURE_NOTIFICATION = 127;
 
