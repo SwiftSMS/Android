@@ -43,7 +43,7 @@ import com.icc.tasks.SendTask;
 import com.icc.ui.view.anim.AnimationRunner;
 import com.icc.ui.view.util.AccountSpinnerAdapter;
 import com.icc.ui.view.util.CharacterCountTextWatcher;
-import com.icc.ui.view.util.ContactAdapter;
+import com.icc.ui.view.util.ContactSuggestionAdapter;
 import com.icc.ui.view.util.ContactSuggestionClickListener;
 import com.icc.utils.Notification;
 
@@ -88,7 +88,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		final ContactSuggestionClickListener itemClickTextWatcher = new ContactSuggestionClickListener();
 
 		this.sendButton.setEnabled(false);
-		this.recipientEdittext.setAdapter(new ContactAdapter(this.themedContext));
+		this.recipientEdittext.setAdapter(new ContactSuggestionAdapter(this.themedContext, null));
 		this.recipientEdittext.setThreshold(1);
 		itemClickTextWatcher.addObserver(this);
 		this.recipientEdittext.addTextChangedListener(itemClickTextWatcher);
