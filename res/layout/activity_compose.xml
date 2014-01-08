@@ -5,6 +5,7 @@
     tools:context=".ComposeActivity" >
 
     <RelativeLayout
+        android:id="@+id/layout_compose_recipient"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -23,6 +24,37 @@
 
             <requestFocus />
         </AutoCompleteTextView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_compose_notification_area"
+        android:layout_below="@+id/layout_compose_recipient" >
+
+        <ListView
+            android:id="@+id/list_compose_recent_contacts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </ListView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_compose_notification_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_compose_bottom_scrollview"
+        android:paddingBottom="@dimen/element_margin_half"
+        android:paddingTop="@dimen/element_margin_half"
+        android:visibility="gone" >
+
+        <TextView
+            android:id="@+id/text_compose_notification"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@android:color/background_light" >
+        </TextView>
     </RelativeLayout>
 
     <ScrollView
@@ -88,23 +120,5 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:visibility="gone" />
-
-    <RelativeLayout
-        android:id="@+id/view_notification_area"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/layout_compose_bottom_scrollview"
-        android:paddingBottom="@dimen/element_margin_half"
-        android:paddingTop="@dimen/element_margin_half"
-        android:visibility="gone" >
-
-        <TextView
-            android:id="@+id/textview_notification_area"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@android:color/background_light" >
-        </TextView>
-    </RelativeLayout>
 
 </RelativeLayout>

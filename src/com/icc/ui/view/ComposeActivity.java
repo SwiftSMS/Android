@@ -81,7 +81,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.accountDatabase = AccountDataSource.getInstance(this.themedContext);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		this.sendButton = (ImageButton) this.findViewById(R.id.button_compose_send);
-		this.notificationArea = (RelativeLayout) this.findViewById(R.id.view_notification_area);
+		this.notificationArea = (RelativeLayout) this.findViewById(R.id.layout_compose_notification_area);
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
@@ -333,7 +333,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 
 		final int FADE_DURATION = 500;
 
-		final TextView notificationText = (TextView) this.findViewById(R.id.textview_notification_area);
+		final TextView notificationText = (TextView) this.findViewById(R.id.text_compose_notification);
 
 		final Animation fadeInAnim = new AlphaAnimation(0.0f, 1.0f);
 		final Animation fadeOutAnim = new AlphaAnimation(1.0f, 0.0f);
