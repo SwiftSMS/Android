@@ -90,20 +90,22 @@
         android:visibility="gone" />
 
     <RelativeLayout
+        android:id="@+id/view_notification_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/element_margin_half"
-        android:paddingBottom="@dimen/element_margin_half"
-        android:id="@+id/view_notification_area"
         android:layout_above="@id/layout_compose_bottom_scrollview"
-        android:visibility="gone">
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:paddingBottom="@dimen/element_margin_half"
+        android:paddingTop="@dimen/element_margin_half"
+        android:visibility="gone" >
+
+        <TextView
+            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/textview_notification_area"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@android:color/background_light">
+            android:textColor="@android:color/background_light" >
         </TextView>
-        </RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
