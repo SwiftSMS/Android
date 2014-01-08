@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -30,8 +29,7 @@ public class RecentContactsTask extends AsyncTask<String, Integer, List<Contact>
 
 	@Override
 	protected List<Contact> doInBackground(final String... arg0) {
-		final String[] projection = new String[] { Contacts.DISPLAY_NAME, Contacts.PHOTO_THUMBNAIL_URI, Phone.NUMBER, Phone.TYPE,
-				Phone.LABEL };
+		final String[] projection = new String[] { Contacts.DISPLAY_NAME, Contacts.PHOTO_THUMBNAIL_URI, Phone.NUMBER, Phone.TYPE, Phone.LABEL };
 		final String selection = Data.MIMETYPE + " = ?";
 		final String[] selectionArgs = new String[] { Phone.CONTENT_ITEM_TYPE };
 		final String sortOrder = Contacts.SORT_KEY_PRIMARY;
@@ -45,15 +43,9 @@ public class RecentContactsTask extends AsyncTask<String, Integer, List<Contact>
 		final ArrayList<Contact> values = new ArrayList<Contact>();
 		while (c.moveToNext()) {
 			final String cName = c.getString(0);
-			final String cPhoto = c.getString(1);
 			final String cNumber = c.getString(2);
-			final int cLabelType = c.getInt(3);
-			final String cCustomLabel = c.getString(4);
 
-			final Resources res = this.context.getResources();
-			final String cNumberType = Phone.getTypeLabel(res, cLabelType, cCustomLabel).toString();
-
-			values.add(new Contact(cName, cPhoto, cNumber, cNumberType));
+			values.add(new Contact(cName, "", cNumber, null));
 		}
 
 		return values;
