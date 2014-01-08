@@ -107,6 +107,11 @@ public class Vodafone extends Operator {
 		return isSent ? Status.SUCCESS : Status.FAILED;
 	}
 
+	/**
+	 * This method is responsible for waiting for the user to complete the captcha.
+	 * 
+	 * @return The Captcha answer.
+	 */
 	private String getCaptchaResponse() {
 		while (this.answerEditText.isShown()) {
 			try {
