@@ -87,18 +87,22 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.notificationArea = (RelativeLayout) this.findViewById(R.id.layout_compose_notification_area);
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
 		this.recentContactsList = (ListView) this.findViewById(R.id.list_compose_recent_contacts);
+
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
 		final ContactSuggestionClickListener itemClickTextWatcher = new ContactSuggestionClickListener();
+		itemClickTextWatcher.addObserver(this);
+		final TextView recentContactsHeader = new TextView(this.themedContext);
+		recentContactsHeader.setText(R.string.recent);
 
 		this.sendButton.setEnabled(false);
 		this.recipientEdittext.setAdapter(new ContactSuggestionAdapter(this.themedContext, null));
 		this.recipientEdittext.setThreshold(1);
-		itemClickTextWatcher.addObserver(this);
 		this.recipientEdittext.addTextChangedListener(itemClickTextWatcher);
 		this.recipientEdittext.setOnItemClickListener(itemClickTextWatcher);
 		this.charCountWatcher.addObserver(this);
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
+		this.recentContactsList.addHeaderView(recentContactsHeader);
 
 		this.handleIntentData();
 	}
@@ -189,8 +193,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	}
 
 	private void getRecentContacts() {
-		final Context context = this.getActionBarThemedContextCompat();
-		final RecentContactsTask task = new RecentContactsTask(context, this.recentContactsList);
+		final RecentContactsTask task = new RecentContactsTask(this.themedContext, this.recentContactsList);
 		task.execute();
 	}
 
