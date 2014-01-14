@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Swift SMS</string>
+    <string name="app_name">SwiftSMS</string>
     <string name="type_message">Type message</string>
     <string name="to">To</string>
     <string name="action_add_account">Add Account</string>
