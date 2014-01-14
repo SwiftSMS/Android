@@ -28,7 +28,6 @@ import android.view.animation.Animation;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,7 +38,6 @@ import com.icc.io.net.Operator;
 import com.icc.io.net.OperatorFactory;
 import com.icc.model.Account;
 import com.icc.tasks.MaxCharacterCountTask;
-import com.icc.tasks.RecentContactsTask;
 import com.icc.tasks.RemainingSmsTask;
 import com.icc.tasks.SendTask;
 import com.icc.ui.view.anim.AnimationRunner;
@@ -68,7 +66,6 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private IAccountDatabase accountDatabase;
 	private RemainingSmsTask task;
 	private Context themedContext;
-	private ListView recentContactsList;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -86,14 +83,11 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.sendButton = (ImageButton) this.findViewById(R.id.button_compose_send);
 		this.notificationArea = (RelativeLayout) this.findViewById(R.id.layout_compose_notification_area);
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
-		this.recentContactsList = (ListView) this.findViewById(R.id.list_compose_recent_contacts);
 
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
 		final ContactSuggestionClickListener itemClickTextWatcher = new ContactSuggestionClickListener();
 		itemClickTextWatcher.addObserver(this);
-		final TextView recentContactsHeader = new TextView(this.themedContext);
-		recentContactsHeader.setText(R.string.recent);
 
 		this.sendButton.setEnabled(false);
 		this.recipientEdittext.setAdapter(new ContactSuggestionAdapter(this.themedContext, null));
@@ -102,7 +96,6 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.recipientEdittext.setOnItemClickListener(itemClickTextWatcher);
 		this.charCountWatcher.addObserver(this);
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
-		this.recentContactsList.addHeaderView(recentContactsHeader);
 
 		this.handleIntentData();
 	}
@@ -176,7 +169,6 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	@Override
 	protected void onResume() {
 		super.onResume();
-		this.getRecentContacts();
 
 		final int accountId = this.preferences.getInt(ACTIVE_ACCOUNT, -1);
 		if (accountId == -1) {
@@ -190,11 +182,6 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 			this.retrieveRemainingSmsCount();
 			this.getMaxCharacterCount();
 		}
-	}
-
-	private void getRecentContacts() {
-		final RecentContactsTask task = new RecentContactsTask(this.themedContext, this.recentContactsList);
-		task.execute();
 	}
 
 	/**

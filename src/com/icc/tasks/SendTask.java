@@ -12,7 +12,6 @@ import static com.icc.InternalString.SMS_PROVIDER_SENTBOX_URI;
 
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.Notification.BigTextStyle;
@@ -26,9 +25,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.Data;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -102,49 +98,11 @@ public class SendTask extends AsyncTask<String, Integer, com.icc.tasks.Status> {
 			this.recipientsEditText.requestFocus();
 			this.messageEditText.setText(EMPTY_STRING);
 			this.insertMessageInSmsDb();
-			this.updateContact();
 		} else if (result == com.icc.tasks.Status.FAILED) {
 			this.activity.addNotification(com.icc.utils.Notification.SMS_SEND_FAILURE);
 			final Notification notif = this.buildFailureNotification();
 			final NotificationManager service = (NotificationManager) this.activity.getSystemService(Context.NOTIFICATION_SERVICE);
 			service.notify(++FAILURE_NOTIFICATION, notif);
-		}
-	}
-
-	/**
-	 * This method is used to update the last time contacted for each recipient.
-	 */
-	@SuppressLint("InlinedApi")
-	private void updateContact() {
-		String.format("%s DESC LIMIT 5", Contacts.LAST_TIME_CONTACTED);
-
-		final ContentValues values = new ContentValues();
-		values.put(Phone.LAST_TIME_CONTACTED, System.currentTimeMillis());
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-			values.put(Phone.LAST_TIME_USED, System.currentTimeMillis());
-		}
-
-		this.activity.getContentResolver();
-		final String where = Phone.NUMBER + " = ? AND " + Data.MIMETYPE + " = ?";
-		for (final String recipient : ContactUtils.getContactsAsList(this.recipients)) {
-			// final int affected = resolver.update(Data.CONTENT_URI, values, where, new String[] { recipient,
-			// Phone.CONTENT_ITEM_TYPE });
-
-			Log.d(LOG_TAG, "Where: " + where + recipient);
-			// Log.d(LOG_TAG, "Affected rows: " + affected);
-
-			// Log.d(LOG_TAG, "Where: " + where + recipient);
-			//
-			// final Cursor c = resolver.query(Data.CONTENT_URI, new String[] { Contacts.DISPLAY_NAME, Phone.NUMBER }, where,
-			// new String[] { recipient,
-			// Phone.CONTENT_ITEM_TYPE }, null);
-			// while (c.moveToNext()) {
-			// final String cName = c.getString(0);
-			// final String cNumber = c.getString(1);
-			//
-			// Log.d(LOG_TAG, "Name = " + cName);
-			// Log.d(LOG_TAG, "Number = " + cNumber);
-			// }
 		}
 	}
 
