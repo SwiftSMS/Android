@@ -23,5 +23,23 @@
     <string name="operator_image">Operator image</string>
     <string name="delete">Delete</string>
     <string name="ok">OK</string>
+    <string name="app_description">
+        SwiftSMS helps you use your Webtexts straight from your phone or tablet in a fast and simple manner.
+		It is designed to provide you easy and intuitive access to sending SMS messages using your Network Providers Webtext allowance.
+		Features include:
+			* Send SMS via Webtext
+			* Multiple Accounts
+			* Fast Account Switching
+			* Simple and Quick Contact Suggestions
+			
+		The App is designed with the Android look and feel in mind so it fits seemlessly onto your device.
+		
+		We currently only support the following Netowrk Providers:
+			* Vodafone
+			* Three
+			* Meteor
+			* Tesco
+		In a later releases we will add support for all other Irish providers.
+	</string>
     
 </resources>
