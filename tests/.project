@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ice-cream-cabbage-test</name>
+	<name>SwiftSMS Tests</name>
 	<comment></comment>
 	<projects>
 		<project>ice-cream-cabbage</project>
