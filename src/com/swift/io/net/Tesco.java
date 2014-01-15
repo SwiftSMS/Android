@@ -8,14 +8,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.net.Uri;
 import android.util.Base64;
-import android.util.Log;
 
-import com.swift.InternalString;
 import com.swift.model.Account;
 import com.swift.tasks.Status;
 
 public class Tesco extends Operator {
+
+	private static final String LOGIN_URL = "https://app.tescomobile.ie/MyTM/restws/user/permissions/";
+	private static final String BASE_URL = "https://app.tescomobile.ie/MyTM/restws/webtext/";
+	private static final String SEND_URL_POSTFIX = "/send";
+	private static final String REMAIN_URL_POSTFIX = "/balance";
+
+	private static final String JSON_MSISDN = "msisdn";
+	private static final String JSON_NATIONAL_REMAINING = "nationalRemaining";
+	private static final String JSON_TEXT = "text";
+	private static final String JSON_MSISDNS = "msisdns";
+	private static final String JSON_GROUPIDS = "groupIds";
+	private static final String JSON_CONTACTIDS = "contactIds";
+
+	private static final String GET = "GET";
+	private static final String ACCEPT = "Accept";
+	private static final String USER_AGENT = "User-Agent";
+	private static final String AUTHORIZATION = "Authorization";
+	private static final String ACCEPT_VALUE = "application/json";
+	private static final String USER_AGENT_VALUE = "MyTescoApp/1.1";
 
 	private final String auth;
 
@@ -29,26 +47,24 @@ public class Tesco extends Operator {
 
 	@Override
 	boolean doLogin() {
-		final ConnectionManager manager = new ConnectionManager("https://app.tescomobile.ie/MyTM/restws/user/permissions/"
-				+ this.getAccount().getMobileNumber(), "GET", false);
-		manager.setRequestHeader("User-Agent", "MyTescoApp/1.1");
-		manager.setRequestHeader("Accept", "application/json");
-		manager.setRequestHeader("Authorization", this.auth);
+		final ConnectionManager manager = new ConnectionManager(LOGIN_URL + this.getAccount().getMobileNumber(), GET, false);
+		manager.setRequestHeader(USER_AGENT, USER_AGENT_VALUE);
+		manager.setRequestHeader(ACCEPT, ACCEPT_VALUE);
+		manager.setRequestHeader(AUTHORIZATION, this.auth);
 		final String html = manager.connect();
-		return html.contains("msisdn");
+		return html.contains(JSON_MSISDN);
 	}
 
 	@Override
 	int doGetRemainingSMS() {
-		final ConnectionManager manager = new ConnectionManager("https://app.tescomobile.ie/MyTM/restws/webtext/" + this.getAccount().getMobileNumber()
-				+ "/balance", "GET", false);
-		manager.setRequestHeader("User-Agent", "MyTescoApp/1.1");
-		manager.setRequestHeader("Accept", "application/json");
-		manager.setRequestHeader("Authorization", this.auth);
+		final ConnectionManager manager = new ConnectionManager(BASE_URL + this.getAccount().getMobileNumber() + REMAIN_URL_POSTFIX, GET, false);
+		manager.setRequestHeader(USER_AGENT, USER_AGENT_VALUE);
+		manager.setRequestHeader(ACCEPT, ACCEPT_VALUE);
+		manager.setRequestHeader(AUTHORIZATION, this.auth);
 		final String rawJson = manager.connect();
 		try {
 			final JSONObject json = new JSONObject(rawJson);
-			return json.getInt("nationalRemaining");
+			return json.getInt(JSON_NATIONAL_REMAINING);
 		} catch (final JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -58,27 +74,26 @@ public class Tesco extends Operator {
 
 	@Override
 	Status doSend(final List<String> list, final String message) {
-		final ConnectionManager manager = new ConnectionManager("https://app.tescomobile.ie/MyTM/restws/webtext/0892088841/send");
-		manager.setRequestHeader("User-Agent", "MyTescoApp/1.1");
-		manager.setRequestHeader("Accept", "application/json");
-		manager.setRequestHeader("Authorization", this.auth);
+		final ConnectionManager manager = new ConnectionManager(BASE_URL + this.getAccount().getMobileNumber() + SEND_URL_POSTFIX);
+		manager.setRequestHeader(USER_AGENT, USER_AGENT_VALUE);
+		manager.setRequestHeader(ACCEPT, ACCEPT_VALUE);
+		manager.setRequestHeader("Accept-Encoding", null);
+		manager.setRequestHeader("Content-Type", ACCEPT_VALUE);
+		manager.setRequestHeader(AUTHORIZATION, this.auth);
 
-		// "{"message":"sdf","contacts":[],"groups":[],"msisdns":["0857855532"]}"
 		final Map<String, Object> copyFrom = new LinkedHashMap<String, Object>();
-		copyFrom.put("message", message);
-		copyFrom.put("contacts", new JSONArray());
-		copyFrom.put("groups", new JSONArray());
-		copyFrom.put("msisdns", new JSONArray(list));
+		copyFrom.put(JSON_TEXT, Uri.decode(message));
+		copyFrom.put(JSON_CONTACTIDS, new JSONArray());
+		copyFrom.put(JSON_GROUPIDS, new JSONArray());
+		copyFrom.put(JSON_MSISDNS, new JSONArray(list));
 
 		final JSONObject requestJson = new JSONObject(copyFrom);
-		Log.d(InternalString.LOG_TAG, "doSend - request json: " + requestJson.toString());
 		manager.addRequestBody(requestJson.toString());
 		final String rawJson = manager.connect();
-		Log.d(InternalString.LOG_TAG, "doSend - returned json: " + rawJson.toString());
 
 		try {
 			final JSONObject json = new JSONObject(rawJson);
-			final boolean isSent = json.getBoolean("status");
+			final boolean isSent = json.length() == 0;
 
 			return isSent ? Status.SUCCESS : Status.FAILED;
 		} catch (final JSONException e) {
