@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
@@ -29,6 +30,7 @@ import com.swift.tasks.Status;
 
 public class Vodafone extends Operator {
 
+	private static final int MAX_MSG_RECIPIENTS = 5;
 	private static final String CHARS_URL = "https://www.vodafone.ie/javascript/section.myv.webtext.js";
 	private static final String TOKEN_URL = "https://www.vodafone.ie/myv/messaging/webtext/index.jsp";
 	private static final String CAPTCHA_URL = "https://www.vodafone.ie/myv/messaging/webtext/Challenge.shtml";
@@ -78,6 +80,34 @@ public class Vodafone extends Operator {
 
 	@Override
 	Status doSend(final List<String> recipients, final String message) {
+		Status isSent = Status.FAILED;
+		final List<List<String>> splitRecipients = this.chopped(recipients, MAX_MSG_RECIPIENTS);
+		for (final List<String> sendableRecipients : splitRecipients) {
+			isSent = this.sendMessage(sendableRecipients, message);
+		}
+		return isSent;
+	}
+
+	/**
+	 * Method to break a {@link List} into multiple smaller lists.
+	 * 
+	 * @param list
+	 *            The larger list to be broken down.
+	 * @param length
+	 *            The max length of a returned {@link List}.
+	 * @return A {@link List} containing the smaller broken down lists.
+	 */
+	private <T> List<List<T>> chopped(final List<T> list, final int length) {
+		final List<List<T>> parts = new ArrayList<List<T>>();
+		final int N = list.size();
+		for (int i = 0; i < N; i += length) {
+			final List<T> sublist = list.subList(i, Math.min(N, i + length));
+			parts.add(new ArrayList<T>(sublist));
+		}
+		return parts;
+	}
+
+	private Status sendMessage(final List<String> recipients, final String message) {
 		final String token = this.getToken();
 		final String captcha = this.getCaptchaResponse();
 		if (captcha.isEmpty()) {
