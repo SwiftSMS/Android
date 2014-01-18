@@ -166,6 +166,7 @@ public class SendTask extends AsyncTask<String, Integer, com.swift.tasks.Status>
 
 	private PendingIntent buildFailureIntent() {
 		final Intent intent = new Intent(this.activity, ComposeActivity.class);
+		intent.setAction(Intent.ACTION_SEND);
 		intent.setData(Uri.parse(SMSTO + this.recipients));
 		intent.putExtra(SMS_BODY, this.message);
 		return PendingIntent.getActivity(this.activity, FAILURE_NOTIFICATION, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
