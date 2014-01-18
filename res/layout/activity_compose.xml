@@ -20,6 +20,7 @@
             android:layout_alignParentTop="true"
             android:ems="10"
             android:hint="@string/to"
+            android:imeOptions="actionNext"
             android:inputType="textPersonName" >
 
             <requestFocus />
