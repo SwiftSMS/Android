@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -144,10 +145,13 @@ public class Vodafone extends Operator {
 				Vodafone.this.imageView = (ImageView) layout.findViewById(R.id.image_captcha_dialog);
 				Vodafone.this.progessBar = (ProgressBar) layout.findViewById(R.id.image_captcha_progress);
 
-				final Builder dialog = new AlertDialog.Builder(Vodafone.this.context);
-				dialog.setTitle(R.string.captcha);
-				dialog.setView(layout);
-				dialog.setPositiveButton(R.string.ok, null);
+				final Builder builder = new AlertDialog.Builder(Vodafone.this.context);
+				builder.setTitle(R.string.captcha);
+				builder.setView(layout);
+				builder.setPositiveButton(R.string.ok, null);
+
+				final AlertDialog dialog = builder.create();
+				dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 				dialog.show();
 			}
 		});
