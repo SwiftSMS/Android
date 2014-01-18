@@ -95,7 +95,7 @@ public abstract class Operator {
 	 */
 	public final Status send(final List<String> list, final String message) {
 		this.login();
-		final List<String> msgParts = getParts(message, this.getCharacterLimit());
+		final List<String> msgParts = this.getParts(message, this.getCharacterLimit());
 		Status sendStatus = Status.FAILED;
 		for (final String msgToSend : msgParts) {
 			final String encodedMsg = Uri.encode(msgToSend);
@@ -117,7 +117,7 @@ public abstract class Operator {
 	 *            The maximum size of each part.
 	 * @return A list of strings broken into parts.
 	 */
-	private static List<String> getParts(final String string, final int partitionSize) {
+	private List<String> getParts(final String string, final int partitionSize) {
 		final List<String> parts = new ArrayList<String>();
 		final int len = string.length();
 		for (int i = 0; i < len; i += partitionSize) {

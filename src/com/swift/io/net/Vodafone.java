@@ -51,6 +51,8 @@ public class Vodafone extends Operator {
 	private ImageView imageView;
 	private Handler handler;
 	private ProgressBar progessBar;
+	private LayoutInflater inflater;
+	private Context context;
 
 	public Vodafone(final Account account) {
 		super(account);
@@ -68,26 +70,14 @@ public class Vodafone extends Operator {
 
 	@Override
 	public void preSend(final Context context) {
+		this.context = context;
 		this.handler = new Handler(context.getMainLooper());
-
-		final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		final View layout = inflater.inflate(R.layout.captcha_dialog, null);
-		this.answerEditText = (EditText) layout.findViewById(R.id.text_captcha_dialog);
-		this.imageView = (ImageView) layout.findViewById(R.id.image_captcha_dialog);
-		this.progessBar = (ProgressBar) layout.findViewById(R.id.image_captcha_progress);
-
-		final Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle(R.string.captcha);
-		dialog.setView(layout);
-		dialog.setPositiveButton(R.string.ok, null);
-		dialog.show();
+		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
 	Status doSend(final List<String> recipients, final String message) {
 		final String token = this.getToken();
-		this.downloadCaptcha();
-
 		final String captcha = this.getCaptchaResponse();
 		if (captcha.isEmpty()) {
 			return Status.CANCELLED;
@@ -103,7 +93,6 @@ public class Vodafone extends Operator {
 		}
 		manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 		final boolean isSent = manager.connect().contains(SEND_SUCCESS_STRING);
-
 		return isSent ? Status.SUCCESS : Status.FAILED;
 	}
 
@@ -113,6 +102,8 @@ public class Vodafone extends Operator {
 	 * @return The Captcha answer.
 	 */
 	private String getCaptchaResponse() {
+		this.displayCaptchaDialog();
+		this.downloadCaptcha();
 		while (this.answerEditText.isShown()) {
 			try {
 				Thread.sleep(100);
@@ -142,6 +133,24 @@ public class Vodafone extends Operator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void displayCaptchaDialog() {
+		this.handler.post(new Runnable() {
+			@Override
+			public void run() {
+				final View layout = Vodafone.this.inflater.inflate(R.layout.captcha_dialog, null);
+				Vodafone.this.answerEditText = (EditText) layout.findViewById(R.id.text_captcha_dialog);
+				Vodafone.this.imageView = (ImageView) layout.findViewById(R.id.image_captcha_dialog);
+				Vodafone.this.progessBar = (ProgressBar) layout.findViewById(R.id.image_captcha_progress);
+
+				final Builder dialog = new AlertDialog.Builder(Vodafone.this.context);
+				dialog.setTitle(R.string.captcha);
+				dialog.setView(layout);
+				dialog.setPositiveButton(R.string.ok, null);
+				dialog.show();
+			}
+		});
 	}
 
 	private String getToken() {
