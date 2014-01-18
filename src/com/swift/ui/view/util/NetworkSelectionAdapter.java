@@ -49,6 +49,7 @@ public class NetworkSelectionAdapter extends BaseAdapter {
 		final ImageView imageView = (ImageView) view.findViewById(R.id.image_network_selection_operator);
 		textViewAccountName.setText(this.accounts[position].toString());
 		imageView.setImageResource(this.accounts[position].getLogo());
+		imageView.setClickable(false);
 
 		return view;
 	}
