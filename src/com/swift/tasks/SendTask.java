@@ -82,9 +82,8 @@ public class SendTask extends AsyncTask<String, Integer, com.swift.tasks.Status>
 	protected com.swift.tasks.Status doInBackground(final String... params) {
 		this.message = this.messageEditText.getText().toString();
 		this.recipients = ContactUtils.trimSeparators(this.recipientsEditText.getText().toString());
-		final String encodedMsg = Uri.encode(this.message);
 		final List<String> recipList = ContactUtils.getContactsAsList(this.recipients);
-		return this.operator.send(recipList, encodedMsg);
+		return this.operator.send(recipList, this.message);
 	}
 
 	@Override

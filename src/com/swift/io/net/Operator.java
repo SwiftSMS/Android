@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import com.swift.InternalString;
@@ -97,10 +98,11 @@ public abstract class Operator {
 		final List<String> msgParts = getParts(message, this.getCharacterLimit());
 		Status sendStatus = Status.FAILED;
 		for (final String msgToSend : msgParts) {
-			sendStatus = this.doSend(list, msgToSend);
+			final String encodedMsg = Uri.encode(msgToSend);
+			sendStatus = this.doSend(list, encodedMsg);
 			if (sendStatus == Status.FAILED) {
 				this.retryLogin();
-				sendStatus = this.doSend(list, msgToSend);
+				sendStatus = this.doSend(list, encodedMsg);
 			}
 		}
 		return sendStatus;
