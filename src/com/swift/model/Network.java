@@ -12,7 +12,7 @@ import com.swift.R;
  */
 public enum Network {
 
-	// EMOBILE("EMobile", R.drawable.operator_logo_emobile, InputType.TYPE_CLASS_PHONE),
+	EMOBILE("EMobile", R.drawable.operator_logo_emobile, InputType.TYPE_CLASS_PHONE),
 	METEOR("Meteor", R.drawable.operator_logo_meteor, InputType.TYPE_CLASS_PHONE),
 	// O2("O2", R.drawable.operator_logo_o2, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS),
 	TESCO("Tesco", R.drawable.operator_logo_tesco, InputType.TYPE_CLASS_PHONE),
