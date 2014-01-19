@@ -6,8 +6,8 @@ public class OperatorFactory {
 
 	public static Operator getOperator(final Account account) {
 		switch (account.getOperator()) {
-		case EMOBILE:
-			return new EMobile(account);
+		// case EMOBILE:
+		// return new EMobile(account);
 		case METEOR:
 			return new Meteor(account);
 			// case O2:
