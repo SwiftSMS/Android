@@ -56,13 +56,4 @@ public class NetworkSelectionActivity extends ListActivity {
 		intent.putExtra(OPERATOR, network.toString());
 		this.startActivityForResult(intent, ADD_ACCOUNT_REQUESTCODE);
 	}
-
-	/**
-	 * Method to handle a click event of an operators image.
-	 * 
-	 * @param view
-	 *            The clicked view.
-	 */
-	public void onImageClicked(final View view) {
-	}
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
@@ -18,6 +19,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -28,6 +30,7 @@ import com.swift.tasks.Status;
 
 public class Vodafone extends Operator {
 
+	private static final int MAX_MSG_RECIPIENTS = 5;
 	private static final String CHARS_URL = "https://www.vodafone.ie/javascript/section.myv.webtext.js";
 	private static final String TOKEN_URL = "https://www.vodafone.ie/myv/messaging/webtext/index.jsp";
 	private static final String CAPTCHA_URL = "https://www.vodafone.ie/myv/messaging/webtext/Challenge.shtml";
@@ -51,6 +54,8 @@ public class Vodafone extends Operator {
 	private ImageView imageView;
 	private Handler handler;
 	private ProgressBar progessBar;
+	private LayoutInflater inflater;
+	private Context context;
 
 	public Vodafone(final Account account) {
 		super(account);
@@ -68,26 +73,42 @@ public class Vodafone extends Operator {
 
 	@Override
 	public void preSend(final Context context) {
+		this.context = context;
 		this.handler = new Handler(context.getMainLooper());
-
-		final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		final View layout = inflater.inflate(R.layout.captcha_dialog, null);
-		this.answerEditText = (EditText) layout.findViewById(R.id.text_captcha_dialog);
-		this.imageView = (ImageView) layout.findViewById(R.id.image_captcha_dialog);
-		this.progessBar = (ProgressBar) layout.findViewById(R.id.image_captcha_progress);
-
-		final Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle(R.string.captcha);
-		dialog.setView(layout);
-		dialog.setPositiveButton(R.string.ok, null);
-		dialog.show();
+		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
 
 	@Override
 	Status doSend(final List<String> recipients, final String message) {
-		final String token = this.getToken();
-		this.downloadCaptcha();
+		Status isSent = Status.FAILED;
+		final List<List<String>> splitRecipients = this.chopped(recipients, MAX_MSG_RECIPIENTS);
+		for (final List<String> sendableRecipients : splitRecipients) {
+			isSent = this.sendMessage(sendableRecipients, message);
+		}
+		return isSent;
+	}
 
+	/**
+	 * Method to break a {@link List} into multiple smaller lists.
+	 * 
+	 * @param list
+	 *            The larger list to be broken down.
+	 * @param length
+	 *            The max length of a returned {@link List}.
+	 * @return A {@link List} containing the smaller broken down lists.
+	 */
+	private <T> List<List<T>> chopped(final List<T> list, final int length) {
+		final List<List<T>> parts = new ArrayList<List<T>>();
+		final int N = list.size();
+		for (int i = 0; i < N; i += length) {
+			final List<T> sublist = list.subList(i, Math.min(N, i + length));
+			parts.add(new ArrayList<T>(sublist));
+		}
+		return parts;
+	}
+
+	private Status sendMessage(final List<String> recipients, final String message) {
+		final String token = this.getToken();
 		final String captcha = this.getCaptchaResponse();
 		if (captcha.isEmpty()) {
 			return Status.CANCELLED;
@@ -103,7 +124,6 @@ public class Vodafone extends Operator {
 		}
 		manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 		final boolean isSent = manager.connect().contains(SEND_SUCCESS_STRING);
-
 		return isSent ? Status.SUCCESS : Status.FAILED;
 	}
 
@@ -113,6 +133,8 @@ public class Vodafone extends Operator {
 	 * @return The Captcha answer.
 	 */
 	private String getCaptchaResponse() {
+		this.displayCaptchaDialog();
+		this.downloadCaptcha();
 		while (this.answerEditText.isShown()) {
 			try {
 				Thread.sleep(100);
@@ -142,6 +164,27 @@ public class Vodafone extends Operator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private void displayCaptchaDialog() {
+		this.handler.post(new Runnable() {
+			@Override
+			public void run() {
+				final View layout = Vodafone.this.inflater.inflate(R.layout.captcha_dialog, null);
+				Vodafone.this.answerEditText = (EditText) layout.findViewById(R.id.text_captcha_dialog);
+				Vodafone.this.imageView = (ImageView) layout.findViewById(R.id.image_captcha_dialog);
+				Vodafone.this.progessBar = (ProgressBar) layout.findViewById(R.id.image_captcha_progress);
+
+				final Builder builder = new AlertDialog.Builder(Vodafone.this.context);
+				builder.setTitle(R.string.captcha);
+				builder.setView(layout);
+				builder.setPositiveButton(R.string.ok, null);
+
+				final AlertDialog dialog = builder.create();
+				dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+				dialog.show();
+			}
+		});
 	}
 
 	private String getToken() {

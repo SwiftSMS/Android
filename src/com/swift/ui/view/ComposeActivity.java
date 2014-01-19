@@ -104,25 +104,33 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	 * Handle the data passed to this {@link Activity} from it's {@link Intent}.
 	 */
 	private void handleIntentData() {
-		final Uri intentData = this.getIntent().getData();
+		final Intent intent = this.getIntent();
+		final String iAction = intent.getAction();
+		final String iType = intent.getType();
+		final Uri iData = intent.getData();
+
 		final String persistedMessage = this.preferences.getString(this.getMessagePrefKey(), null);
 		final String persistedRecipient = this.preferences.getString(this.getRecipientPrefKey(), null);
 
-		if (intentData != null) {
-			final String smsto = intentData.getSchemeSpecificPart();
-			this.recipientEdittext.setText(smsto + DEFAULT_CONTACT_SEPARATOR);
-			final String smsBody = this.getIntent().getStringExtra(SMS_BODY);
-			if (smsBody != null) {
-				this.messageEditText.setText(smsBody);
-			} else {
-				this.messageEditText.setText(persistedMessage);
-			}
-			this.messageEditText.requestFocus();
-		} else {
-			this.recipientEdittext.setText(persistedRecipient);
-			this.messageEditText.setText(persistedMessage);
-			if (persistedRecipient != null && !persistedRecipient.isEmpty()) {
+		if (iAction.equals(Intent.ACTION_SEND) && iType != null && iType.equals("text/plain")) {
+			this.messageEditText.setText(intent.getStringExtra(Intent.EXTRA_TEXT));
+		} else if (iAction.equals(Intent.ACTION_SEND) || iAction.equals(Intent.ACTION_SENDTO)) {
+			if (iData != null) {
+				final String smsto = iData.getSchemeSpecificPart();
+				this.recipientEdittext.setText(smsto + DEFAULT_CONTACT_SEPARATOR);
+				final String smsBody = this.getIntent().getStringExtra(SMS_BODY);
+				if (smsBody != null) {
+					this.messageEditText.setText(smsBody);
+				} else {
+					this.messageEditText.setText(persistedMessage);
+				}
 				this.messageEditText.requestFocus();
+			} else {
+				this.recipientEdittext.setText(persistedRecipient);
+				this.messageEditText.setText(persistedMessage);
+				if (persistedRecipient != null && !persistedRecipient.isEmpty()) {
+					this.messageEditText.requestFocus();
+				}
 			}
 		}
 	}
