@@ -37,6 +37,7 @@ public class Three extends Operator {
 
 	@Override
 	boolean doLogin() {
+
 		final ConnectionManager loginManager = new ConnectionManager(Three.LOGIN_URL);
 		loginManager.addPostHeader(Three.POST_USER, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(Three.POST_PASS, this.getAccount().getPassword());
