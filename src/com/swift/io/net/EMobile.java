@@ -68,17 +68,21 @@ public class EMobile extends Operator {
 	}
 
 	private void addEnteredMSISDNs(final List<String> recipients) {
-
+		final StringBuilder sb = new StringBuilder(POST_VALUE_NO_ID);
+		sb.append(recipients.remove(0));
 		for (final String recipient : recipients) {
-			final ConnectionManager addNumberRequest = new ConnectionManager(EMobile.HOST_URL + EMobile.AJAX_API);
-
-			addNumberRequest.addPostHeader(EMobile.AJAX_EVENT, EMobile.AJAX_SMS);
-			addNumberRequest.addPostHeader(EMobile.AJAX_FUNCTION, EMobile.AJAX_MSISDNS_FUNCTION);
-			addNumberRequest.addPostHeader(EMobile.AJAX_REQUEST, EMobile.POST_VALUE_ADD_RECIPIENT);
-			addNumberRequest.addPostHeader(EMobile.POST_ADD, EMobile.POST_VALUE_NO_ID + recipient);
-			addNumberRequest.addPostHeader(EMobile.POST_REMOVE, "-");
-			addNumberRequest.connect();
+			sb.append(",");
+			sb.append(POST_VALUE_NO_ID);
+			sb.append(recipient);
 		}
+
+		final ConnectionManager addNumberRequest = new ConnectionManager(EMobile.HOST_URL + EMobile.AJAX_API);
+		addNumberRequest.addPostHeader(EMobile.AJAX_EVENT, EMobile.AJAX_SMS);
+		addNumberRequest.addPostHeader(EMobile.AJAX_FUNCTION, EMobile.AJAX_MSISDNS_FUNCTION);
+		addNumberRequest.addPostHeader(EMobile.AJAX_REQUEST, EMobile.POST_VALUE_ADD_RECIPIENT);
+		addNumberRequest.addPostHeader(EMobile.POST_ADD, sb.toString());
+		addNumberRequest.addPostHeader(EMobile.POST_REMOVE, "-");
+		addNumberRequest.connect();
 	}
 
 	private String sendMessage(final String message) {
