@@ -62,11 +62,8 @@ public class EMobile extends Operator {
     Status doSend(List<String> list, String message) {
 
         addEnteredMSISDNs(list);
-
         final String resultHtml = sendMessage(message);
-
         boolean isSent = resultHtml.contains(EMobile.SEND_SUCCESS_TEXT);
-
         return isSent ? Status.SUCCESS : Status.FAILED;
     }
 
