@@ -13,10 +13,11 @@ public class Meteor extends Operator {
 	private static final String SEND_SUCCESS_TEXT = "sentTrue";
 	private static final String LOGIN_SUCCESS_TEXT = "Log Out";
 
-	private static final String LOGIN_URL = "https://www.mymeteor.ie/go/mymeteor-login-manager";
-	private static final String REMAINING_SMS_URL = "https://www.mymeteor.ie/cfusion/meteor/Meteor_REST/service/freeSMS";
-	private static final String CHARACTER_COUNT_URL = "https://www.mymeteor.ie/go/freewebtext";
-	private static final String SMS_URL = "https://www.mymeteor.ie/mymeteorapi/index.cfm?event=smsAjax";
+	private static final String HOSTNAME = "https://www.mymeteor.ie/";
+	private static final String LOGIN_URL = HOSTNAME + "go/mymeteor-login-manager";
+	private static final String REMAINING_SMS_URL = HOSTNAME + "cfusion/meteor/Meteor_REST/service/freeSMS";
+	private static final String CHARACTER_COUNT_URL = HOSTNAME + "go/freewebtext";
+	private static final String SMS_URL = HOSTNAME + "mymeteorapi/index.cfm?event=smsAjax";
 
 	private static final String GET_REQUEST_METHOD = "GET";
 
@@ -67,9 +68,7 @@ public class Meteor extends Operator {
 
 	@Override
 	Status doSend(final List<String> recipients, final String message) {
-		for (final String recipient : recipients) {
-			this.addRecipient(recipient);
-		}
+		this.addRecipients(recipients);
 
 		final ConnectionManager sendManager = new ConnectionManager(Meteor.SMS_URL);
 		sendManager.addPostHeader(Meteor.POST_AJAX_REQUEST, Meteor.POST_VALUE_SEND_SMS);
@@ -79,12 +78,19 @@ public class Meteor extends Operator {
 		return isSent ? Status.SUCCESS : Status.FAILED;
 	}
 
-	private void addRecipient(final String recipient) {
-		final String addUrl = Meteor.SMS_URL;
-		final ConnectionManager addManager = new ConnectionManager(addUrl);
+	private void addRecipients(final List<String> recipients) {
+		final StringBuilder sb = new StringBuilder(Meteor.POST_VALUE_NO_ID);
+		sb.append(recipients.remove(0));
+		for (final String recipient : recipients) {
+			sb.append(",");
+			sb.append(Meteor.POST_VALUE_NO_ID);
+			sb.append(recipient);
+		}
+
+		final ConnectionManager addManager = new ConnectionManager(Meteor.SMS_URL);
 		addManager.addPostHeader(Meteor.POST_AJAX_REQUEST, Meteor.POST_VALUE_ADD_RECIPIENT);
 		addManager.addPostHeader(Meteor.POST_REMOVE, Meteor.POST_VALUE_NONE);
-		addManager.addPostHeader(Meteor.POST_ADD, Meteor.POST_VALUE_NO_ID + recipient);
+		addManager.addPostHeader(Meteor.POST_ADD, sb.toString());
 		addManager.connect();
 	}
 
