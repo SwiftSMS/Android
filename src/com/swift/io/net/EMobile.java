@@ -2,6 +2,9 @@ package com.swift.io.net;
 
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.swift.model.Account;
 import com.swift.tasks.Status;
 
@@ -17,8 +20,8 @@ public class EMobile extends Operator {
 	private static final String SUCCESS_LOGIN = "Log out";
 	private static final String SEND_SUCCESS_TEXT = "sentTrue";
 
+	private static final String SMS_REMAINING_URL = HOST_URL + "/cfusion/meteor/Meteor_REST/service/freeSMS";
 	private static final String SMS_CONSOLE = "/go/common/message-centre/web-sms/free-web-text";
-	private static final String SMS_REMAINING_START_TEXT = "id=\"numfreesmstext\" value=\"";
 	private static final String SMS_CHARS_LIMIT = "id=\"charsLeft\"  value=\"";
 	private static final String AJAX_API = "/myemobileapi/index.cfm";
 	private static final String AJAX_EVENT = "event";
@@ -32,6 +35,10 @@ public class EMobile extends Operator {
 	private static final String POST_ADD = "add";
 	private static final String POST_REMOVE = "remove";
 	private static final String POST_VALUE_NO_ID = "0%7C";
+	private static final String GET_REQUEST_METHOD = "GET";
+
+	private static final String JSON_REMAINING_FREE_SMS = "remainingFreeSMS";
+	private static final String JSON_FREE_SMS = "FreeSMS";
 
 	public EMobile(final Account account) {
 		super(account);
@@ -51,11 +58,18 @@ public class EMobile extends Operator {
 
 	@Override
 	int doGetRemainingSMS() {
-		final ConnectionManager smsConsole = new ConnectionManager(EMobile.HOST_URL + EMobile.SMS_CONSOLE);
+		final ConnectionManager manager = new ConnectionManager(SMS_REMAINING_URL, GET_REQUEST_METHOD, false);
+		final String smsHtml = manager.connect();
 
-		final String smsConsoleHtml = smsConsole.connect();
-
-		return this.getRemainingSmsFromHTML(smsConsoleHtml);
+		try {
+			final JSONObject smsJson = new JSONObject(smsHtml);
+			final JSONObject freeSmsJson = smsJson.getJSONObject(JSON_FREE_SMS);
+			return freeSmsJson.getInt(JSON_REMAINING_FREE_SMS);
+		} catch (final JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
 	}
 
 	@Override
@@ -124,24 +138,5 @@ public class EMobile extends Operator {
 		}
 
 		return charLimit;
-	}
-
-	private int getRemainingSmsFromHTML(final String html) {
-
-		int remainingSms = -1;
-		final String startText = EMobile.SMS_REMAINING_START_TEXT;
-
-		final int index = html.indexOf(startText) + startText.length();
-
-		final int startPos = index;
-		final int endPos = index + 4;
-
-		try {
-			final String remainingSmsStr = html.substring(startPos, endPos).replaceAll("[</span>\"]", "");
-			remainingSms = Integer.parseInt(remainingSmsStr.trim());
-		} catch (final Exception ex) {
-		}
-
-		return remainingSms;
 	}
 }
