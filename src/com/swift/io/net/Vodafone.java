@@ -26,7 +26,10 @@ import android.widget.ProgressBar;
 
 import com.swift.R;
 import com.swift.model.Account;
-import com.swift.tasks.Status;
+import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.OperationResult;
+import com.swift.tasks.results.Successful;
+import com.swift.tasks.results.WarningResult;
 
 public class Vodafone extends Operator {
 
@@ -79,8 +82,8 @@ public class Vodafone extends Operator {
 	}
 
 	@Override
-	Status doSend(final List<String> recipients, final String message) {
-		Status isSent = Status.FAILED;
+	OperationResult doSend(final List<String> recipients, final String message) {
+		OperationResult isSent = new Failure();
 		final List<List<String>> splitRecipients = this.chopped(recipients, MAX_MSG_RECIPIENTS);
 		for (final List<String> sendableRecipients : splitRecipients) {
 			isSent = this.sendMessage(sendableRecipients, message);
@@ -107,11 +110,11 @@ public class Vodafone extends Operator {
 		return parts;
 	}
 
-	private Status sendMessage(final List<String> recipients, final String message) {
+	private OperationResult sendMessage(final List<String> recipients, final String message) {
 		final String token = this.getToken();
 		final String captcha = this.getCaptchaResponse();
 		if (captcha.isEmpty()) {
-			return Status.CANCELLED;
+			return new WarningResult(R.string.message_cancelled);
 		}
 
 		final ConnectionManager manager = new ConnectionManager(SEND_URL);
@@ -124,7 +127,7 @@ public class Vodafone extends Operator {
 		}
 		manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 		final boolean isSent = manager.connect().contains(SEND_SUCCESS_STRING);
-		return isSent ? Status.SUCCESS : Status.FAILED;
+		return isSent ? new Successful() : new Failure();
 	}
 
 	/**

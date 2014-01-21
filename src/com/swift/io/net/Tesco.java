@@ -11,8 +11,11 @@ import org.json.JSONObject;
 import android.net.Uri;
 import android.util.Base64;
 
+import com.swift.R;
 import com.swift.model.Account;
-import com.swift.tasks.Status;
+import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.OperationResult;
+import com.swift.tasks.results.Successful;
 
 public class Tesco extends Operator {
 
@@ -73,7 +76,7 @@ public class Tesco extends Operator {
 	}
 
 	@Override
-	Status doSend(final List<String> list, final String message) {
+	OperationResult doSend(final List<String> list, final String message) {
 		final ConnectionManager manager = new ConnectionManager(BASE_URL + this.getAccount().getMobileNumber() + SEND_URL_POSTFIX);
 		manager.setRequestHeader(USER_AGENT, USER_AGENT_VALUE);
 		manager.setRequestHeader(ACCEPT, ACCEPT_VALUE);
@@ -95,11 +98,11 @@ public class Tesco extends Operator {
 			final JSONObject json = new JSONObject(rawJson);
 			final boolean isSent = json.length() == 0;
 
-			return isSent ? Status.SUCCESS : Status.FAILED;
+			return isSent ? new Successful() : new Failure();
 		} catch (final JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return Status.FAILED;
+			return new Failure(R.string.operator_changed);
 		}
 	}
 

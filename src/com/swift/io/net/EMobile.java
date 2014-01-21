@@ -4,7 +4,9 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.swift.model.Account;
-import com.swift.tasks.Status;
+import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.OperationResult;
+import com.swift.tasks.results.Successful;
 
 /**
  * Created by Rob Powell on 17/01/14.
@@ -39,7 +41,7 @@ public class EMobile extends Operator {
 	private static final String JSON_REMAINING_FREE_SMS = "remainingFreeSMS";
 	private static final String JSON_FREE_SMS = "FreeSMS";
 
-    private int localRemainingSmsCount = -1;
+	private int localRemainingSmsCount = -1;
 
 	public EMobile(final Account account) {
 		super(account);
@@ -63,8 +65,8 @@ public class EMobile extends Operator {
 		try {
 			final JSONObject smsJson = new JSONObject(smsHtml);
 			final JSONObject freeSmsJson = smsJson.getJSONObject(JSON_FREE_SMS);
-            localRemainingSmsCount = freeSmsJson.getInt(JSON_REMAINING_FREE_SMS);
-			return localRemainingSmsCount;
+			this.localRemainingSmsCount = freeSmsJson.getInt(JSON_REMAINING_FREE_SMS);
+			return this.localRemainingSmsCount;
 		} catch (final JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -73,15 +75,14 @@ public class EMobile extends Operator {
 	}
 
 	@Override
-	Status doSend(final List<String> list, final String message) {
-
-        final int expectedRemainingSms = localRemainingSmsCount - list.size();
+	OperationResult doSend(final List<String> list, final String message) {
+		final int expectedRemainingSms = this.localRemainingSmsCount - list.size();
 
 		this.addEnteredMSISDNs(list);
 		this.sendMessage(message);
 
-        boolean isSent = hasRemainingSmsDecremented(expectedRemainingSms);
-		return isSent ? Status.SUCCESS : Status.FAILED;
+		final boolean isSent = this.hasRemainingSmsDecremented(expectedRemainingSms);
+		return isSent ? new Successful() : new Failure();
 	}
 
 	private void addEnteredMSISDNs(final List<String> recipients) {

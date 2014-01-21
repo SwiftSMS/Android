@@ -12,6 +12,8 @@ import android.util.Log;
 import com.swift.InternalString;
 import com.swift.model.Account;
 import com.swift.tasks.Status;
+import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.OperationResult;
 
 /**
  * This class contains all of the generic methods and actions needed for interaction with an operators website.
@@ -93,14 +95,14 @@ public abstract class Operator {
 	 *            The message to send.
 	 * @return <code>true</code> if the message was sent successfully else <code>false</code>
 	 */
-	public final Status send(final List<String> list, final String message) {
+	public final OperationResult send(final List<String> list, final String message) {
 		this.login();
 		final List<String> msgParts = this.getParts(message, this.getCharacterLimit());
-		Status sendStatus = Status.FAILED;
+		OperationResult sendStatus = new Failure();
 		for (final String msgToSend : msgParts) {
 			final String encodedMsg = Uri.encode(msgToSend);
 			sendStatus = this.doSend(list, encodedMsg);
-			if (sendStatus == Status.FAILED) {
+			if (sendStatus.getStatus() == Status.FAILED) {
 				this.retryLogin();
 				sendStatus = this.doSend(list, encodedMsg);
 			}
@@ -135,7 +137,7 @@ public abstract class Operator {
 	 *            The message to send.
 	 * @return <code>true</code> if the message was sent successfully else <code>false</code>
 	 */
-	abstract Status doSend(final List<String> list, final String message);
+	abstract OperationResult doSend(final List<String> list, final String message);
 
 	public final int getCharacterLimit() {
 		if (this.characterLimit == -1) {

@@ -41,5 +41,8 @@
 			* Tesco
 		In a later releases we will add support for all other Irish providers.
 	</string>
-    
+	<string name="not_implemented">O2 Sending not Implemented!</string>
+	<string name="message_cancelled">Sending cancelled</string>
+	<string name="operator_changed">Operator website changed</string>
+		
 </resources>

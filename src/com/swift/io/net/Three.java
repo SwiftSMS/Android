@@ -4,7 +4,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.swift.model.Account;
-import com.swift.tasks.Status;
+import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.OperationResult;
+import com.swift.tasks.results.Successful;
 
 /**
  * Created by Rob Powell on 04/10/13.
@@ -47,14 +49,14 @@ public class Three extends Operator {
 	}
 
 	@Override
-	Status doSend(final List<String> recipients, final String message) {
+	OperationResult doSend(final List<String> recipients, final String message) {
 		final ConnectionManager smsSendManager = new ConnectionManager(Three.SMS_URL);
 
 		smsSendManager.addPostHeader(Three.POST_RECIPIENT_INDIVIDUAL, this.parseRecipients(recipients));
 		smsSendManager.addPostHeader(Three.POST_MESSAGE_TEXT, message);
 		final boolean isSent = smsSendManager.connect().contains(Three.SMS_SEND_SUCCESS_TEXT);
 
-		return isSent ? Status.SUCCESS : Status.FAILED;
+		return isSent ? new Successful() : new Failure();
 	}
 
 	private String parseRecipients(final List<String> recipients) {

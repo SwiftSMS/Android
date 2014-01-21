@@ -9,6 +9,8 @@ import static com.swift.InternalString.SMS_PROVIDER_FAILURE;
 import static com.swift.InternalString.SMS_PROVIDER_MESSAGE_ADDRESS;
 import static com.swift.InternalString.SMS_PROVIDER_MESSAGE_BODY;
 import static com.swift.InternalString.SMS_PROVIDER_SENTBOX_URI;
+import static com.swift.tasks.Status.FAILED;
+import static com.swift.tasks.Status.SUCCESS;
 
 import java.util.List;
 
@@ -33,13 +35,14 @@ import android.widget.ProgressBar;
 
 import com.swift.R;
 import com.swift.io.net.Operator;
+import com.swift.tasks.results.OperationResult;
 import com.swift.ui.view.ComposeActivity;
 import com.swift.utils.ContactUtils;
 
 /**
  * This class is an {@link AsyncTask} responsible for sending a web text using the provided operator.
  */
-public class SendTask extends AsyncTask<String, Integer, com.swift.tasks.Status> {
+public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 
 	private static int FAILURE_NOTIFICATION = 127;
 
@@ -79,7 +82,7 @@ public class SendTask extends AsyncTask<String, Integer, com.swift.tasks.Status>
 	}
 
 	@Override
-	protected com.swift.tasks.Status doInBackground(final String... params) {
+	protected OperationResult doInBackground(final String... params) {
 		this.message = this.messageEditText.getText().toString();
 		this.recipients = ContactUtils.trimSeparators(this.recipientsEditText.getText().toString());
 		final List<String> recipList = ContactUtils.getContactsAsList(this.recipients);
@@ -87,18 +90,18 @@ public class SendTask extends AsyncTask<String, Integer, com.swift.tasks.Status>
 	}
 
 	@Override
-	protected void onPostExecute(final com.swift.tasks.Status result) {
+	protected void onPostExecute(final OperationResult result) {
 		this.progressBar.setVisibility(View.GONE);
 		this.sendButton.setEnabled(true);
-		if (result == com.swift.tasks.Status.SUCCESS) {
-			this.activity.addNotification(com.swift.utils.Notification.SMS_SEND_SUCCESSFUL);
+		this.activity.addNotification(result);
+
+		if (result.getStatus() == SUCCESS) {
 			this.activity.retrieveRemainingSmsCount();
 			this.recipientsEditText.setText(EMPTY_STRING);
 			this.recipientsEditText.requestFocus();
 			this.messageEditText.setText(EMPTY_STRING);
 			this.insertMessageInSmsDb();
-		} else if (result == com.swift.tasks.Status.FAILED) {
-			this.activity.addNotification(com.swift.utils.Notification.SMS_SEND_FAILURE);
+		} else if (result.getStatus() == FAILED) {
 			final Notification notif = this.buildFailureNotification();
 			final NotificationManager service = (NotificationManager) this.activity.getSystemService(Context.NOTIFICATION_SERVICE);
 			service.notify(++FAILURE_NOTIFICATION, notif);
