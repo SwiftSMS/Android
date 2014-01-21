@@ -44,13 +44,16 @@ public class O2 extends Operator {
 		final String prefix = "spn_WebtextFree\">";
 		final String postfix = "</span>";
 		final String remainingSMS = HTMLParser.parseHtml(html, prefix, postfix);
-		return Integer.parseInt(remainingSMS);
+
+		int remainingSMSCount = -1;
+		if (remainingSMS != null) {
+			remainingSMSCount = Integer.parseInt(remainingSMS);
+		}
+		return remainingSMSCount;
 	}
 
 	private String getSessionId() {
-		final ConnectionManager manager = new ConnectionManager(
-				"http://messaging.o2online.ie/ssomanager.osp?APIID=AUTH-WEBSSO&TargetApp=o2om_smscenter_new.osp%3FMsgContentID%3D-1%26SID%3D_", "GET",
-				false);
+		final ConnectionManager manager = new ConnectionManager("http://messaging.o2online.ie/ssomanager.osp?APIID=AUTH-WEBSSO", "GET", false);
 		final String html = manager.connect();
 
 		final String prefix = "GLOBAL_SESSION_ID = '";
