@@ -20,8 +20,6 @@ public class EMobile extends Operator {
 	private static final String POST_USER = "username";
 	private static final String POST_PASS = "userpass";
 	private static final String SUCCESS_LOGIN = "Log out";
-	private static final String SEND_SUCCESS_TEXT = "sentTrue";
-
 	private static final String SMS_REMAINING_URL = HOST_URL + "/cfusion/meteor/Meteor_REST/service/freeSMS";
 	private static final String SMS_CONSOLE = "/go/common/message-centre/web-sms/free-web-text";
 	private static final String SMS_CHARS_LIMIT = "id=\"charsLeft\"  value=\"";
@@ -41,6 +39,8 @@ public class EMobile extends Operator {
 
 	private static final String JSON_REMAINING_FREE_SMS = "remainingFreeSMS";
 	private static final String JSON_FREE_SMS = "FreeSMS";
+
+	private int localRemainingSmsCount = -1;
 
 	public EMobile(final Account account) {
 		super(account);
@@ -66,7 +66,8 @@ public class EMobile extends Operator {
 		try {
 			final JSONObject smsJson = new JSONObject(smsHtml);
 			final JSONObject freeSmsJson = smsJson.getJSONObject(JSON_FREE_SMS);
-			return freeSmsJson.getInt(JSON_REMAINING_FREE_SMS);
+			this.localRemainingSmsCount = freeSmsJson.getInt(JSON_REMAINING_FREE_SMS);
+			return this.localRemainingSmsCount;
 		} catch (final JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -76,10 +77,12 @@ public class EMobile extends Operator {
 
 	@Override
 	OperationResult doSend(final List<String> list, final String message) {
+		final int expectedRemainingSms = this.localRemainingSmsCount - list.size();
 
 		this.addEnteredMSISDNs(list);
-		final String resultHtml = this.sendMessage(message);
-		final boolean isSent = resultHtml.contains(EMobile.SEND_SUCCESS_TEXT);
+		this.sendMessage(message);
+
+		final boolean isSent = this.hasRemainingSmsDecremented(expectedRemainingSms);
 		return isSent ? new Successful() : new Failure();
 	}
 
@@ -140,5 +143,18 @@ public class EMobile extends Operator {
 		}
 
 		return charLimit;
+	}
+
+	private boolean hasRemainingSmsDecremented(final int expectedSmsRemaining) {
+		for (int x = 0; x < 5; x++) {
+			if (this.getRemainingSMS() == expectedSmsRemaining) {
+				return true;
+			}
+			try {
+				Thread.sleep(100);
+			} catch (final InterruptedException e) {
+			}
+		}
+		return false;
 	}
 }
