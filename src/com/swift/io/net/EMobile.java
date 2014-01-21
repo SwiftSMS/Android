@@ -1,18 +1,16 @@
 package com.swift.io.net;
 
-import android.util.Log;
-
 import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.swift.InternalString;
 import com.swift.model.Account;
 import com.swift.tasks.Status;
 
 /**
  * Created by Rob Powell on 17/01/14.
+ *
+ * This class manages interfacing with the website of EMobile.
+ * Much the same as Meteor.
  */
 public class EMobile extends Operator {
 
@@ -21,8 +19,6 @@ public class EMobile extends Operator {
 	private static final String POST_USER = "username";
 	private static final String POST_PASS = "userpass";
 	private static final String SUCCESS_LOGIN = "Log out";
-	private static final String SEND_SUCCESS_TEXT = "sentTrue";
-
 	private static final String SMS_REMAINING_URL = HOST_URL + "/cfusion/meteor/Meteor_REST/service/freeSMS";
 	private static final String SMS_CONSOLE = "/go/common/message-centre/web-sms/free-web-text";
 	private static final String SMS_CHARS_LIMIT = "id=\"charsLeft\"  value=\"";
@@ -56,9 +52,7 @@ public class EMobile extends Operator {
 		loginManager.addPostHeader(EMobile.POST_USER, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(EMobile.POST_PASS, this.getAccount().getPassword());
 		final String loginHtml = loginManager.connect();
-		final boolean result = loginHtml.contains(SUCCESS_LOGIN);
-
-		return result;
+		return loginHtml.contains(SUCCESS_LOGIN);
 	}
 
 	@Override
@@ -108,7 +102,7 @@ public class EMobile extends Operator {
 		addNumberRequest.connect();
 	}
 
-	private String sendMessage(final String message) {
+	private void sendMessage(final String message) {
 
 		final ConnectionManager sendMessageRequest = new ConnectionManager(EMobile.HOST_URL + EMobile.AJAX_API);
 
@@ -116,8 +110,7 @@ public class EMobile extends Operator {
 		sendMessageRequest.addPostHeader(EMobile.AJAX_FUNCTION, EMobile.AJAX_SMS_FUNCTION);
 		sendMessageRequest.addPostHeader(EMobile.AJAX_REQUEST, EMobile.AJAX_SMS_FUNCTION);
 		sendMessageRequest.addPostHeader(EMobile.POST_MESSAGE_TEXT, message);
-
-		return sendMessageRequest.connect();
+        sendMessageRequest.connect();
 	}
 
 	@Override
@@ -136,16 +129,12 @@ public class EMobile extends Operator {
 		final String startText = EMobile.SMS_CHARS_LIMIT;
 
 		final int index = html.indexOf(startText) + startText.length();
-
-		final int startPos = index;
 		final int endPos = index + 4;
 
 		try {
-			final String remainingCharsStr = html.substring(startPos, endPos).replaceAll("[</span>\"]", "");
+			final String remainingCharsStr = html.substring(index, endPos).replaceAll("[</span>\"]", "");
 			charLimit = Integer.parseInt(remainingCharsStr.trim());
-		} catch (final Exception ex) {
-		}
-
+		} catch (final Exception ex) {ex.printStackTrace();}
 		return charLimit;
 	}
 
@@ -154,7 +143,7 @@ public class EMobile extends Operator {
             if(getRemainingSMS() == expectedSmsRemaining){
                 return true;
             }
-            try { Thread.sleep(100); } catch (InterruptedException e) {}
+            try { Thread.sleep(100); } catch (InterruptedException e) {e.printStackTrace();}
         }
         return false;
     }
