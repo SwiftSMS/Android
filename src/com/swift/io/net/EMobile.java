@@ -1,8 +1,10 @@
 package com.swift.io.net;
 
 import java.util.List;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import com.swift.model.Account;
 import com.swift.tasks.results.Failure;
 import com.swift.tasks.results.OperationResult;
@@ -10,9 +12,8 @@ import com.swift.tasks.results.Successful;
 
 /**
  * Created by Rob Powell on 17/01/14.
- *
- * This class manages interfacing with the website of EMobile.
- * Much the same as Meteor.
+ * 
+ * This class manages interfacing with the website of EMobile. Much the same as Meteor.
  */
 public class EMobile extends Operator {
 
@@ -86,13 +87,13 @@ public class EMobile extends Operator {
 	}
 
 	private void addEnteredMSISDNs(final List<String> recipients) {
-		final StringBuilder sb = new StringBuilder(POST_VALUE_NO_ID);
-		sb.append(recipients.remove(0));
+		final StringBuilder sb = new StringBuilder();
 		for (final String recipient : recipients) {
-			sb.append(",");
 			sb.append(POST_VALUE_NO_ID);
 			sb.append(recipient);
+			sb.append(",");
 		}
+		sb.deleteCharAt(sb.length() - 1); // remove trailing comma
 
 		final ConnectionManager addNumberRequest = new ConnectionManager(EMobile.HOST_URL + EMobile.AJAX_API);
 		addNumberRequest.addPostHeader(EMobile.AJAX_EVENT, EMobile.AJAX_SMS);
@@ -111,7 +112,7 @@ public class EMobile extends Operator {
 		sendMessageRequest.addPostHeader(EMobile.AJAX_FUNCTION, EMobile.AJAX_SMS_FUNCTION);
 		sendMessageRequest.addPostHeader(EMobile.AJAX_REQUEST, EMobile.AJAX_SMS_FUNCTION);
 		sendMessageRequest.addPostHeader(EMobile.POST_MESSAGE_TEXT, message);
-        sendMessageRequest.connect();
+		sendMessageRequest.connect();
 	}
 
 	@Override
@@ -135,17 +136,23 @@ public class EMobile extends Operator {
 		try {
 			final String remainingCharsStr = html.substring(index, endPos).replaceAll("[</span>\"]", "");
 			charLimit = Integer.parseInt(remainingCharsStr.trim());
-		} catch (final Exception ex) {ex.printStackTrace();}
+		} catch (final Exception ex) {
+			ex.printStackTrace();
+		}
 		return charLimit;
 	}
 
-    private boolean hasRemainingSmsDecremented(final int expectedSmsRemaining){
-        for(int x = 0; x < 5; x++) {
-            if(getRemainingSMS() == expectedSmsRemaining){
-                return true;
-            }
-            try { Thread.sleep(100); } catch (InterruptedException e) {e.printStackTrace();}
-        }
-        return false;
-    }
+	private boolean hasRemainingSmsDecremented(final int expectedSmsRemaining) {
+		for (int x = 0; x < 5; x++) {
+			if (this.getRemainingSMS() == expectedSmsRemaining) {
+				return true;
+			}
+			try {
+				Thread.sleep(100);
+			} catch (final InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
 }
