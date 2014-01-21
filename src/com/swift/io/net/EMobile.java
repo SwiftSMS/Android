@@ -6,7 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.swift.model.Account;
-import com.swift.tasks.Status;
+import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.OperationResult;
+import com.swift.tasks.results.Successful;
 
 /**
  * Created by Rob Powell on 17/01/14.
@@ -73,12 +75,12 @@ public class EMobile extends Operator {
 	}
 
 	@Override
-	Status doSend(final List<String> list, final String message) {
+	OperationResult doSend(final List<String> list, final String message) {
 
 		this.addEnteredMSISDNs(list);
 		final String resultHtml = this.sendMessage(message);
 		final boolean isSent = resultHtml.contains(EMobile.SEND_SUCCESS_TEXT);
-		return isSent ? Status.SUCCESS : Status.FAILED;
+		return isSent ? new Successful() : new Failure();
 	}
 
 	private void addEnteredMSISDNs(final List<String> recipients) {

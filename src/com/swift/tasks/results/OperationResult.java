@@ -1,27 +1,30 @@
-package com.swift.utils;
+package com.swift.tasks.results;
 
-import com.swift.R;
+import com.swift.tasks.Status;
 
 /**
  * Notifications for ICC Activities
  * 
  * @author Rob Powell
  */
-public enum Notification {
-
-	SMS_SEND_SUCCESSFUL(R.string.message_sent, R.color.green),
-	SMS_SEND_FAILURE(R.string.message_failed_to_send, R.color.red);
+public abstract class OperationResult {
 
 	private final int stringResource;
+	private final Status status;
 	private final int colourResource;
 
-	Notification(final int stringResource, final int colourResource) {
+	public OperationResult(final int stringResource, final int colourResource, final Status status) {
 		this.stringResource = stringResource;
 		this.colourResource = colourResource;
+		this.status = status;
 	}
 
 	public int getStringResource() {
 		return this.stringResource;
+	}
+
+	public Status getStatus() {
+		return this.status;
 	}
 
 	public int getColourResource() {

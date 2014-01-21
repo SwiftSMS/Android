@@ -5,8 +5,10 @@ import java.util.List;
 import android.util.Log;
 
 import com.swift.InternalString;
+import com.swift.R;
 import com.swift.model.Account;
-import com.swift.tasks.Status;
+import com.swift.tasks.results.OperationResult;
+import com.swift.tasks.results.WarningResult;
 
 public class O2 extends Operator {
 
@@ -66,8 +68,8 @@ public class O2 extends Operator {
 	}
 
 	@Override
-	Status doSend(final List<String> list, final String message) {
-		return Status.FAILED;
+	OperationResult doSend(final List<String> list, final String message) {
+		return new WarningResult(R.string.not_implemented);
 	}
 
 	@Override

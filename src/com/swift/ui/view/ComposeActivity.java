@@ -40,12 +40,12 @@ import com.swift.model.Account;
 import com.swift.tasks.MaxCharacterCountTask;
 import com.swift.tasks.RemainingSmsTask;
 import com.swift.tasks.SendTask;
+import com.swift.tasks.results.OperationResult;
 import com.swift.ui.view.anim.AnimationRunner;
 import com.swift.ui.view.util.AccountSpinnerAdapter;
 import com.swift.ui.view.util.CharacterCountTextWatcher;
 import com.swift.ui.view.util.ContactSuggestionAdapter;
 import com.swift.ui.view.util.ContactSuggestionClickListener;
-import com.swift.utils.Notification;
 
 public class ComposeActivity extends Activity implements Observer, ActionBar.OnNavigationListener {
 
@@ -336,9 +336,9 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	 * Method used to display notifications on the main compose activity
 	 * 
 	 * @param paramNotification
-	 *            Notification objects for different event's
+	 *            OperationResult objects for different event's
 	 */
-	public void addNotification(final Notification paramNotification) {
+	public void addNotification(final OperationResult paramNotification) {
 
 		final int FADE_DURATION = 500;
 

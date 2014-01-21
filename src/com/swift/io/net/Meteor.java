@@ -6,7 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.swift.model.Account;
-import com.swift.tasks.Status;
+import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.OperationResult;
+import com.swift.tasks.results.Successful;
 
 public class Meteor extends Operator {
 
@@ -67,7 +69,7 @@ public class Meteor extends Operator {
 	}
 
 	@Override
-	Status doSend(final List<String> recipients, final String message) {
+	OperationResult doSend(final List<String> recipients, final String message) {
 		this.addRecipients(recipients);
 
 		final ConnectionManager sendManager = new ConnectionManager(Meteor.SMS_URL);
@@ -75,7 +77,7 @@ public class Meteor extends Operator {
 		sendManager.addPostHeader(Meteor.POST_MESSAGE_TEXT, message);
 		final boolean isSent = sendManager.connect().contains(Meteor.SEND_SUCCESS_TEXT);
 
-		return isSent ? Status.SUCCESS : Status.FAILED;
+		return isSent ? new Successful() : new Failure();
 	}
 
 	private void addRecipients(final List<String> recipients) {
