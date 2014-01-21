@@ -1,10 +1,13 @@
 package com.swift.io.net;
 
+import android.util.Log;
+
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.swift.InternalString;
 import com.swift.model.Account;
 import com.swift.tasks.Status;
 
@@ -40,6 +43,8 @@ public class EMobile extends Operator {
 	private static final String JSON_REMAINING_FREE_SMS = "remainingFreeSMS";
 	private static final String JSON_FREE_SMS = "FreeSMS";
 
+    private int localRemainingSmsCount = -1;
+
 	public EMobile(final Account account) {
 		super(account);
 	}
@@ -64,7 +69,8 @@ public class EMobile extends Operator {
 		try {
 			final JSONObject smsJson = new JSONObject(smsHtml);
 			final JSONObject freeSmsJson = smsJson.getJSONObject(JSON_FREE_SMS);
-			return freeSmsJson.getInt(JSON_REMAINING_FREE_SMS);
+            localRemainingSmsCount = freeSmsJson.getInt(JSON_REMAINING_FREE_SMS);
+			return localRemainingSmsCount;
 		} catch (final JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -75,9 +81,12 @@ public class EMobile extends Operator {
 	@Override
 	Status doSend(final List<String> list, final String message) {
 
+        final int expectedRemainingSms = localRemainingSmsCount - list.size();
+
 		this.addEnteredMSISDNs(list);
-		final String resultHtml = this.sendMessage(message);
-		final boolean isSent = resultHtml.contains(EMobile.SEND_SUCCESS_TEXT);
+		this.sendMessage(message);
+
+        boolean isSent = hasRemainingSmsDecremented(expectedRemainingSms);
 		return isSent ? Status.SUCCESS : Status.FAILED;
 	}
 
@@ -139,4 +148,14 @@ public class EMobile extends Operator {
 
 		return charLimit;
 	}
+
+    private boolean hasRemainingSmsDecremented(final int expectedSmsRemaining){
+        for(int x = 0; x < 5; x++) {
+            if(getRemainingSMS() == expectedSmsRemaining){
+                return true;
+            }
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+        }
+        return false;
+    }
 }
