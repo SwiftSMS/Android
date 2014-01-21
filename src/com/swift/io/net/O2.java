@@ -2,13 +2,11 @@ package com.swift.io.net;
 
 import java.util.List;
 
-import android.util.Log;
-
-import com.swift.InternalString;
 import com.swift.R;
 import com.swift.model.Account;
 import com.swift.tasks.results.OperationResult;
 import com.swift.tasks.results.WarningResult;
+import com.swift.utils.HTMLParser;
 
 public class O2 extends Operator {
 
@@ -30,41 +28,35 @@ public class O2 extends Operator {
 		final ConnectionManager manager = new ConnectionManager("https://www.o2online.ie/idm/login/redirect.jsp", "GET", false);
 		final String html = manager.connect();
 
-		String requestId = "";
-		final String startText = "request_id\" value=\"";
-		final int startPos = html.indexOf(startText) + startText.length();
-		final int endPos = html.indexOf("\">", startPos);
-
-		Log.d(InternalString.LOG_TAG, "getRequestId - startPos = " + startPos);
-		Log.d(InternalString.LOG_TAG, "getRequestId - endPos = " + endPos);
-
-		if (startPos > startText.length()) {
-			requestId = html.substring(startPos, endPos);
-		}
-		// <input type="hidden" name="request_id" value="-3152757608710563281">
-		Log.d(InternalString.LOG_TAG, "getRequestId - requestId = " + requestId);
-		return requestId;
+		final String prefix = "request_id\" value=\"";
+		final String postfix = "\">";
+		return HTMLParser.parseHtml(html, prefix, postfix);
 	}
 
 	@Override
 	int doGetRemainingSMS() {
-		final ConnectionManager manager = new ConnectionManager("http://messaging.o2online.ie/o2om_smscenter_new.osp?SID=_", "GET", false);
+		final String sessionId = this.getSessionId();
+		final String url = "http://messaging.o2online.ie/o2om_smscenter_new.osp?MsgContentID=-1&SID=_&SID=" + sessionId;
+
+		final ConnectionManager manager = new ConnectionManager(url, "GET", false);
 		final String html = manager.connect();
 
-		int remainingSmsCount = -1;
-		final String startText = "spn_WebtextFree\">";
-		final int startPos = html.indexOf(startText) + startText.length();
-		final int endPos = html.indexOf("</span>", startPos);
+		final String prefix = "spn_WebtextFree\">";
+		final String postfix = "</span>";
+		final String remainingSMS = HTMLParser.parseHtml(html, prefix, postfix);
+		return Integer.parseInt(remainingSMS);
+	}
 
-		Log.d(InternalString.LOG_TAG, "doGetRemainingSMS - startPos = " + startPos);
-		Log.d(InternalString.LOG_TAG, "doGetRemainingSMS - endPos = " + endPos);
+	private String getSessionId() {
+		final ConnectionManager manager = new ConnectionManager(
+				"http://messaging.o2online.ie/ssomanager.osp?APIID=AUTH-WEBSSO&TargetApp=o2om_smscenter_new.osp%3FMsgContentID%3D-1%26SID%3D_", "GET",
+				false);
+		final String html = manager.connect();
 
-		if (startPos > startText.length()) {
-			remainingSmsCount = Integer.parseInt(html.substring(startPos, endPos));
-		}
-		// <input type="hidden" name="request_id" value="-3152757608710563281">
-		Log.d(InternalString.LOG_TAG, "doGetRemainingSMS - remainingSmsCount = " + remainingSmsCount);
-		return remainingSmsCount;
+		final String prefix = "GLOBAL_SESSION_ID = '";
+		final String postfix = "';";
+
+		return HTMLParser.parseHtml(html, prefix, postfix);
 	}
 
 	@Override
