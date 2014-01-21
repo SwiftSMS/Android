@@ -5,6 +5,7 @@
     <string name="type_message">Type message</string>
     <string name="to">To</string>
     <string name="action_add_account">Add Account</string>
+    <string name="hint_add_account_login_help">Enter your Web Text login details.</string>
     <string name="hint_mob_number">Username</string>
     <string name="hint_password">Password</string>
     <string name="hint_acc_name_opt">Account name (optional)</string>
