@@ -81,13 +81,13 @@ public class Meteor extends Operator {
 	}
 
 	private void addRecipients(final List<String> recipients) {
-		final StringBuilder sb = new StringBuilder(Meteor.POST_VALUE_NO_ID);
-		sb.append(recipients.remove(0));
+		final StringBuilder sb = new StringBuilder();
 		for (final String recipient : recipients) {
-			sb.append(",");
 			sb.append(Meteor.POST_VALUE_NO_ID);
 			sb.append(recipient);
+			sb.append(",");
 		}
+		sb.deleteCharAt(sb.length() - 1); // remove trailing comma
 
 		final ConnectionManager addManager = new ConnectionManager(Meteor.SMS_URL);
 		addManager.addPostHeader(Meteor.POST_AJAX_REQUEST, Meteor.POST_VALUE_ADD_RECIPIENT);
