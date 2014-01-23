@@ -35,10 +35,9 @@ public class O2 extends Operator {
 
 	@Override
 	int doGetRemainingSMS() {
-		final String sessionId = this.getSessionId();
-		final String url = "http://messaging.o2online.ie/o2om_smscenter_new.osp?MsgContentID=-1&SID=_&SID=" + sessionId;
+		final String webtextUrl = "http://messaging.o2online.ie/" + this.getWebtextUrl();
 
-		final ConnectionManager manager = new ConnectionManager(url, "GET", false);
+		final ConnectionManager manager = new ConnectionManager(webtextUrl, "GET", false);
 		final String html = manager.connect();
 
 		final String prefix = "spn_WebtextFree\">";
@@ -52,12 +51,14 @@ public class O2 extends Operator {
 		return remainingSMSCount;
 	}
 
-	private String getSessionId() {
-		final ConnectionManager manager = new ConnectionManager("http://messaging.o2online.ie/ssomanager.osp?APIID=AUTH-WEBSSO", "GET", false);
+	private String getWebtextUrl() {
+		final ConnectionManager manager = new ConnectionManager(
+				"http://messaging.o2online.ie/ssomanager.osp?APIID=AUTH-WEBSSO&TargetApp=o2om_smscenter_new.osp%3FMsgContentID%3D-1%26SID%3D_", "GET",
+				false);
 		final String html = manager.connect();
 
-		final String prefix = "GLOBAL_SESSION_ID = '";
-		final String postfix = "';";
+		final String prefix = "name=\"frame_content\" src=\"";
+		final String postfix = "\"";
 
 		return HTMLParser.parseHtml(html, prefix, postfix);
 	}
