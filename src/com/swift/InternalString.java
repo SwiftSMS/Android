@@ -22,6 +22,11 @@ public class InternalString {
 	public static final String ACTIVE_ACCOUNT = "activeAccount";
 
 	/**
+	 * This key is used to store whether WRITE_SMS permission is enabled (Used for post KitKat devices).
+	 */
+	public static final String WRITE_SMS_ENABLED = "com.swift.app.prefs.writesms.enabled";
+
+	/**
 	 * This is the default character used to separate contacts when entering multiple recipients.
 	 */
 	public static final String DEFAULT_CONTACT_SEPARATOR = ", ";

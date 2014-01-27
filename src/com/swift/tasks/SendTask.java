@@ -4,12 +4,14 @@ import static com.swift.InternalString.COLON_SPACE;
 import static com.swift.InternalString.EMPTY_STRING;
 import static com.swift.InternalString.FAILED_TO_ENABLE_WRITE_PERMISSION;
 import static com.swift.InternalString.LOG_TAG;
+import static com.swift.InternalString.PREFS_KEY;
 import static com.swift.InternalString.SMSTO;
 import static com.swift.InternalString.SMS_BODY;
 import static com.swift.InternalString.SMS_PROVIDER_FAILURE;
 import static com.swift.InternalString.SMS_PROVIDER_MESSAGE_ADDRESS;
 import static com.swift.InternalString.SMS_PROVIDER_MESSAGE_BODY;
 import static com.swift.InternalString.SMS_PROVIDER_SENTBOX_URI;
+import static com.swift.InternalString.WRITE_SMS_ENABLED;
 import static com.swift.tasks.Status.FAILED;
 import static com.swift.tasks.Status.SUCCESS;
 
@@ -27,6 +29,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -51,16 +55,17 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 
 	private static int FAILURE_NOTIFICATION = 127;
 
-	private final EditText messageEditText;
-	private final ProgressBar progressBar;
-	private final EditText recipientsEditText;
 	private final ComposeActivity activity;
-	private final Operator operator;
+	private final EditText messageEditText;
+	private final EditText recipientsEditText;
+	private final ProgressBar progressBar;
+	private final ImageButton sendButton;
 
 	private String recipients;
 	private String message;
 
-	private final ImageButton sendButton;
+	private final Operator operator;
+	private final SharedPreferences preferences;
 
 	/**
 	 * Create a new instance of the sending Task.
@@ -77,6 +82,7 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 		this.sendButton = (ImageButton) activity.findViewById(R.id.button_compose_send);
 		this.progressBar = (ProgressBar) activity.findViewById(R.id.progressbar_compose);
 		this.recipientsEditText = (EditText) activity.findViewById(R.id.text_compose_recipients);
+		this.preferences = activity.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
 	}
 
 	@Override
@@ -142,17 +148,24 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 	@TargetApi(19)
 	private void kitKatEnableSMSWritePermission() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-			try {
-				final AppOpsManager mAppOps = (AppOpsManager) this.activity.getSystemService(Context.APP_OPS_SERVICE);
-				final int WRITE_SMS = 15;
+			final boolean isWriteEnabled = this.preferences.getBoolean(WRITE_SMS_ENABLED, false);
+			if (!isWriteEnabled) {
+				try {
+					final AppOpsManager mAppOps = (AppOpsManager) this.activity.getSystemService(Context.APP_OPS_SERVICE);
+					final int WRITE_SMS = 15;
 
-				final PackageManager mPm = this.activity.getPackageManager();
-				final PackageInfo mPackageInfo = mPm.getPackageInfo(this.activity.getPackageName(), PackageManager.GET_ACTIVITIES);
+					final PackageManager mPm = this.activity.getPackageManager();
+					final PackageInfo mPackageInfo = mPm.getPackageInfo(this.activity.getPackageName(), PackageManager.GET_ACTIVITIES);
 
-				final Method method = mAppOps.getClass().getMethod("setMode", int.class, int.class, String.class, int.class);
-				method.invoke(mAppOps, WRITE_SMS, mPackageInfo.applicationInfo.uid, mPackageInfo.packageName, AppOpsManager.MODE_ALLOWED);
-			} catch (final Exception e) {
-				Log.e(LOG_TAG, FAILED_TO_ENABLE_WRITE_PERMISSION, e);
+					final Method method = mAppOps.getClass().getMethod("setMode", int.class, int.class, String.class, int.class);
+					method.invoke(mAppOps, WRITE_SMS, mPackageInfo.applicationInfo.uid, mPackageInfo.packageName, AppOpsManager.MODE_ALLOWED);
+
+					final Editor editor = this.preferences.edit();
+					editor.putBoolean(WRITE_SMS_ENABLED, true);
+					editor.apply();
+				} catch (final Exception e) {
+					Log.e(LOG_TAG, FAILED_TO_ENABLE_WRITE_PERMISSION, e);
+				}
 			}
 		}
 	}
