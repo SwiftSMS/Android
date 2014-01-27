@@ -2,6 +2,7 @@ package com.swift.tasks;
 
 import static com.swift.InternalString.COLON_SPACE;
 import static com.swift.InternalString.EMPTY_STRING;
+import static com.swift.InternalString.FAILED_TO_ENABLE_WRITE_PERMISSION;
 import static com.swift.InternalString.LOG_TAG;
 import static com.swift.InternalString.SMSTO;
 import static com.swift.InternalString.SMS_BODY;
@@ -12,9 +13,11 @@ import static com.swift.InternalString.SMS_PROVIDER_SENTBOX_URI;
 import static com.swift.tasks.Status.FAILED;
 import static com.swift.tasks.Status.SUCCESS;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import android.annotation.TargetApi;
+import android.app.AppOpsManager;
 import android.app.Notification;
 import android.app.Notification.BigTextStyle;
 import android.app.Notification.Builder;
@@ -24,6 +27,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -112,6 +117,8 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 	 * Take the data from this {@link SendTask} and insert into the Android SMS provider.
 	 */
 	private void insertMessageInSmsDb() {
+		this.kitKatEnableSMSWritePermission();
+
 		for (final String recipient : ContactUtils.getContactsAsList(this.recipients)) {
 			try {
 				final ContentValues values = new ContentValues();
@@ -122,6 +129,30 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 				resolver.insert(smsUri, values);
 			} catch (final Exception e) {
 				Log.e(LOG_TAG, SMS_PROVIDER_FAILURE, e);
+			}
+		}
+	}
+
+	/**
+	 * <b>Muhahahahahahahahahahah</b>
+	 * <p>
+	 * Hack to enable WRITE_SMS permission on post KitKat devices.
+	 * </p>
+	 */
+	@TargetApi(19)
+	private void kitKatEnableSMSWritePermission() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			try {
+				final AppOpsManager mAppOps = (AppOpsManager) this.activity.getSystemService(Context.APP_OPS_SERVICE);
+				final int WRITE_SMS = 15;
+
+				final PackageManager mPm = this.activity.getPackageManager();
+				final PackageInfo mPackageInfo = mPm.getPackageInfo(this.activity.getPackageName(), PackageManager.GET_ACTIVITIES);
+
+				final Method method = mAppOps.getClass().getMethod("setMode", int.class, int.class, String.class, int.class);
+				method.invoke(mAppOps, WRITE_SMS, mPackageInfo.applicationInfo.uid, mPackageInfo.packageName, AppOpsManager.MODE_ALLOWED);
+			} catch (final Exception e) {
+				Log.e(LOG_TAG, FAILED_TO_ENABLE_WRITE_PERMISSION, e);
 			}
 		}
 	}

@@ -77,6 +77,11 @@ public class InternalString {
 	public static final String SMS_PROVIDER_FAILURE = "Could not insert message to SMS provider";
 
 	/**
+	 * The message to log when changing the android.permission.WRITE_SMS permission programmatically fails.
+	 */
+	public static final String FAILED_TO_ENABLE_WRITE_PERMISSION = "Failed to enable WRITE_SMS permissions";
+
+	/**
 	 * The tag to use when logging messages.
 	 */
 	public static final String LOG_TAG = "com.swift.log";
