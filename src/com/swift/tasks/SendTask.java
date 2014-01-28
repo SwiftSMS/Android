@@ -54,6 +54,7 @@ import com.swift.utils.ContactUtils;
 public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 
 	private static int FAILURE_NOTIFICATION = 127;
+	private static int SUCCESS_NOTIFICATION = 1;
 
 	private final ComposeActivity activity;
 	private final EditText messageEditText;
@@ -66,6 +67,7 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 
 	private final Operator operator;
 	private final SharedPreferences preferences;
+	private final NotificationManager notificationService;
 
 	/**
 	 * Create a new instance of the sending Task.
@@ -83,6 +85,7 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 		this.progressBar = (ProgressBar) activity.findViewById(R.id.progressbar_compose);
 		this.recipientsEditText = (EditText) activity.findViewById(R.id.text_compose_recipients);
 		this.preferences = activity.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
+		this.notificationService = (NotificationManager) this.activity.getSystemService(Context.NOTIFICATION_SERVICE);
 	}
 
 	@Override
@@ -112,11 +115,8 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 			this.recipientsEditText.requestFocus();
 			this.messageEditText.setText(EMPTY_STRING);
 			this.insertMessageInSmsDb();
-		} else if (result.getStatus() == FAILED) {
-			final Notification notif = this.buildFailureNotification();
-			final NotificationManager service = (NotificationManager) this.activity.getSystemService(Context.NOTIFICATION_SERVICE);
-			service.notify(++FAILURE_NOTIFICATION, notif);
 		}
+		this.sendNotification(result.getStatus());
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 	 * Hack to enable WRITE_SMS permission on post KitKat devices.
 	 * </p>
 	 */
-	@TargetApi(19)
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	private void kitKatEnableSMSWritePermission() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			final boolean isWriteEnabled = this.preferences.getBoolean(WRITE_SMS_ENABLED, false);
@@ -170,6 +170,26 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 		}
 	}
 
+	private void sendNotification(final com.swift.tasks.Status status) {
+		if (!this.recipientsEditText.isShown()) {
+			if (status == SUCCESS) {
+				final Notification notif = this.buildSuccessNotification();
+				this.notificationService.notify(SUCCESS_NOTIFICATION, notif);
+				this.notificationService.cancel(SUCCESS_NOTIFICATION);
+			} else if (status == FAILED) {
+				final Notification notif = this.buildFailureNotification();
+				this.notificationService.notify(++FAILURE_NOTIFICATION, notif);
+			}
+		}
+	}
+
+	private Notification buildSuccessNotification() {
+		final Builder builder = new Notification.Builder(this.activity);
+		builder.setTicker(this.getStringRes(R.string.message_sent));
+		builder.setSmallIcon(R.drawable.ic_launcher);
+		return this.build(builder);
+	}
+
 	/**
 	 * Build up an Android notification for this {@link SendTask} to inform the user of a message that failed to send.
 	 * 
@@ -177,38 +197,36 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 	 */
 	private Notification buildFailureNotification() {
 		final Builder builder = new Notification.Builder(this.activity);
+		final String message = this.getStringRes(R.string.to) + COLON_SPACE + this.recipients;
 		builder.setContentTitle(this.getStringRes(R.string.message_failed_to_send));
 		builder.setSmallIcon(R.drawable.ic_launcher);
 		builder.setVibrate(new long[] { 10, 200 });
 		builder.setContentIntent(this.buildFailureIntent());
 		builder.setAutoCancel(true);
-		final String message = this.getStringRes(R.string.to) + COLON_SPACE + this.recipients;
 		builder.setContentText(message);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-			this.setNotificationStyle(builder, message);
-			return this.buildJB(builder);
-		} else {
-			return this.build(builder);
-		}
+		this.setNotificationStyle(builder, message);
+		return this.build(builder);
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	private void setNotificationStyle(final Builder builder, final String message) {
-		final BigTextStyle style = new Notification.BigTextStyle();
-		style.setSummaryText(message);
-		style.bigText(this.message);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			final BigTextStyle style = new Notification.BigTextStyle();
+			style.setSummaryText(message);
+			style.bigText(this.message);
 
-		builder.setStyle(style);
+			builder.setStyle(style);
+		}
 	}
 
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	private Notification buildJB(final Notification.Builder builder) {
-		return builder.build();
-	}
-
 	@SuppressWarnings("deprecation")
 	private Notification build(final Notification.Builder builder) {
-		return builder.getNotification();
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+			return builder.build();
+		} else {
+			return builder.getNotification();
+		}
 	}
 
 	private PendingIntent buildFailureIntent() {
