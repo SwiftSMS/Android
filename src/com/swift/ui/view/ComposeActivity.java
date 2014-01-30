@@ -115,22 +115,20 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		if (iAction.equals(Intent.ACTION_SEND) && iType != null && iType.equals("text/plain")) {
 			this.messageEditText.setText(intent.getStringExtra(Intent.EXTRA_TEXT));
 		} else if (iAction.equals(Intent.ACTION_SEND) || iAction.equals(Intent.ACTION_SENDTO)) {
-			if (iData != null) {
-				final String smsto = iData.getSchemeSpecificPart();
-				this.recipientEdittext.setText(smsto + DEFAULT_CONTACT_SEPARATOR);
-				final String smsBody = this.getIntent().getStringExtra(SMS_BODY);
-				if (smsBody != null) {
-					this.messageEditText.setText(smsBody);
-				} else {
-					this.messageEditText.setText(persistedMessage);
-				}
+			final String smsto = iData.getSchemeSpecificPart();
+			this.recipientEdittext.setText(smsto + DEFAULT_CONTACT_SEPARATOR);
+
+			final String smsBody = this.getIntent().getStringExtra(SMS_BODY);
+			this.messageEditText.setText(persistedMessage);
+			if (smsBody != null) {
+				this.messageEditText.setText(smsBody);
+			}
+			this.messageEditText.requestFocus();
+		} else if (iAction.equals(Intent.ACTION_MAIN)) {
+			this.recipientEdittext.setText(persistedRecipient);
+			this.messageEditText.setText(persistedMessage);
+			if (persistedRecipient != null && !persistedRecipient.isEmpty()) {
 				this.messageEditText.requestFocus();
-			} else {
-				this.recipientEdittext.setText(persistedRecipient);
-				this.messageEditText.setText(persistedMessage);
-				if (persistedRecipient != null && !persistedRecipient.isEmpty()) {
-					this.messageEditText.requestFocus();
-				}
 			}
 		}
 	}
