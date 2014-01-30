@@ -148,17 +148,18 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	/**
 	 * This method gets the key that is used to store the draft message in {@link SharedPreferences}.
 	 * <p>
-	 * There is a different key based on the launch context.
+	 * The key is unique based on the launch context.
 	 * <ul>
 	 * <li>A default key is used when the {@link Activity} is entered via the launcher.</li>
-	 * <li>There is a unique key for each contact when the {@link Activity} is entered through a send {@link Intent}.</li>
+	 * <li>When the {@link Activity} is started from an {@link Intent} a unique key derived from the {@link Intent} is used.</li>
 	 * </ul>
 	 * </p>
 	 * 
 	 * @return The {@link SharedPreferences} key to persist the message in the current launch context.
 	 */
 	private String getMessagePrefKey() {
-		return PERSISTED_MESSAGE_BASE_KEY + this.getIntent().getData();
+		final Intent intent = this.getIntent();
+		return PERSISTED_MESSAGE_BASE_KEY + intent.getAction() + intent.getType() + intent.getData();
 	}
 
 	/**
@@ -169,7 +170,8 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	 * @return The {@link SharedPreferences} key to persist the message recipients in the current launch context.
 	 */
 	private String getRecipientPrefKey() {
-		return PERSISTED_RECIPIENT_BASE_KEY + this.getIntent().getData();
+		final Intent intent = this.getIntent();
+		return PERSISTED_RECIPIENT_BASE_KEY + intent.getAction() + intent.getType() + intent.getData();
 	}
 
 	@Override
