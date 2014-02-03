@@ -57,6 +57,7 @@ public class Vodafone extends Operator {
 	private static final String SEND_URL = "https://www.vodafone.ie/myv/messaging/webtext/Process.shtml";
 
 	private static final String LOGIN_SUCCESS_STRING = "Sign out";
+	private static final String LOGIN_ACCOUNT_LOCKED = "your account has been locked";
 	private static final String LOGIN_POST_PASSWORD = "password";
 	private static final String LOGIN_POST_USERNAME = "username";
 	private static final String LOGIN_URL = "https://www.vodafone.ie/myv/services/login/Login.shtml";
@@ -169,11 +170,7 @@ public class Vodafone extends Operator {
 		this.displayCaptchaDialog();
 		this.downloadCaptcha();
 		while (this.answerEditText.isShown()) {
-			try {
-				Thread.sleep(100);
-			} catch (final InterruptedException e) {
-				e.printStackTrace();
-			}
+			this.waitFor();
 		}
 		return this.answerEditText.getText().toString();
 	}
@@ -237,7 +234,7 @@ public class Vodafone extends Operator {
 		final String token = HTMLParser.parseHtml(sendHtml, HTML_TOKEN_POSTTEXT, HTML_TOKEN_PRETEXT);
 		final String code = this.getVerificationCode();
 
-		final ConnectionManager manager = new ConnectionManager(VERIFICATION_URL, "GET", false);
+		final ConnectionManager manager = new ConnectionManager(VERIFICATION_URL);
 		manager.addPostHeader(SEND_POST_TOKEN, token);
 		manager.addPostHeader(VERIFY_POST_PIN, code);
 		final String verifyHtml = manager.connect();
@@ -248,12 +245,11 @@ public class Vodafone extends Operator {
 
 	private String getVerificationCode() {
 		this.displayVerificationDialog();
-		while (this.verificationEditText.isShown()) {
-			try {
-				Thread.sleep(100);
-			} catch (final InterruptedException e) {
-				e.printStackTrace();
-			}
+		while (this.verificationEditText == null || !this.verificationEditText.isShown()) { // wait until dialog appears
+			this.waitFor();
+		}
+		while (this.verificationEditText.isShown()) { // wait until dialog is dismissed
+			this.waitFor();
 		}
 		return this.verificationEditText.getText().toString();
 	}
@@ -275,6 +271,14 @@ public class Vodafone extends Operator {
 				dialog.show();
 			}
 		});
+	}
+
+	private void waitFor() {
+		try {
+			Thread.sleep(100);
+		} catch (final InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
