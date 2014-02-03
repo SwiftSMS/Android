@@ -1,9 +1,10 @@
 package com.swift.tasks;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.swift.R;
@@ -15,6 +16,7 @@ import com.swift.io.net.Operator;
 public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
 
 	private final Operator operator;
+	private final TextView doneButton;
 	private final ImageView verifyImage;
 	private final int green;
 	private final int red;
@@ -29,8 +31,9 @@ public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
 	 * @param verifyImage
 	 *            The verify image, rotates once task is complete should be stopped.
 	 */
-	public VerifyTask(final Activity context, final Operator operator, final ImageView verifyImage) {
+	public VerifyTask(final Context context, final Operator operator, final ImageView verifyImage, final TextView buttonDone) {
 		this.operator = operator;
+		this.doneButton = buttonDone;
 		this.verifyImage = verifyImage;
 		this.red = context.getResources().getColor(R.color.red);
 		this.green = context.getResources().getColor(R.color.green);
@@ -50,6 +53,7 @@ public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
 		this.verifyImage.clearAnimation();
 		final View layout = (View) this.verifyImage.getParent();
 		if (result) {
+			this.doneButton.setEnabled(true);
 			layout.setBackgroundColor(this.green);
 		} else {
 			layout.setBackgroundColor(this.red);

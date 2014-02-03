@@ -105,9 +105,10 @@ public class AddAccountActivity extends Activity {
 	 * Set the enabled state or the {@link ActionBar} buttons based on the contents of the phone number & password fields.
 	 */
 	private void updateDoneButton() {
+		this.buttonDone.setEnabled(false);
+
 		final boolean isMessageEmpty = !this.textAccNumber.getText().toString().isEmpty();
 		final boolean isRecipientsEmpty = !this.textAccPassword.getText().toString().isEmpty();
-		this.buttonDone.setEnabled(isMessageEmpty && isRecipientsEmpty);
 		this.buttonVerify.setEnabled(isMessageEmpty && isRecipientsEmpty);
 		this.buttonVerify.setBackgroundColor(Color.TRANSPARENT);
 	}
@@ -153,7 +154,7 @@ public class AddAccountActivity extends Activity {
 
 		final Account account = this.makeAccountFromUI();
 		final Operator operator = OperatorFactory.getOperator(account);
-		this.verifyTask = new VerifyTask(this, operator, this.buttonVerifyIcon).execute();
+		this.verifyTask = new VerifyTask(this, operator, this.buttonVerifyIcon, this.buttonDone).execute();
 	}
 
 	/**
