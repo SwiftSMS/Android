@@ -8,4 +8,5 @@
     <dimen name="activity_margin">16dp</dimen>
     <dimen name="element_margin">8dp</dimen>
     <dimen name="element_margin_half">4dp</dimen>
+    <dimen name="element_border">2dp</dimen>
 </resources>

@@ -1,11 +1,9 @@
 package com.swift.tasks;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.swift.R;
 import com.swift.io.net.Operator;
@@ -18,25 +16,21 @@ public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
 	private final Operator operator;
 	private final TextView doneButton;
 	private final ImageView verifyImage;
-	private final int green;
-	private final int red;
 
 	/**
 	 * Create a new instance of the verify Task.
 	 * 
-	 * @param context
-	 *            The add account context used to display a {@link Toast} message.
 	 * @param operator
 	 *            The network operator used to test the account details.
 	 * @param verifyImage
 	 *            The verify image, rotates once task is complete should be stopped.
+	 * @param buttonDone
+	 *            The actionbar's Done button, used to enable or disable.
 	 */
-	public VerifyTask(final Context context, final Operator operator, final ImageView verifyImage, final TextView buttonDone) {
+	public VerifyTask(final Operator operator, final ImageView verifyImage, final TextView buttonDone) {
 		this.operator = operator;
 		this.doneButton = buttonDone;
 		this.verifyImage = verifyImage;
-		this.red = context.getResources().getColor(R.color.red);
-		this.green = context.getResources().getColor(R.color.green);
 	}
 
 	@Override
@@ -54,9 +48,9 @@ public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
 		final View layout = (View) this.verifyImage.getParent();
 		if (result) {
 			this.doneButton.setEnabled(true);
-			layout.setBackgroundColor(this.green);
+			layout.setBackgroundResource(R.drawable.green_highlight);
 		} else {
-			layout.setBackgroundColor(this.red);
+			layout.setBackgroundResource(R.drawable.red_highlight);
 		}
 	}
 }

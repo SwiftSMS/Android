@@ -154,7 +154,7 @@ public class AddAccountActivity extends Activity {
 
 		final Account account = this.makeAccountFromUI();
 		final Operator operator = OperatorFactory.getOperator(account);
-		this.verifyTask = new VerifyTask(this, operator, this.buttonVerifyIcon, this.buttonDone).execute();
+		this.verifyTask = new VerifyTask(operator, this.buttonVerifyIcon, this.buttonDone).execute();
 	}
 
 	/**
