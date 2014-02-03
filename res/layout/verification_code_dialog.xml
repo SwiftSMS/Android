@@ -3,27 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/label_verification_code"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
-        style="@android:style/TextAppearance.Large"
-        android:text="@string/enter_verification_code"
-        android:padding="@dimen/element_margin" >
-
-    </TextView>
-
     <EditText
         android:id="@+id/text_verification_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textNoSuggestions"
-        android:layout_below="@+id/label_verification_code"
-        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/activity_margin"
         android:ems="10"
-        android:hint="@string/code" >
+        android:hint="@string/code"
+        android:inputType="textNoSuggestions" >
 
         <requestFocus />
     </EditText>
