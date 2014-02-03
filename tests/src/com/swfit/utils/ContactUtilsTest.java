@@ -1,8 +1,11 @@
 package com.swfit.utils;
 
-import com.swift.utils.ContactUtils;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
+
+import com.swift.utils.ContactUtils;
 
 public class ContactUtilsTest extends TestCase {
 
@@ -83,9 +86,9 @@ public class ContactUtilsTest extends TestCase {
 	public void testGetContactsAsListWithSemiColon() {
 		assertEquals("[084798465]", ContactUtils.getContactsAsList(this.tStrTwoContactsWithSemi).toString());
 		assertEquals("[0847898789, 086131313]", ContactUtils.getContactsAsList(this.tStrThreeContactsWithSemi).toString());
-		assertEquals("[+35385114411]", ContactUtils.getContactsAsList(this.tStrThreeContactsWithSemiAtEnd).toString());
+		assertEquals("[085114411]", ContactUtils.getContactsAsList(this.tStrThreeContactsWithSemiAtEnd).toString());
 		assertEquals("[]", ContactUtils.getContactsAsList(this.tStrFourContactsWithCharsAndSemi).toString());
-		assertEquals("[+353831129933, +353812225554]", ContactUtils.getContactsAsList(this.tStrContactsWithPointlessSeparatorsAndSemi).toString());
+		assertEquals("[0831129933, 0812225554]", ContactUtils.getContactsAsList(this.tStrContactsWithPointlessSeparatorsAndSemi).toString());
 	}
 
 	public void testTrimSeparators() {
@@ -106,5 +109,22 @@ public class ContactUtilsTest extends TestCase {
 		assertEquals("first_0847898789_contact, second co086131313ntact, last contact", ContactUtils.trimSeparators(this.tStrThreeContactsWithSemi));
 		assertEquals("first contact(+35385114411), second contact, last contact", ContactUtils.trimSeparators(this.tStrThreeContactsWithSemiAtEnd));
 		assertEquals("a#contact, two-contacts, three&contacts, fo*r<contacts>", ContactUtils.trimSeparators(this.tStrFourContactsWithCharsAndSemi));
+	}
+
+	public void testRemoveIrishPrefixFromRecipients() {
+		final List<String> recipients = new ArrayList<String>();
+		recipients.add("+353871111111");
+		recipients.add("00353872222222");
+		recipients.add("353873333333");
+		recipients.add("0874444444");
+		recipients.add("0871135311");
+
+		final List<String> result = ContactUtils.removeIrishPrefixFromRecipients(recipients);
+
+		assertEquals("0871111111", result.get(0));
+		assertEquals("0872222222", result.get(1));
+		assertEquals("0873333333", result.get(2));
+		assertEquals("0874444444", result.get(3));
+		assertEquals("0871135311", result.get(4));
 	}
 }

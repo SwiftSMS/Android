@@ -17,7 +17,7 @@ public class ContactUtils {
 
 	private static final String NON_NUMBER_PATTERN = "[^\\d\\+]";
 	private final static String SEPARATOR_PATTERN;
-	private final static String IRISH_PREFIX = "+353";
+	private final static String IRISH_PREFIXS = "^(\\+353|00353|353)";
 	private final static String ZERO = "0";
 
 	static {
@@ -146,7 +146,7 @@ public class ContactUtils {
 		final List<String> newRecipients = new ArrayList<String>();
 
 		for (final String recipient : recipients) {
-			newRecipients.add(recipient.replace(IRISH_PREFIX, ZERO));
+			newRecipients.add(recipient.replaceAll(IRISH_PREFIXS, ZERO));
 		}
 		return newRecipients;
 	}
