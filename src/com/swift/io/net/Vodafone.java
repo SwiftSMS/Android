@@ -30,13 +30,21 @@ import com.swift.tasks.results.Failure;
 import com.swift.tasks.results.OperationResult;
 import com.swift.tasks.results.Successful;
 import com.swift.tasks.results.WarningResult;
+import com.swift.utils.HTMLParser;
 
 public class Vodafone extends Operator {
 
 	private static final int MAX_MSG_RECIPIENTS = 5;
+
 	private static final String CHARS_URL = "https://www.vodafone.ie/javascript/section.myv.webtext.js";
 	private static final String TOKEN_URL = "https://www.vodafone.ie/myv/messaging/webtext/index.jsp";
 	private static final String CAPTCHA_URL = "https://www.vodafone.ie/myv/messaging/webtext/Challenge.shtml";
+
+	private static final String HTML_TOKEN_PRETEXT = "\"";
+	private static final String HTML_TOKEN_POSTTEXT = "org.apache.struts.taglib.html.TOKEN\" value=\"";
+
+	private static final String VERIFY_POST_PIN = "confirmPin";
+	private static final String VERIFICATION_URL = "https://www.vodafone.ie/myv/messaging/webtext/send.shtml";
 
 	private static final String SMS_JSON_USED = "used";
 	private static final String SMS_JSON_TOTAL = "total";
@@ -53,12 +61,14 @@ public class Vodafone extends Operator {
 	private static final String LOGIN_POST_USERNAME = "username";
 	private static final String LOGIN_URL = "https://www.vodafone.ie/myv/services/login/Login.shtml";
 
-	private EditText answerEditText;
-	private ImageView imageView;
 	private Handler handler;
-	private ProgressBar progessBar;
-	private LayoutInflater inflater;
 	private Context context;
+	private LayoutInflater inflater;
+
+	private ImageView imageView;
+	private ProgressBar progessBar;
+	private EditText answerEditText;
+	private EditText verificationEditText;
 
 	public Vodafone(final Account account) {
 		super(account);
@@ -91,23 +101,37 @@ public class Vodafone extends Operator {
 		return isSent;
 	}
 
-	/**
-	 * Method to break a {@link List} into multiple smaller lists.
-	 * 
-	 * @param list
-	 *            The larger list to be broken down.
-	 * @param length
-	 *            The max length of a returned {@link List}.
-	 * @return A {@link List} containing the smaller broken down lists.
-	 */
-	private <T> List<List<T>> chopped(final List<T> list, final int length) {
-		final List<List<T>> parts = new ArrayList<List<T>>();
-		final int N = list.size();
-		for (int i = 0; i < N; i += length) {
-			final List<T> sublist = list.subList(i, Math.min(N, i + length));
-			parts.add(new ArrayList<T>(sublist));
+	@Override
+	int doGetRemainingSMS() {
+		final ConnectionManager manager = new ConnectionManager(SMS_URL, "GET", false);
+		final String smsHtml = manager.connect();
+
+		try {
+			final JSONObject smsJson = new JSONObject(smsHtml);
+			final int totalSms = smsJson.getInt(SMS_JSON_TOTAL);
+			final int usedSms = smsJson.getInt(SMS_JSON_USED);
+			return totalSms - usedSms;
+		} catch (final JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
 		}
-		return parts;
+	}
+
+	@Override
+	int doGetCharacterLimit() {
+		final ConnectionManager manager = new ConnectionManager(CHARS_URL, "GET", false);
+		final String html = manager.connect();
+
+		final String charsText = "var char_limit = ";
+		final int startPos = html.lastIndexOf(charsText) + charsText.length();
+		final int endPos = html.indexOf(";", startPos);
+		if (startPos > charsText.length()) {
+			final String characterCount = html.substring(startPos, endPos);
+			return Integer.valueOf(characterCount);
+		} else {
+			return -1;
+		}
 	}
 
 	private OperationResult sendMessage(final List<String> recipients, final String message) {
@@ -126,7 +150,13 @@ public class Vodafone extends Operator {
 			manager.addPostHeader(key, value);
 		}
 		manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
-		final boolean isSent = manager.connect().contains(SEND_SUCCESS_STRING);
+
+		final String sendHtml = manager.connect();
+		if (sendHtml.contains(HTML_TOKEN_POSTTEXT)) {
+			return this.handleVerificationCode(sendHtml);
+		}
+
+		final boolean isSent = sendHtml.contains(SEND_SUCCESS_STRING);
 		return isSent ? new Successful() : new Failure();
 	}
 
@@ -194,45 +224,75 @@ public class Vodafone extends Operator {
 		final ConnectionManager manager = new ConnectionManager(TOKEN_URL, "GET", false);
 		final String html = manager.connect();
 
-		final String charsText = "org.apache.struts.taglib.html.TOKEN\" value=\"";
-		final int startPos = html.indexOf(charsText) + charsText.length();
-		final int endPos = html.indexOf("\"", startPos);
-		if (startPos > charsText.length()) {
-			return html.substring(startPos, endPos);
-		}
-		return "";
+		return HTMLParser.parseHtml(html, HTML_TOKEN_POSTTEXT, HTML_TOKEN_PRETEXT);
 	}
 
-	@Override
-	int doGetRemainingSMS() {
-		final ConnectionManager manager = new ConnectionManager(SMS_URL, "GET", false);
-		final String smsHtml = manager.connect();
+	/**
+	 * When the {@link #sendMessage(List, String)} is redirected to an
+	 * 
+	 * @param sendHtml
+	 * @return
+	 */
+	private OperationResult handleVerificationCode(final String sendHtml) {
+		final String token = HTMLParser.parseHtml(sendHtml, HTML_TOKEN_POSTTEXT, HTML_TOKEN_PRETEXT);
+		final String code = this.getVerificationCode();
 
-		try {
-			final JSONObject smsJson = new JSONObject(smsHtml);
-			final int totalSms = smsJson.getInt(SMS_JSON_TOTAL);
-			final int usedSms = smsJson.getInt(SMS_JSON_USED);
-			return totalSms - usedSms;
-		} catch (final JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return -1;
-		}
+		final ConnectionManager manager = new ConnectionManager(VERIFICATION_URL, "GET", false);
+		manager.addPostHeader(SEND_POST_TOKEN, token);
+		manager.addPostHeader(VERIFY_POST_PIN, code);
+		final String verifyHtml = manager.connect();
+
+		final boolean isSent = verifyHtml.contains(SEND_SUCCESS_STRING);
+		return isSent ? new Successful() : new Failure();
 	}
 
-	@Override
-	int doGetCharacterLimit() {
-		final ConnectionManager manager = new ConnectionManager(CHARS_URL, "GET", false);
-		final String html = manager.connect();
-
-		final String charsText = "var char_limit = ";
-		final int startPos = html.lastIndexOf(charsText) + charsText.length();
-		final int endPos = html.indexOf(";", startPos);
-		if (startPos > charsText.length()) {
-			final String characterCount = html.substring(startPos, endPos);
-			return Integer.valueOf(characterCount);
-		} else {
-			return -1;
+	private String getVerificationCode() {
+		this.displayVerificationDialog();
+		while (this.verificationEditText.isShown()) {
+			try {
+				Thread.sleep(100);
+			} catch (final InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+		return this.verificationEditText.getText().toString();
+	}
+
+	private void displayVerificationDialog() {
+		this.handler.post(new Runnable() {
+			@Override
+			public void run() {
+				final View layout = Vodafone.this.inflater.inflate(R.layout.verification_code_dialog, null);
+				Vodafone.this.verificationEditText = (EditText) layout.findViewById(R.id.text_verification_code);
+
+				final Builder builder = new AlertDialog.Builder(Vodafone.this.context);
+				builder.setTitle(R.string.enter_verification_code);
+				builder.setView(layout);
+				builder.setPositiveButton(R.string.ok, null);
+
+				final AlertDialog dialog = builder.create();
+				dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+				dialog.show();
+			}
+		});
+	}
+
+	/**
+	 * Method to break a {@link List} into multiple smaller lists.
+	 * 
+	 * @param list
+	 *            The larger list to be broken down.
+	 * @param length
+	 *            The max length of a returned {@link List}.
+	 * @return A {@link List} containing the smaller broken down lists.
+	 */
+	private <T> List<List<T>> chopped(final List<T> list, final int length) {
+		final List<List<T>> parts = new ArrayList<List<T>>();
+		final int N = list.size();
+		for (int i = 0; i < N; i += length) {
+			final List<T> sublist = list.subList(i, Math.min(N, i + length));
+			parts.add(new ArrayList<T>(sublist));
+		}
+		return parts;
 	}
 }
