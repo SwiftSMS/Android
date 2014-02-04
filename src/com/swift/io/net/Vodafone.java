@@ -53,11 +53,12 @@ public class Vodafone extends Operator {
 	private static final String SEND_SUCCESS_STRING = "Message sent!";
 	private static final String SEND_POST_CAPTCHA = "jcaptcha_response";
 	private static final String SEND_POST_MESSAGE = "message";
+	private static final String SEND_POST_X = "x";
+	private static final String SEND_POST_Y = "y";
 	private static final String SEND_POST_TOKEN = "org.apache.struts.taglib.html.TOKEN";
 	private static final String SEND_URL = "https://www.vodafone.ie/myv/messaging/webtext/Process.shtml";
 
 	private static final String LOGIN_SUCCESS_STRING = "Sign out";
-	private static final String LOGIN_ACCOUNT_LOCKED = "your account has been locked";
 	private static final String LOGIN_POST_PASSWORD = "password";
 	private static final String LOGIN_POST_USERNAME = "username";
 	private static final String LOGIN_URL = "https://www.vodafone.ie/myv/services/login/Login.shtml";
@@ -70,6 +71,8 @@ public class Vodafone extends Operator {
 	private ProgressBar progessBar;
 	private EditText answerEditText;
 	private EditText verificationEditText;
+
+	private boolean isCaptchaRequired = true;
 
 	public Vodafone(final Account account) {
 		super(account);
@@ -148,21 +151,15 @@ public class Vodafone extends Operator {
 	}
 
 	private OperationResult sendMessage(final List<String> recipients, final String message) {
-		final String token = this.getToken();
-		final String captcha = this.getCaptchaResponse();
-		if (captcha.isEmpty()) {
-			return new WarningResult(R.string.message_cancelled);
-		}
+		final ConnectionManager manager = this.createSendManager(recipients, message);
 
-		final ConnectionManager manager = new ConnectionManager(SEND_URL);
-		manager.addPostHeader(SEND_POST_TOKEN, token);
-		manager.addPostHeader(SEND_POST_MESSAGE, message);
-		for (int i = 0; i < recipients.size(); i++) {
-			final String key = Uri.encode("recipients[" + i + "]");
-			final String value = Uri.encode(recipients.get(i));
-			manager.addPostHeader(key, value);
+		if (this.isCaptchaRequired) {
+			final String captcha = this.getCaptchaResponse();
+			if (captcha.isEmpty()) {
+				return new WarningResult(R.string.message_cancelled);
+			}
+			manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 		}
-		manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 
 		final String sendHtml = manager.connect();
 		if (sendHtml.contains(HTML_TOKEN_POSTTEXT)) {
@@ -171,6 +168,24 @@ public class Vodafone extends Operator {
 
 		final boolean isSent = sendHtml.contains(SEND_SUCCESS_STRING);
 		return isSent ? new Successful() : new Failure();
+	}
+
+	private ConnectionManager createSendManager(final List<String> recipients, final String message) {
+		final String token = this.getToken();
+		final int x = (int) (Math.random() * 60) + 1;
+		final int y = (int) (Math.random() * 20) + 1;
+
+		final ConnectionManager manager = new ConnectionManager(SEND_URL);
+		manager.addPostHeader(SEND_POST_TOKEN, token);
+		manager.addPostHeader(SEND_POST_X, Integer.toString(x));
+		manager.addPostHeader(SEND_POST_Y, Integer.toString(y));
+		manager.addPostHeader(SEND_POST_MESSAGE, message);
+		for (int i = 0; i < recipients.size(); i++) {
+			final String key = Uri.encode("recipients[" + i + "]");
+			final String value = Uri.encode(recipients.get(i));
+			manager.addPostHeader(key, value);
+		}
+		return manager;
 	}
 
 	/**
@@ -233,7 +248,16 @@ public class Vodafone extends Operator {
 		final ConnectionManager manager = new ConnectionManager(TOKEN_URL, "GET", false);
 		final String html = manager.connect();
 
+		this.checkIsCaptchaRequired(html);
 		return HTMLParser.parseHtml(html, HTML_TOKEN_POSTTEXT, HTML_TOKEN_PRETEXT);
+	}
+
+	private void checkIsCaptchaRequired(final String html) {
+		if (html.contains(SEND_POST_CAPTCHA)) {
+			this.isCaptchaRequired = true;
+		} else {
+			this.isCaptchaRequired = false;
+		}
 	}
 
 	/**
