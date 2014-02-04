@@ -77,6 +77,12 @@ public class Vodafone extends Operator {
 
 	@Override
 	boolean doLogin() {
+		final ConnectionManager preLogin = new ConnectionManager(TOKEN_URL, "GET", false);
+		final String preHtml = preLogin.connect();
+		if (preHtml.contains(LOGIN_SUCCESS_STRING)) {
+			return true;
+		}
+
 		final ConnectionManager loginManager = new ConnectionManager(LOGIN_URL);
 		loginManager.addPostHeader(LOGIN_POST_USERNAME, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(LOGIN_POST_PASSWORD, this.getAccount().getPassword());
