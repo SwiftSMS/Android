@@ -1,12 +1,11 @@
 package com.swift.io.net;
 
-import java.net.CookieHandler;
-import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
 import android.net.Uri;
+import android.webkit.CookieSyncManager;
 
 import com.swift.model.Account;
 import com.swift.tasks.Status;
@@ -32,7 +31,6 @@ public abstract class Operator {
 	 */
 	public Operator(final Account account) {
 		this.account = account;
-		CookieHandler.setDefault(new CookieManager());
 	}
 
 	/**
@@ -44,6 +42,7 @@ public abstract class Operator {
 	public final boolean login() {
 		if (!this.isLoggedIn) {
 			this.isLoggedIn = this.doLogin();
+			CookieSyncManager.getInstance().sync();
 		}
 		return this.isLoggedIn;
 	}

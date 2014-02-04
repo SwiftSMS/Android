@@ -5,6 +5,8 @@ import static com.swift.InternalString.DEFAULT_CONTACT_SEPARATOR;
 import static com.swift.InternalString.PREFS_KEY;
 import static com.swift.InternalString.SMS_BODY;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -25,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.webkit.CookieSyncManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -76,6 +79,9 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		final ActionBar actionBar = this.getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+
+		CookieHandler.setDefault(new CookieManager());
+		CookieSyncManager.createInstance(this.themedContext);
 
 		this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
 		this.accountDatabase = AccountDataSource.getInstance(this.themedContext);
@@ -136,6 +142,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	@Override
 	protected void onPause() {
 		super.onPause();
+		CookieSyncManager.getInstance().stopSync();
 		final String message = this.messageEditText.getText().toString();
 		final String recipient = this.recipientEdittext.getText().toString();
 
@@ -177,6 +184,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	@Override
 	protected void onResume() {
 		super.onResume();
+		CookieSyncManager.getInstance().startSync();
 
 		final int accountId = this.preferences.getInt(ACTIVE_ACCOUNT, -1);
 		if (accountId == -1) {
