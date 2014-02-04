@@ -7,9 +7,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 
-import com.swift.InternalString;
 import com.swift.model.Account;
 import com.swift.tasks.Status;
 import com.swift.tasks.results.Failure;
@@ -167,7 +165,6 @@ public abstract class Operator {
 	 * This method will removed the cached login and make a login attempt.
 	 */
 	private void retryLogin() {
-		Log.d(InternalString.LOG_TAG, "retryLogin - Login expired");
 		this.isLoggedIn = false;
 		this.login();
 	}
