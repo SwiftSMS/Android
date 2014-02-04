@@ -270,14 +270,21 @@ public class Vodafone extends Operator {
 					@Override
 					public void onClick(final DialogInterface dialog, final int which) {
 						final Intent intent = new Intent(Intent.ACTION_SEND);
-						intent.setType("text/html");
-						intent.putExtra(Intent.EXTRA_EMAIL, "dunedeveloping@gmail.com");
+						intent.setType("text/plain");
+						intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "dunedeveloping@gmail.com" });
 						intent.putExtra(Intent.EXTRA_SUBJECT, "SwiftSMS Logs");
 						intent.putExtra(Intent.EXTRA_TEXT, "Find attached my log file.");
 						final Uri uri = Uri.parse("file://" + logFile);
 						intent.putExtra(Intent.EXTRA_STREAM, uri);
 
 						Vodafone.this.context.startActivity(Intent.createChooser(intent, "Send Email"));
+					}
+				});
+				builder.setNegativeButton("View", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(final DialogInterface dialog, final int which) {
+						final Intent intent = new Intent(Intent.ACTION_VIEW);
+						Vodafone.this.context.startActivity(Intent.createChooser(intent, "Open file"));
 					}
 				});
 				builder.show();
