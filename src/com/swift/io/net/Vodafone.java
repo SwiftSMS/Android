@@ -72,30 +72,20 @@ public class Vodafone extends Operator {
 	private EditText answerEditText;
 	private EditText verificationEditText;
 
+	private boolean isCaptchaRequired = true;
+
 	public Vodafone(final Account account) {
 		super(account);
 	}
 
 	@Override
 	boolean doLogin() {
-		if (this.isLoggedIn()) {
-			return true;
-		}
 		final ConnectionManager loginManager = new ConnectionManager(LOGIN_URL);
 		loginManager.addPostHeader(LOGIN_POST_USERNAME, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(LOGIN_POST_PASSWORD, this.getAccount().getPassword());
 		final String loginHtml = loginManager.connect();
 
 		return loginHtml.contains(LOGIN_SUCCESS_STRING);
-	}
-
-	private boolean isLoggedIn() {
-		final ConnectionManager preLogin = new ConnectionManager(TOKEN_URL, "GET", false);
-		final String preHtml = preLogin.connect();
-		if (preHtml.contains(LOGIN_SUCCESS_STRING)) {
-			return true;
-		}
-		return false;
 	}
 
 	@Override
@@ -151,11 +141,15 @@ public class Vodafone extends Operator {
 	private OperationResult sendMessage(final List<String> recipients, final String message) {
 		final ConnectionManager manager = this.createSendManager(recipients, message);
 
-		final String captcha = this.getCaptchaResponse();
-		if (captcha.isEmpty()) {
-			return new WarningResult(R.string.message_cancelled);
+		if (this.isCaptchaRequired) {
+			final String captcha = this.getCaptchaResponse();
+			if (captcha.isEmpty()) {
+				return new WarningResult(R.string.message_cancelled);
+			}
+			manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
+		} else {
+			this.waitFor(1000);
 		}
-		manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 
 		final String sendHtml = manager.connect();
 		if (sendHtml.contains(HTML_TOKEN_POSTTEXT)) {
@@ -193,7 +187,7 @@ public class Vodafone extends Operator {
 		this.displayCaptchaDialog();
 		this.downloadCaptcha();
 		while (this.answerEditText.isShown()) {
-			this.waitFor();
+			this.waitFor(100);
 		}
 		return this.answerEditText.getText().toString();
 	}
@@ -244,7 +238,16 @@ public class Vodafone extends Operator {
 		final ConnectionManager manager = new ConnectionManager(TOKEN_URL, "GET", false);
 		final String html = manager.connect();
 
+		this.checkIsCaptchaRequired(html);
 		return HTMLParser.parseHtml(html, HTML_TOKEN_POSTTEXT, HTML_TOKEN_PRETEXT);
+	}
+
+	private void checkIsCaptchaRequired(final String html) {
+		if (html.contains(SEND_POST_CAPTCHA)) {
+			this.isCaptchaRequired = true;
+		} else {
+			this.isCaptchaRequired = false;
+		}
 	}
 
 	/**
@@ -269,10 +272,10 @@ public class Vodafone extends Operator {
 	private String getVerificationCode() {
 		this.displayVerificationDialog();
 		while (this.verificationEditText == null || !this.verificationEditText.isShown()) { // wait until dialog appears
-			this.waitFor();
+			this.waitFor(100);
 		}
 		while (this.verificationEditText.isShown()) { // wait until dialog is dismissed
-			this.waitFor();
+			this.waitFor(100);
 		}
 		return this.verificationEditText.getText().toString();
 	}
@@ -296,9 +299,9 @@ public class Vodafone extends Operator {
 		});
 	}
 
-	private void waitFor() {
+	private void waitFor(final long millis) {
 		try {
-			Thread.sleep(100);
+			Thread.sleep(millis);
 		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		}
