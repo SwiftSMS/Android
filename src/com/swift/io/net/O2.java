@@ -16,11 +16,19 @@ public class O2 extends Operator {
 
 	@Override
 	boolean doLogin() {
+		final ConnectionManager preMgr = new ConnectionManager("https://www.o2online.ie/o2/my-o2/", "GET", false);
+		preMgr.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:26.0) Gecko/20100101 Firefox/26.0");
+		preMgr.setRequestHeader("Referer", "http://www.o2online.ie/o2/my-o2/");
+		final String preHtml = preMgr.connect();
+		preHtml.contains("Welcome to My O2");
+
 		final ConnectionManager manager = new ConnectionManager("https://www.o2online.ie/oam/server/auth_cred_submit");
+		manager.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:26.0) Gecko/20100101 Firefox/26.0");
 		manager.addPostHeader("username", this.getAccount().getMobileNumber());
 		manager.addPostHeader("password", this.getAccount().getPassword());
 		manager.addPostHeader("request_id", this.getRequestId());
 		final String html = manager.connect();
+
 		return html.contains("Redirect") && html.contains("o2online");
 	}
 
@@ -53,8 +61,7 @@ public class O2 extends Operator {
 
 	private String getWebtextUrl() {
 		final ConnectionManager manager = new ConnectionManager(
-				"http://messaging.o2online.ie/ssomanager.osp?APIID=AUTH-WEBSSO&TargetApp=o2om_smscenter_new.osp%3FMsgContentID%3D-1%26SID%3D_", "GET",
-				false);
+				"http://messaging.o2online.ie/ssomanager.osp?APIID=AUTH-WEBSSO&TargetApp=o2om_smscenter_new.osp%3FMsgContentID%3D-1%26SID%3D_", "GET", false);
 		final String html = manager.connect();
 
 		final String prefix = "name=\"frame_content\" src=\"";
