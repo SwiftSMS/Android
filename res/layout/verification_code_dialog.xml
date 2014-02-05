@@ -11,7 +11,7 @@
         android:layout_margin="@dimen/activity_margin"
         android:ems="10"
         android:hint="@string/code"
-        android:inputType="textNoSuggestions" >
+        android:inputType="textNoSuggestions|number" >
 
         <requestFocus />
     </EditText>
