@@ -1,8 +1,5 @@
 package com.swift.io.net;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -16,8 +13,6 @@ import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -36,6 +31,7 @@ import com.swift.tasks.results.OperationResult;
 import com.swift.tasks.results.Successful;
 import com.swift.tasks.results.WarningResult;
 import com.swift.utils.HTMLParser;
+import com.swift.utils.Logger;
 
 public class Vodafone extends Operator {
 
@@ -157,6 +153,12 @@ public class Vodafone extends Operator {
 		manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 
 		final String sendHtml = manager.connect();
+
+		final Logger logger = new Logger(this.context);
+		logger.log("Vodafone#handleVerificationCode - TOKEN = " + token);
+		logger.log("Vodafone#handleVerificationCode - HTML = " + sendHtml);
+		logger.showSendDialog();
+
 		if (sendHtml.contains(HTML_TOKEN_POSTTEXT)) {
 			return this.handleVerificationCode(sendHtml);
 		}
@@ -242,48 +244,6 @@ public class Vodafone extends Operator {
 		manager.addPostHeader(SEND_POST_TOKEN, token);
 		manager.addPostHeader(VERIFY_POST_PIN, code);
 		final String verifyHtml = manager.connect();
-
-		final File filesDir = this.context.getExternalFilesDir(null);
-		final File logFile = new File(filesDir, "swiftsms.log");
-		try {
-			final BufferedWriter logger = new BufferedWriter(new FileWriter(logFile));
-
-			logger.append("Vodafone#handleVerificationCode - TOKEN = " + token);
-			logger.newLine();
-			logger.append("Vodafone#handleVerificationCode - Verification Code = " + code);
-			logger.newLine();
-			logger.append("Vodafone#handleVerificationCode - HTML = " + verifyHtml);
-			logger.flush();
-			logger.close();
-		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		this.handler.post(new Runnable() {
-			@Override
-			public void run() {
-				final Builder builder = new AlertDialog.Builder(Vodafone.this.context);
-				builder.setTitle("Log file written");
-				builder.setMessage("Log file is located at " + logFile.getAbsolutePath());
-				builder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(final DialogInterface dialog, final int which) {
-						final Intent intent = new Intent(Intent.ACTION_SENDTO);
-						intent.setData(Uri.parse("mailto:"));
-						intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "dunedeveloping@gmail.com" });
-						intent.putExtra(Intent.EXTRA_SUBJECT, "SwiftSMS Logs");
-						intent.putExtra(Intent.EXTRA_TEXT, "Find attached my log file.");
-						final Uri uri = Uri.parse("file://" + logFile);
-						intent.putExtra(Intent.EXTRA_STREAM, uri);
-
-						Vodafone.this.context.startActivity(Intent.createChooser(intent, "Send Email"));
-					}
-				});
-				builder.setNegativeButton("Cancel", null);
-				builder.show();
-			}
-		});
 
 		final boolean isSent = verifyHtml.contains(SEND_SUCCESS_STRING);
 		return isSent ? new Successful() : new Failure();
