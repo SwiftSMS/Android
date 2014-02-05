@@ -72,8 +72,6 @@ public class Vodafone extends Operator {
 	private EditText answerEditText;
 	private EditText verificationEditText;
 
-	private boolean isCaptchaRequired = true;
-
 	public Vodafone(final Account account) {
 		super(account);
 	}
@@ -153,13 +151,11 @@ public class Vodafone extends Operator {
 	private OperationResult sendMessage(final List<String> recipients, final String message) {
 		final ConnectionManager manager = this.createSendManager(recipients, message);
 
-		if (this.isCaptchaRequired) {
-			final String captcha = this.getCaptchaResponse();
-			if (captcha.isEmpty()) {
-				return new WarningResult(R.string.message_cancelled);
-			}
-			manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
+		final String captcha = this.getCaptchaResponse();
+		if (captcha.isEmpty()) {
+			return new WarningResult(R.string.message_cancelled);
 		}
+		manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 
 		final String sendHtml = manager.connect();
 		if (sendHtml.contains(HTML_TOKEN_POSTTEXT)) {
@@ -248,16 +244,7 @@ public class Vodafone extends Operator {
 		final ConnectionManager manager = new ConnectionManager(TOKEN_URL, "GET", false);
 		final String html = manager.connect();
 
-		this.checkIsCaptchaRequired(html);
 		return HTMLParser.parseHtml(html, HTML_TOKEN_POSTTEXT, HTML_TOKEN_PRETEXT);
-	}
-
-	private void checkIsCaptchaRequired(final String html) {
-		if (html.contains(SEND_POST_CAPTCHA)) {
-			this.isCaptchaRequired = true;
-		} else {
-			this.isCaptchaRequired = false;
-		}
 	}
 
 	/**
