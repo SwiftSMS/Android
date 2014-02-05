@@ -20,7 +20,6 @@ public abstract class Operator {
 	public static final int DEFAULT_CHAR_LIMIT = 160;
 
 	private final Account account;
-	private boolean isLoggedIn = false;
 	private int characterLimit = -1;
 
 	/**
@@ -40,11 +39,8 @@ public abstract class Operator {
 	 * @return <code>true</code> if the login was successful else <code>false</code>
 	 */
 	public final boolean login() {
-		if (!this.isLoggedIn) {
-			this.isLoggedIn = this.doLogin();
-			CookieSyncManager.getInstance().sync();
-		}
-		return this.isLoggedIn;
+		CookieSyncManager.getInstance().sync();
+		return this.doLogin();
 	}
 
 	/**
@@ -62,10 +58,9 @@ public abstract class Operator {
 	 * @return the number of remaining SMS messages the user has or <code>-1</code> if it can't be determined.
 	 */
 	public final int getRemainingSMS() {
-		this.login();
 		final int smsCount = this.doGetRemainingSMS();
 		if (smsCount == -1) {
-			this.retryLogin();
+			this.login();
 			return this.doGetRemainingSMS();
 		}
 		return smsCount;
@@ -93,14 +88,13 @@ public abstract class Operator {
 	 * @return <code>true</code> if the message was sent successfully else <code>false</code>
 	 */
 	public final OperationResult send(final List<String> list, final String message) {
-		this.login();
 		final List<String> msgParts = this.getParts(message, this.getCharacterLimit());
 		OperationResult sendStatus = new Failure();
 		for (final String msgToSend : msgParts) {
 			final String encodedMsg = Uri.encode(msgToSend);
 			sendStatus = this.doSend(list, encodedMsg);
 			if (sendStatus.getStatus() == Status.FAILED) {
-				this.retryLogin();
+				this.login();
 				sendStatus = this.doSend(list, encodedMsg);
 			}
 		}
@@ -138,10 +132,9 @@ public abstract class Operator {
 
 	public final int getCharacterLimit() {
 		if (this.characterLimit == -1) {
-			this.login();
 			this.characterLimit = this.doGetCharacterLimit();
 			if (this.characterLimit == -1) {
-				this.retryLogin();
+				this.login();
 				this.characterLimit = this.doGetCharacterLimit();
 			}
 		}
@@ -158,13 +151,5 @@ public abstract class Operator {
 	 */
 	public Account getAccount() {
 		return this.account;
-	}
-
-	/**
-	 * This method will removed the cached login and make a login attempt.
-	 */
-	private void retryLogin() {
-		this.isLoggedIn = false;
-		this.login();
 	}
 }
