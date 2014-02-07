@@ -7,6 +7,7 @@ import static com.swift.InternalString.SMS_BODY;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -80,7 +81,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
-		CookieHandler.setDefault(new CookieManager());
+		CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
 		CookieSyncManager.createInstance(this.themedContext);
 
 		this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
