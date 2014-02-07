@@ -7,10 +7,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.swift.R;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.swift.model.Account;
+import com.swift.tasks.results.Failure;
 import com.swift.tasks.results.OperationResult;
-import com.swift.tasks.results.WarningResult;
+import com.swift.tasks.results.Successful;
 import com.swift.utils.HTMLParser;
 
 public class O2 extends Operator {
@@ -116,11 +119,35 @@ public class O2 extends Operator {
 
 	@Override
 	OperationResult doSend(final List<String> list, final String message) {
-		return new WarningResult(R.string.not_implemented);
+		final ConnectionManager manager = new ConnectionManager("http://messaging.o2online.ie/smscenter_send.osp");
+		manager.addPostHeader("SID", "");
+		manager.addPostHeader("MsgContentID", "-1");
+		manager.addPostHeader("SMSTo", "");
+		manager.addPostHeader("SMSText", message);
+		manager.addPostHeader("FlagDLR", "1");
+		manager.addPostHeader("RepeatStartDate", "2014%2C02%2C07%2C23%2C45%2C00");
+		manager.addPostHeader("RepeatEndDate", "2014%2C02%2C07%2C23%2C45%2C00");
+		manager.addPostHeader("RepeatType", "0");
+		manager.addPostHeader("RepeatEndType", "0");
+		manager.addPostHeader("FolderID", "0");
+		manager.addPostHeader("REF", "1391816552");
+		manager.addPostHeader("RURL", "asp_getfileid.osp%3FSID%3D110082403_tinaymun%26FID%3D6422");
+		final String rawJson = manager.connect();
+
+		boolean isSent = false;
+		try {
+			final JSONObject json = new JSONObject(rawJson);
+			isSent = json.getBoolean("isSuccess");
+		} catch (final JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return isSent ? new Successful() : new Failure();
 	}
 
 	@Override
 	int doGetCharacterLimit() {
-		return -1;
+		return 160;
 	}
 }
