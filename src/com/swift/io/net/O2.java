@@ -7,9 +7,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.swift.model.Account;
 import com.swift.tasks.results.Failure;
 import com.swift.tasks.results.OperationResult;
@@ -48,16 +45,17 @@ public class O2 extends Operator {
 	private static final String SMS_BASE_URL = MESSAGING_BASE_URL + "o2om_smscenter_new.osp?MsgContentID=-1&SID=_&SID=";
 	private static final String SMS_PRE = "spn_WebtextFree\">";
 	private static final String SMS_POST = "</span>";
+
 	private static final String SEND_FORM_NAME = "name=\"form_WebtextSave\"";
-	private static final String SEND_RURL_PRE = "name=\"RURL\" value=\"";
 	private static final String SEND_REF_PRE = "name=\"REF\" value=\"";
+	private static final String SEND_RURL_PRE = "name=\"RURL\" value=\"";
+
 	private static final String POST_TEXT = "\"";
 
+	private String remainingSMS;
 	private String sessionId;
 	private String sendRef;
 	private String sendRUrl;
-
-	private String remainingSMS;
 
 	public O2(final Account account) {
 		super(account);
@@ -89,10 +87,11 @@ public class O2 extends Operator {
 		manager = new ConnectionManager(SMS_BASE_URL + this.sessionId, GET, false);
 		manager.setRequestHeader(HTTP_COOKIE, this.getCookieHeader());
 		html = manager.connect();
+		this.remainingSMS = HTMLParser.parseHtml(html, SMS_PRE, SMS_POST);
+
 		html = html.substring(html.indexOf(SEND_FORM_NAME));
 		this.sendRef = HTMLParser.parseHtml(html, SEND_REF_PRE, POST_TEXT);
 		this.sendRUrl = HTMLParser.parseHtml(html, SEND_RURL_PRE, POST_TEXT);
-		this.remainingSMS = HTMLParser.parseHtml(html, SMS_PRE, SMS_POST);
 	}
 
 	private String getCookieHeader() {
@@ -123,6 +122,14 @@ public class O2 extends Operator {
 
 	@Override
 	OperationResult doSend(final List<String> recipients, final String message) {
+		final ConnectionManager manager = this.buildSendManager(recipients, message);
+		final String rawJson = manager.connect();
+
+		final boolean isSent = rawJson.contains("isSuccess : true");
+		return isSent ? new Successful() : new Failure();
+	}
+
+	private ConnectionManager buildSendManager(final List<String> recipients, final String message) {
 		final StringBuilder sb = new StringBuilder();
 		for (final String recipient : recipients) {
 			sb.append(recipient);
@@ -132,30 +139,14 @@ public class O2 extends Operator {
 
 		final ConnectionManager manager = new ConnectionManager("http://messaging.o2online.ie/smscenter_send.osp");
 		manager.setRequestHeader(HTTP_COOKIE, this.getCookieHeader());
+		manager.setRequestHeader("Referer", SMS_BASE_URL + this.sessionId);
 		manager.addPostHeader("SID", this.sessionId);
 		manager.addPostHeader("MsgContentID", "-1");
 		manager.addPostHeader("SMSTo", sb.toString());
 		manager.addPostHeader("SMSText", message);
-		manager.addPostHeader("FlagDLR", "1");
-		manager.addPostHeader("RepeatStartDate", "2014,01,08,18,30,00");
-		manager.addPostHeader("RepeatEndDate", "2014,01,08,18,30,00");
-		manager.addPostHeader("RepeatType", "0");
-		manager.addPostHeader("RepeatEndType", "0");
-		manager.addPostHeader("FolderID", "0");
 		manager.addPostHeader("REF", this.sendRef);
 		manager.addPostHeader("RURL", this.sendRUrl);
-		final String rawJson = manager.connect();
-
-		boolean isSent = false;
-		try {
-			final JSONObject json = new JSONObject(rawJson);
-			isSent = json.getBoolean("isSuccess");
-		} catch (final JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return isSent ? new Successful() : new Failure();
+		return manager;
 	}
 
 	@Override
