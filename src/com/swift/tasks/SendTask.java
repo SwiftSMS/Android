@@ -186,7 +186,7 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 	private Notification buildSuccessNotification() {
 		final Builder builder = new Notification.Builder(this.activity);
 		builder.setTicker(this.getStringRes(R.string.message_sent));
-		builder.setSmallIcon(R.drawable.ic_launcher);
+		builder.setSmallIcon(R.drawable.ic_launcher_grey);
 		return this.build(builder);
 	}
 
@@ -199,7 +199,7 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 		final Builder builder = new Notification.Builder(this.activity);
 		final String message = this.getStringRes(R.string.to) + COLON_SPACE + this.recipients;
 		builder.setContentTitle(this.getStringRes(R.string.message_failed_to_send));
-		builder.setSmallIcon(R.drawable.ic_launcher);
+		builder.setSmallIcon(R.drawable.ic_launcher_grey);
 		builder.setVibrate(new long[] { 10, 200 });
 		builder.setContentIntent(this.buildFailureIntent());
 		builder.setAutoCancel(true);
