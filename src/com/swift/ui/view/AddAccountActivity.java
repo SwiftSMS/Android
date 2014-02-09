@@ -1,5 +1,7 @@
 package com.swift.ui.view;
 
+import static com.swift.InternalString.ACTIVE_ACCOUNT;
+import static com.swift.InternalString.OPERATOR;
 import static com.swift.InternalString.PREFS_KEY;
 
 import java.util.Locale;
@@ -24,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.swift.InternalString;
 import com.swift.R;
 import com.swift.io.db.AccountDataSource;
 import com.swift.io.db.IAccountDatabase;
@@ -71,7 +72,8 @@ public class AddAccountActivity extends Activity {
 		this.accountDatabase = AccountDataSource.getInstance(this);
 
 		final TextView labelSelectedNetwork = (TextView) this.findViewById(R.id.text_add_account_selected_network);
-		this.selectedNetwork = Network.valueOf(this.getIntent().getStringExtra(InternalString.OPERATOR).toUpperCase(Locale.UK));
+		final String operator = this.getIntent().getStringExtra(OPERATOR).toUpperCase(Locale.UK).replace(" ", "");
+		this.selectedNetwork = Network.valueOf(operator);
 		labelSelectedNetwork.setText(this.selectedNetwork.toString());
 		this.textAccNumber.setInputType(this.selectedNetwork.getInputType());
 
@@ -120,7 +122,7 @@ public class AddAccountActivity extends Activity {
 		if (successfullyAddedId != FAILED_DB_ADD) {
 			if (this.checkActiveAccount.isChecked() || successfullyAddedId == 1) {
 				final Editor editor = this.preferences.edit();
-				editor.putInt(InternalString.ACTIVE_ACCOUNT, successfullyAddedId);
+				editor.putInt(ACTIVE_ACCOUNT, successfullyAddedId);
 				editor.commit();
 			}
 		}
