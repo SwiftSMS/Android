@@ -17,6 +17,8 @@ public class O2 extends Operator {
 
 	private static final String MESSAGING_BASE_URL = "http://messaging.o2online.ie/";
 
+	private static final String HTTP_REFERER = "Referer";
+	private static final String HTTP_COOKIE = "Cookie";
 	private static final String GET = "GET";
 
 	private static final String LOGIN_PRE_URL = "https://www.o2online.ie/o2/my-o2/";
@@ -31,13 +33,8 @@ public class O2 extends Operator {
 	private static final String SESSION_SID_PRE = "var GLOBAL_SESSION_ID = '";
 	private static final String SESSION_SID_POST = "';";
 
-	private static final String HTTP_COOKIE = "Cookie";
 	private static final String COOKIE_O2_DOMAIN = "http://www.o2online.ie";
 	private static final String COOKIE_MESSAGING_DOMAIN = "http://messaging.o2online.ie";
-	private static final String COOKIE_1 = "ObSSOCookie";
-	private static final String COOKIE_2 = "o2onlinewebserver";
-	private static final String COOKIE_3 = "IMDataGivenName";
-	private static final String COOKIE_4 = "o3sisCookie";
 	private static final String COOKIE_EQUALS = "=";
 	private static final String COOKIE_SEMI_COLON = "; ";
 
@@ -46,16 +43,14 @@ public class O2 extends Operator {
 	private static final String SMS_PRE = "spn_WebtextFree\">";
 	private static final String SMS_POST = "</span>";
 
-	private static final String SEND_FORM_NAME = "name=\"form_WebtextSave\"";
-	private static final String SEND_REF_PRE = "name=\"REF\" value=\"";
-	private static final String SEND_RURL_PRE = "name=\"RURL\" value=\"";
-
-	private static final String POST_TEXT = "\"";
+	private static final String SEND_URL = "http://messaging.o2online.ie/smscenter_send.osp";
+	private static final String SEND_POST_SID = "SID";
+	private static final String SEND_POST_TO = "SMSTo";
+	private static final String SEND_POST_TEXT = "SMSText";
+	private static final String SEND_SUCCESS = "isSuccess : true";
 
 	private String remainingSMS;
 	private String sessionId;
-	private String sendRef;
-	private String sendRUrl;
 
 	public O2(final Account account) {
 		super(account);
@@ -88,28 +83,21 @@ public class O2 extends Operator {
 		manager.setRequestHeader(HTTP_COOKIE, this.getCookieHeader());
 		html = manager.connect();
 		this.remainingSMS = HTMLParser.parseHtml(html, SMS_PRE, SMS_POST);
-
-		html = html.substring(html.indexOf(SEND_FORM_NAME));
-		this.sendRef = HTMLParser.parseHtml(html, SEND_REF_PRE, POST_TEXT);
-		this.sendRUrl = HTMLParser.parseHtml(html, SEND_RURL_PRE, POST_TEXT);
 	}
 
 	private String getCookieHeader() {
 		final URI oUri = URI.create(COOKIE_O2_DOMAIN);
 		final URI mUri = URI.create(COOKIE_MESSAGING_DOMAIN);
 		final StringBuilder cookieHeader = new StringBuilder();
-		final CookieManager m = (CookieManager) CookieHandler.getDefault();
+		final CookieManager cookieMgr = (CookieManager) CookieHandler.getDefault();
 
-		final List<HttpCookie> cookies = new ArrayList<HttpCookie>(m.getCookieStore().get(oUri));
-		cookies.addAll(m.getCookieStore().get(mUri));
+		final List<HttpCookie> cookies = new ArrayList<HttpCookie>(cookieMgr.getCookieStore().get(oUri));
+		cookies.addAll(cookieMgr.getCookieStore().get(mUri));
 		for (final HttpCookie cookie : cookies) {
-			if (cookie.getName().equals(COOKIE_1) || cookie.getName().equals(COOKIE_2) || cookie.getName().equals(COOKIE_3)
-					|| cookie.getName().equals(COOKIE_4)) {
-				cookieHeader.append(cookie.getName());
-				cookieHeader.append(COOKIE_EQUALS);
-				cookieHeader.append(cookie.getValue());
-				cookieHeader.append(COOKIE_SEMI_COLON);
-			}
+			cookieHeader.append(cookie.getName());
+			cookieHeader.append(COOKIE_EQUALS);
+			cookieHeader.append(cookie.getValue());
+			cookieHeader.append(COOKIE_SEMI_COLON);
 		}
 		cookieHeader.delete(cookieHeader.length() - 2, cookieHeader.length());
 		return cookieHeader.toString();
@@ -125,7 +113,7 @@ public class O2 extends Operator {
 		final ConnectionManager manager = this.buildSendManager(recipients, message);
 		final String rawJson = manager.connect();
 
-		final boolean isSent = rawJson.contains("isSuccess : true");
+		final boolean isSent = rawJson.contains(SEND_SUCCESS);
 		return isSent ? new Successful() : new Failure();
 	}
 
@@ -137,15 +125,12 @@ public class O2 extends Operator {
 		}
 		sb.deleteCharAt(sb.length() - 1); // remove trailing comma
 
-		final ConnectionManager manager = new ConnectionManager("http://messaging.o2online.ie/smscenter_send.osp");
+		final ConnectionManager manager = new ConnectionManager(SEND_URL);
 		manager.setRequestHeader(HTTP_COOKIE, this.getCookieHeader());
-		manager.setRequestHeader("Referer", SMS_BASE_URL + this.sessionId);
-		manager.addPostHeader("SID", this.sessionId);
-		manager.addPostHeader("MsgContentID", "-1");
-		manager.addPostHeader("SMSTo", sb.toString());
-		manager.addPostHeader("SMSText", message);
-		manager.addPostHeader("REF", this.sendRef);
-		manager.addPostHeader("RURL", this.sendRUrl);
+		manager.setRequestHeader(HTTP_REFERER, SMS_BASE_URL + this.sessionId);
+		manager.addPostHeader(SEND_POST_SID, this.sessionId);
+		manager.addPostHeader(SEND_POST_TO, sb.toString());
+		manager.addPostHeader(SEND_POST_TEXT, message);
 		return manager;
 	}
 
