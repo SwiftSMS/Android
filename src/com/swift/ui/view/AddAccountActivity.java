@@ -137,13 +137,23 @@ public class AddAccountActivity extends Activity {
 	private Account makeAccountFromUI() {
 		final String number = this.textAccNumber.getText().toString();
 		final String password = this.textAccPassword.getText().toString();
-
-		final String numberLast4Digits = number.substring(number.length() - Math.min(4, number.length()));
-		final String defaultAccName = this.selectedNetwork + " (" + numberLast4Digits + ")";
-		final String enteredAccName = this.textAccName.getText().toString();
-		final String accountName = enteredAccName.isEmpty() ? defaultAccName : enteredAccName;
+		final String accountName = this.getAccountName(number);
 
 		return new Account(number, accountName, password, this.selectedNetwork);
+	}
+
+	private String getAccountName(final String number) {
+		final String enteredAccName = this.textAccName.getText().toString();
+
+		String username = number;
+		if (username.contains("@")) {
+			username = username.split("@")[0];
+		}
+		final int length = username.length();
+		final String numberLast4Digits = username.substring(length - Math.min(4, length));
+		final String defaultAccName = this.selectedNetwork + " (" + numberLast4Digits + ")";
+
+		return enteredAccName.isEmpty() ? defaultAccName : enteredAccName;
 	}
 
 	public void verifyAccount(final View view) {
