@@ -10,6 +10,8 @@ public class OperatorFactory {
 			return new EMobile(account);
 		case METEOR:
 			return new Meteor(account);
+		case NEWMETEOR:
+			return new NewMeteor(account);
 		case O2:
 			return new O2(account);
 		case TESCO:
