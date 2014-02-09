@@ -34,6 +34,8 @@ import com.swift.utils.HTMLParser;
 
 public class Vodafone extends Operator {
 
+	private static final String VERIFICATION_CODE = "verification code for your international webtext";
+
 	private static final int MAX_MSG_RECIPIENTS = 5;
 
 	private static final String CHARS_URL = "https://www.vodafone.ie/javascript/section.myv.webtext.js";
@@ -152,7 +154,7 @@ public class Vodafone extends Operator {
 		}
 
 		final String sendHtml = manager.connect();
-		if (sendHtml.contains(HTML_TOKEN_POSTTEXT)) {
+		if (sendHtml.contains(VERIFICATION_CODE)) {
 			return this.handleVerificationCode(sendHtml);
 		}
 
