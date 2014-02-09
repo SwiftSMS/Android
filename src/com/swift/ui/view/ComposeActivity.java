@@ -191,13 +191,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		if (accountId == -1) {
 			this.startActivityForResult(new Intent(this.themedContext, NetworkSelectionActivity.class), ADD_ACCOUNT_REQUEST);
 		} else {
-			if (this.operator == null || this.operator.getAccount().getId() != accountId) {
-				final Account account = this.accountDatabase.getAccountById(accountId);
-				this.operator = OperatorFactory.getOperator(account);
-			}
 			this.setupActionBar();
-			this.retrieveRemainingSmsCount();
-			this.getMaxCharacterCount();
 		}
 	}
 
@@ -330,8 +324,10 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	@Override
 	public boolean onNavigationItemSelected(final int itemPosition, final long itemId) {
 		final int accountId = (int) itemId;
-		final Account account = this.accountDatabase.getAccountById(accountId);
-		this.operator = OperatorFactory.getOperator(account);
+		if (this.operator == null || this.operator.getAccount().getId() != accountId) {
+			final Account account = this.accountDatabase.getAccountById(accountId);
+			this.operator = OperatorFactory.getOperator(account);
+		}
 		this.retrieveRemainingSmsCount();
 		this.getMaxCharacterCount();
 
