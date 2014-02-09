@@ -6,9 +6,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.net.Uri;
+
 import com.swift.model.Account;
 import com.swift.tasks.results.Failure;
 import com.swift.tasks.results.OperationResult;
+import com.swift.tasks.results.Successful;
+import com.swift.utils.HTMLParser;
 
 public class NewMeteor extends Operator {
 
@@ -28,29 +32,75 @@ public class NewMeteor extends Operator {
 
 	@Override
 	int doGetRemainingSMS() {
-		final ConnectionManager manager = new ConnectionManager("https://my.meteor.ie/webtext/mobileNumbers/+353857855532", "GET", false);
-		final String rawJson = manager.connect();
+		final String number = this.getAccountNumber();
+		if (number != null) {
+			final ConnectionManager manager = new ConnectionManager("https://my.meteor.ie/webtext/page/main?msisdn=" + number, "GET", false);
+			final String html = manager.connect();
 
-		try {
-			final JSONObject json = new JSONObject(rawJson);
-			final JSONArray smsLimits = json.getJSONArray("limits");
-			final JSONObject combined = smsLimits.getJSONObject(0);
-			return combined.getInt("balance");
-		} catch (final JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			final String remaining = HTMLParser.parseHtml(html, "\"or\": \"", "\",");
+			if (remaining != null) {
+				return Integer.parseInt(remaining);
+			}
 		}
 		return -1;
 	}
 
+	private String getAccountNumber() {
+		final ConnectionManager preManager = new ConnectionManager("https://my.meteor.ie/rest/secure/brand/3/portalUser/lines", "GET", false);
+		final String preJson = preManager.connect();
+
+		String number = null;
+		try {
+			final JSONObject json = new JSONObject(preJson);
+			final JSONObject data = json.getJSONObject("data");
+			final JSONArray listing = data.getJSONArray("pairingsList");
+			final JSONObject account = listing.getJSONObject(0);
+			number = account.getString("number");
+		} catch (final JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return number;
+	}
+
 	@Override
 	OperationResult doSend(final List<String> list, final String message) {
-		return new Failure();
+		final ConnectionManager manager = new ConnectionManager("https://my.meteor.ie/webtext/gwtAppRequest");
+		final JSONObject json = this.buildSendJson(list, message);
+		manager.setRequestHeader("Content-Type", "application/json; charset=UTF-8");
+		manager.addRequestBody(json.toString());
+		final String rawResult = manager.connect();
+
+		final boolean isSent = rawResult.contains("\"S\":[true]");
+		return isSent ? new Successful() : new Failure();
+	}
+
+	private JSONObject buildSendJson(final List<String> list, final String message) {
+		final JSONObject json = new JSONObject();
+		try {
+			final JSONArray msgArray = new JSONArray();
+			msgArray.put(Uri.decode(message));
+			msgArray.put(new JSONArray());
+			msgArray.put(new JSONArray(list));
+
+			final JSONObject inner = new JSONObject();
+			inner.put("O", "mHdGltoQN30dWmsxAIiW63$wnLc=");
+			inner.put("P", msgArray);
+
+			final JSONArray innerArray = new JSONArray();
+			innerArray.put(inner);
+
+			json.put("F", "com.britebill.webtext.gwt.base.request.ApplicationRequestFactory");
+			json.put("I", innerArray);
+		} catch (final JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return json;
 	}
 
 	@Override
 	int doGetCharacterLimit() {
-		return 0;
+		return 480;
 	}
-
 }
