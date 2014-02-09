@@ -6,6 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.swift.R;
 import com.swift.io.net.Operator;
@@ -20,10 +21,11 @@ public class RemainingSmsTask extends AsyncTask<String, Integer, Integer> {
 
 	private final String key;
 
-	private final LayoutInflater inflater;
+	private final TextView textView;
 
 	public RemainingSmsTask(final Context context, final Operator operator, final SharedPreferences preferences, final MenuItem actionBarRemainingSms) {
-		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.textView = (TextView) inflater.inflate(R.layout.remaining_sms_view, null);
 		this.operator = operator;
 		this.preferences = preferences;
 		this.actionBarItem = actionBarRemainingSms;
@@ -33,7 +35,11 @@ public class RemainingSmsTask extends AsyncTask<String, Integer, Integer> {
 	@Override
 	protected void onPreExecute() {
 		final int savedRemaining = this.preferences.getInt(this.key, -1);
-		this.setTitle(savedRemaining);
+		if (savedRemaining == -1) {
+			this.actionBarItem.setActionView(R.layout.progress_view);
+		} else {
+			this.setTitle(savedRemaining);
+		}
 	}
 
 	@Override
@@ -44,18 +50,17 @@ public class RemainingSmsTask extends AsyncTask<String, Integer, Integer> {
 	@Override
 	protected void onPostExecute(final Integer result) {
 		this.setTitle(result);
-		this.actionBarItem.setActionView(null);
 		final Editor editor = this.preferences.edit();
 		editor.putInt(this.key, result);
 		editor.commit();
 	}
 
 	private void setTitle(final int remaining) {
+		this.actionBarItem.setActionView(this.textView);
 		if (remaining == -1) {
-			this.actionBarItem.setActionView(this.inflater.inflate(R.layout.progress_view, null));
-			this.actionBarItem.setTitle("?");
+			this.textView.setText("?");
 		} else {
-			this.actionBarItem.setTitle(Integer.toString(remaining));
+			this.textView.setText(Integer.toString(remaining));
 		}
 	}
 }
