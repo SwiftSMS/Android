@@ -68,6 +68,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private Operator operator;
 	private SharedPreferences preferences;
 	private IAccountDatabase accountDatabase;
+	private CookieManager cookieMgr;
 	private RemainingSmsTask task;
 	private Context themedContext;
 
@@ -81,7 +82,8 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
-		CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+		this.cookieMgr = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
+		CookieHandler.setDefault(this.cookieMgr);
 		CookieSyncManager.createInstance(this.themedContext);
 
 		this.preferences = this.getSharedPreferences(PREFS_KEY, MODE_PRIVATE);
@@ -327,6 +329,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		if (this.operator == null || this.operator.getAccount().getId() != accountId) {
 			final Account account = this.accountDatabase.getAccountById(accountId);
 			this.operator = OperatorFactory.getOperator(account);
+			this.cookieMgr.getCookieStore().removeAll();
 		}
 		this.retrieveRemainingSmsCount();
 		this.getMaxCharacterCount();
