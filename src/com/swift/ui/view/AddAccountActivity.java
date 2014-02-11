@@ -142,15 +142,16 @@ public class AddAccountActivity extends Activity {
 	}
 
 	private String getAccountName(final String number) {
+		final String acName = this.selectedNetwork.toString().split(" ")[0]; // to remove '(New)' in Meteor
 		final String enteredAccName = this.textAccName.getText().toString();
 
 		String username = number;
-		if (username.contains("@")) {
+		if (username.contains("@")) { // to handle email addresses
 			username = username.split("@")[0];
 		}
 		final int length = username.length();
 		final String numberLast4Digits = username.substring(length - Math.min(4, length));
-		final String defaultAccName = this.selectedNetwork + " (" + numberLast4Digits + ")";
+		final String defaultAccName = acName + " (" + numberLast4Digits + ")";
 
 		return enteredAccName.isEmpty() ? defaultAccName : enteredAccName;
 	}
