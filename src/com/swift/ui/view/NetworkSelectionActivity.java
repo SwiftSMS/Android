@@ -53,7 +53,7 @@ public class NetworkSelectionActivity extends ListActivity {
 	protected void onListItemClick(final ListView l, final View v, final int position, final long id) {
 		final Intent intent = new Intent(this, AddAccountActivity.class);
 		final Network network = (Network) this.getListAdapter().getItem(position);
-		intent.putExtra(OPERATOR, network.toString());
+		intent.putExtra(OPERATOR, network.ordinal());
 		this.startActivityForResult(intent, ADD_ACCOUNT_REQUESTCODE);
 	}
 }

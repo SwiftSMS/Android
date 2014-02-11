@@ -1,9 +1,8 @@
 package com.swift.ui.view;
 
+import static com.swift.InternalString.ACTIVE_ACCOUNT;
+import static com.swift.InternalString.OPERATOR;
 import static com.swift.InternalString.PREFS_KEY;
-
-import java.util.Locale;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -24,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.swift.InternalString;
 import com.swift.R;
 import com.swift.io.db.AccountDataSource;
 import com.swift.io.db.IAccountDatabase;
@@ -71,7 +69,8 @@ public class AddAccountActivity extends Activity {
 		this.accountDatabase = AccountDataSource.getInstance(this);
 
 		final TextView labelSelectedNetwork = (TextView) this.findViewById(R.id.text_add_account_selected_network);
-		this.selectedNetwork = Network.valueOf(this.getIntent().getStringExtra(InternalString.OPERATOR).toUpperCase(Locale.UK));
+		final int operator = this.getIntent().getIntExtra(OPERATOR, -1);
+		this.selectedNetwork = Network.values()[operator];
 		labelSelectedNetwork.setText(this.selectedNetwork.toString());
 		this.textAccNumber.setInputType(this.selectedNetwork.getInputType());
 
@@ -120,7 +119,7 @@ public class AddAccountActivity extends Activity {
 		if (successfullyAddedId != FAILED_DB_ADD) {
 			if (this.checkActiveAccount.isChecked() || successfullyAddedId == 1) {
 				final Editor editor = this.preferences.edit();
-				editor.putInt(InternalString.ACTIVE_ACCOUNT, successfullyAddedId);
+				editor.putInt(ACTIVE_ACCOUNT, successfullyAddedId);
 				editor.commit();
 			}
 		}
@@ -146,12 +145,12 @@ public class AddAccountActivity extends Activity {
 		final String enteredAccName = this.textAccName.getText().toString();
 
 		String username = number;
-		if (username.contains("@")) {
+		if (username.contains("@")) { // to handle email addresses
 			username = username.split("@")[0];
 		}
 		final int length = username.length();
 		final String numberLast4Digits = username.substring(length - Math.min(4, length));
-		final String defaultAccName = this.selectedNetwork + " (" + numberLast4Digits + ")";
+		final String defaultAccName = this.selectedNetwork.toString() + " (" + numberLast4Digits + ")";
 
 		return enteredAccName.isEmpty() ? defaultAccName : enteredAccName;
 	}
