@@ -3,9 +3,6 @@ package com.swift.ui.view;
 import static com.swift.InternalString.ACTIVE_ACCOUNT;
 import static com.swift.InternalString.OPERATOR;
 import static com.swift.InternalString.PREFS_KEY;
-
-import java.util.Locale;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -72,8 +69,8 @@ public class AddAccountActivity extends Activity {
 		this.accountDatabase = AccountDataSource.getInstance(this);
 
 		final TextView labelSelectedNetwork = (TextView) this.findViewById(R.id.text_add_account_selected_network);
-		final String operator = this.getIntent().getStringExtra(OPERATOR).toUpperCase(Locale.UK).replace(" ", "");
-		this.selectedNetwork = Network.valueOf(operator);
+		final int operator = this.getIntent().getIntExtra(OPERATOR, -1);
+		this.selectedNetwork = Network.values()[operator];
 		labelSelectedNetwork.setText(this.selectedNetwork.toString());
 		this.textAccNumber.setInputType(this.selectedNetwork.getInputType());
 
