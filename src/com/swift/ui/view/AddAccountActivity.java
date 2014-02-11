@@ -150,7 +150,7 @@ public class AddAccountActivity extends Activity {
 		}
 		final int length = username.length();
 		final String numberLast4Digits = username.substring(length - Math.min(4, length));
-		final String defaultAccName = this.selectedNetwork.toString() + " (" + numberLast4Digits + ")";
+		final String defaultAccName = this.selectedNetwork + " (" + numberLast4Digits + ")";
 
 		return enteredAccName.isEmpty() ? defaultAccName : enteredAccName;
 	}
