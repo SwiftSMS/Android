@@ -9,9 +9,10 @@ public class OperatorFactory {
 		case EMOBILE:
 			return new EMobile(account);
 		case METEOR:
+			if (account.getMobileNumber().contains("@")) {
+				return new NewMeteor(account);
+			}
 			return new Meteor(account);
-		case NEWMETEOR:
-			return new NewMeteor(account);
 		case O2:
 			return new O2(account);
 		case TESCO:
