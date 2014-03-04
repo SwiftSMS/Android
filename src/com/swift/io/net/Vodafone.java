@@ -30,6 +30,7 @@ import com.swift.tasks.results.Failure;
 import com.swift.tasks.results.OperationResult;
 import com.swift.tasks.results.Successful;
 import com.swift.tasks.results.WarningResult;
+import com.swift.utils.ContactUtils;
 import com.swift.utils.HTMLParser;
 
 public class Vodafone extends Operator {
@@ -100,7 +101,7 @@ public class Vodafone extends Operator {
 	@Override
 	OperationResult doSend(final List<String> recipients, final String message) {
 		OperationResult isSent = new Failure();
-		final List<List<String>> splitRecipients = this.chopped(recipients, MAX_MSG_RECIPIENTS);
+		final List<List<String>> splitRecipients = ContactUtils.chopped(recipients, MAX_MSG_RECIPIENTS);
 		for (final List<String> sendableRecipients : splitRecipients) {
 			isSent = this.sendMessage(sendableRecipients, message);
 		}
@@ -307,24 +308,5 @@ public class Vodafone extends Operator {
 		} catch (final InterruptedException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Method to break a {@link List} into multiple smaller lists.
-	 * 
-	 * @param list
-	 *            The larger list to be broken down.
-	 * @param length
-	 *            The max length of a returned {@link List}.
-	 * @return A {@link List} containing the smaller broken down lists.
-	 */
-	private <T> List<List<T>> chopped(final List<T> list, final int length) {
-		final List<List<T>> parts = new ArrayList<List<T>>();
-		final int N = list.size();
-		for (int i = 0; i < N; i += length) {
-			final List<T> sublist = list.subList(i, Math.min(N, i + length));
-			parts.add(new ArrayList<T>(sublist));
-		}
-		return parts;
 	}
 }
