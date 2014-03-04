@@ -1,5 +1,7 @@
 package com.swift.io.net;
 
+import android.net.Uri;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import com.swift.model.Account;
 import com.swift.tasks.results.Failure;
 import com.swift.tasks.results.OperationResult;
 import com.swift.tasks.results.Successful;
+import com.swift.utils.ContactUtils;
 
 /**
  * Created by Rob Powell on 04/10/13.
@@ -32,8 +35,9 @@ public class Three extends Operator {
 
 	//
 	private static final String GET_REQUEST_METHOD = "GET";
+    private static final int MAX_MSG_RECIPIENTS = 3;
 
-	public Three(final Account account) {
+    public Three(final Account account) {
 		super(account);
 	}
 
@@ -50,30 +54,40 @@ public class Three extends Operator {
 
 	@Override
 	OperationResult doSend(final List<String> recipients, final String message) {
-		final ConnectionManager smsSendManager = new ConnectionManager(Three.SMS_URL);
 
-		smsSendManager.addPostHeader(Three.POST_RECIPIENT_INDIVIDUAL, this.parseRecipients(recipients));
-		smsSendManager.addPostHeader(Three.POST_MESSAGE_TEXT, message);
-		final boolean isSent = smsSendManager.connect().contains(Three.SMS_SEND_SUCCESS_TEXT);
+        OperationResult isSent = new Failure();
 
-		return isSent ? new Successful() : new Failure();
+        final List<List<String>> splitRecipients = ContactUtils.chopped(recipients, MAX_MSG_RECIPIENTS);
+
+        for (final List<String> sendableRecipients : splitRecipients) {
+            isSent = this.sendMessage(sendableRecipients, message);
+        }
+
+		return isSent;
 	}
 
-	private String parseRecipients(final List<String> recipients) {
+    private OperationResult sendMessage(List<String> recipients, String message) {
+        final ConnectionManager sendMessageManager = this.createMessageManager(recipients, message);
 
-		String recipientsString = "";
+        final boolean isSent = sendMessageManager.connect().contains(SMS_SEND_SUCCESS_TEXT);
 
-		final Iterator<String> recipientIterator = recipients.iterator();
+        return isSent ? new Successful() : new Failure();
+    }
 
-		while (recipientIterator.hasNext()) {
-			recipientsString += recipientIterator.next();
+    private ConnectionManager createMessageManager(List<String> recipients, String message){
 
-			if (recipientIterator.hasNext()) {
-				recipientsString += RECIPIENTS_SEPARATOR;
-			}
-		}
-		return recipientsString;
-	}
+        final ConnectionManager manager = new ConnectionManager(SMS_URL);
+
+        manager.addPostHeader(POST_MESSAGE_TEXT, message);
+
+        for (int i = 0; i < recipients.size(); i++) {
+            final String key = Uri.encode(POST_RECIPIENT_INDIVIDUAL+"[" + i + "]");
+            final String value = Uri.encode(recipients.get(i));
+            manager.addPostHeader(key, value);
+        }
+
+        return manager;
+    }
 
 	@Override
 	int doGetRemainingSMS() {

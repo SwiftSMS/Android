@@ -30,6 +30,25 @@ public class ContactUtils {
 		SEPARATOR_PATTERN = pattern.toString();
 	}
 
+    /**
+     * Method to break a {@link List} into multiple smaller lists.
+     *
+     * @param list
+     *            The larger list to be broken down.
+     * @param length
+     *            The max length of a returned {@link List}.
+     * @return A {@link List} containing the smaller broken down lists.
+     */
+    public static <T> List<List<T>> chopped(final List<T> list, final int length) {
+        final List<List<T>> parts = new ArrayList<List<T>>();
+        final int N = list.size();
+        for (int i = 0; i < N; i += length) {
+            final List<T> sublist = list.subList(i, Math.min(N, i + length));
+            parts.add(new ArrayList<T>(sublist));
+        }
+        return parts;
+    }
+
 	/**
 	 * This method determines if there is more than one contact entered in a String. This is determined by the separator
 	 * character. If the separator character exists in the string it is assumed more than one contact exists in the string.
