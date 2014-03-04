@@ -93,13 +93,15 @@ public class O2 extends Operator {
 
 		final List<HttpCookie> cookies = new ArrayList<HttpCookie>(cookieMgr.getCookieStore().get(oUri));
 		cookies.addAll(cookieMgr.getCookieStore().get(mUri));
-		for (final HttpCookie cookie : cookies) {
+		for (int i = 0; i < cookies.size(); i++) {
+			if (i != 0) {
+				cookieHeader.append(COOKIE_SEMI_COLON);
+			}
+			final HttpCookie cookie = cookies.get(i);
 			cookieHeader.append(cookie.getName());
 			cookieHeader.append(COOKIE_EQUALS);
 			cookieHeader.append(cookie.getValue());
-			cookieHeader.append(COOKIE_SEMI_COLON);
 		}
-		cookieHeader.delete(cookieHeader.length() - 2, cookieHeader.length());
 		return cookieHeader.toString();
 	}
 
