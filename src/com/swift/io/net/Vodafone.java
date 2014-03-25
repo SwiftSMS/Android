@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
@@ -151,7 +150,7 @@ public class Vodafone extends Operator {
 			}
 			manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 		} else {
-			this.waitFor(1000);
+			this.fakeUserInput();
 		}
 
 		final String sendHtml = manager.connect();
@@ -181,6 +180,22 @@ public class Vodafone extends Operator {
 		return manager;
 	}
 
+	private String getToken() {
+		final ConnectionManager manager = new ConnectionManager(TOKEN_URL, "GET", false);
+		final String html = manager.connect();
+
+		this.checkIsCaptchaRequired(html);
+		return HTMLParser.parseHtml(html, HTML_TOKEN_POSTTEXT, HTML_TOKEN_PRETEXT);
+	}
+
+	private void checkIsCaptchaRequired(final String html) {
+		if (html.contains(SEND_POST_CAPTCHA)) {
+			this.isCaptchaRequired = true;
+		} else {
+			this.isCaptchaRequired = false;
+		}
+	}
+
 	/**
 	 * This method is responsible for waiting for the user to complete the captcha.
 	 * 
@@ -193,27 +208,6 @@ public class Vodafone extends Operator {
 			this.waitFor(100);
 		}
 		return this.answerEditText.getText().toString();
-	}
-
-	private void downloadCaptcha() {
-		try {
-			final InputStream is = new URL(CAPTCHA_URL).openStream();
-			final Bitmap image = BitmapFactory.decodeStream(is);
-
-			this.handler.post(new Runnable() {
-				@Override
-				public void run() {
-					Vodafone.this.progessBar.setVisibility(View.GONE);
-					Vodafone.this.imageView.setImageBitmap(image);
-				}
-			});
-		} catch (final MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	private void displayCaptchaDialog() {
@@ -237,20 +231,29 @@ public class Vodafone extends Operator {
 		});
 	}
 
-	private String getToken() {
-		final ConnectionManager manager = new ConnectionManager(TOKEN_URL, "GET", false);
-		final String html = manager.connect();
+	private void downloadCaptcha() {
+		try {
+			final InputStream is = new URL(CAPTCHA_URL).openStream();
+			final Bitmap image = BitmapFactory.decodeStream(is);
 
-		this.checkIsCaptchaRequired(html);
-		return HTMLParser.parseHtml(html, HTML_TOKEN_POSTTEXT, HTML_TOKEN_PRETEXT);
+			this.handler.post(new Runnable() {
+				@Override
+				public void run() {
+					Vodafone.this.progessBar.setVisibility(View.GONE);
+					Vodafone.this.imageView.setImageBitmap(image);
+				}
+			});
+		} catch (final MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (final IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	private void checkIsCaptchaRequired(final String html) {
-		if (html.contains(SEND_POST_CAPTCHA)) {
-			this.isCaptchaRequired = true;
-		} else {
-			this.isCaptchaRequired = false;
-		}
+	private void fakeUserInput() {
+		this.waitFor((long) (Math.random() * 1000) + 1000);
 	}
 
 	/**
