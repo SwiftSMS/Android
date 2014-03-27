@@ -53,16 +53,23 @@ public class Vodafone extends Operator {
 
 	private static final String SEND_SUCCESS_STRING = "Message sent!";
 	private static final String SEND_POST_CAPTCHA = "recaptcha_response_field";
+	private static final String SEND_POST_CAPTCHA_KEY = "recaptcha_challenge_field";
 	private static final String SEND_POST_MESSAGE = "message";
 	private static final String SEND_POST_X = "x";
 	private static final String SEND_POST_Y = "y";
 	private static final String SEND_POST_TOKEN = "org.apache.struts.taglib.html.TOKEN";
 	private static final String SEND_URL = "https://www.vodafone.ie/myv/messaging/webtext/Process.shtml";
+	private static final String SEND_CAPTCHA_TEXT_INCORRECT = "the text you entered did not match the image.";
 
 	private static final String LOGIN_SUCCESS_STRING = "Sign out";
 	private static final String LOGIN_POST_PASSWORD = "password";
 	private static final String LOGIN_POST_USERNAME = "username";
 	private static final String LOGIN_URL = "https://www.vodafone.ie/myv/services/login/Login.shtml";
+
+	private static final String CAPTCHA_BASE_URL = "https://www.google.com/recaptcha/api/image?c=";
+	private static final String CAPTCHA_KEY_POSTFIX = "',";
+	private static final String CAPTCHA_KEY_PREFIX = "challenge : '";
+	private static final String CAPTCHA_URL = "https://www.google.com/recaptcha/api/challenge?k=6LfQQNsSAAAAAI4Y2jWlq1fJQhSztl3mqUuWW78D";
 
 	private Handler handler;
 	private Context context;
@@ -142,16 +149,17 @@ public class Vodafone extends Operator {
 	}
 
 	private OperationResult sendMessage(final List<String> recipients, final String message) {
-		final ConnectionManager manager = this.createSendManager(recipients, message);
-		String sendHtml = "the text you entered did not match the image.";
-
-		while (sendHtml.contains("the text you entered did not match the image.")) {
+		String sendHtml = SEND_CAPTCHA_TEXT_INCORRECT;
+		while (sendHtml.contains(SEND_CAPTCHA_TEXT_INCORRECT)) {
+			final ConnectionManager manager = this.createSendManager(recipients, message);
+			
 			if (this.isCaptchaRequired) {
 				final String captcha = this.getCaptchaResponse();
 				if (captcha.isEmpty()) {
 					return new WarningResult(R.string.message_cancelled);
 				}
 				manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
+				manager.addPostHeader(SEND_POST_CAPTCHA_KEY, this.captchaKey);
 			} else {
 				this.fakeUserInput();
 			}
@@ -173,7 +181,6 @@ public class Vodafone extends Operator {
 
 		final ConnectionManager manager = new ConnectionManager(SEND_URL);
 		manager.addPostHeader(SEND_POST_TOKEN, token);
-		manager.addPostHeader("recaptcha_challenge_field", this.captchaKey);
 		manager.addPostHeader(SEND_POST_X, Integer.toString(x));
 		manager.addPostHeader(SEND_POST_Y, Integer.toString(y));
 		manager.addPostHeader(SEND_POST_MESSAGE, message);
@@ -238,15 +245,14 @@ public class Vodafone extends Operator {
 	}
 
 	private void getCaptchaUrl() {
-		final ConnectionManager manager = new ConnectionManager("https://www.google.com/recaptcha/api/challenge?k=6LfQQNsSAAAAAI4Y2jWlq1fJQhSztl3mqUuWW78D",
-				"GET", false);
+		final ConnectionManager manager = new ConnectionManager(CAPTCHA_URL, "GET", false);
 		final String capHtml = manager.connect();
 
-		final int startOfCaptchaUrl = capHtml.indexOf("challenge : '") + "challenge : '".length();
-		final int endOfCaptchaUrl = capHtml.indexOf("',", startOfCaptchaUrl);
+		final int startOfCaptchaUrl = capHtml.indexOf(CAPTCHA_KEY_PREFIX) + CAPTCHA_KEY_PREFIX.length();
+		final int endOfCaptchaUrl = capHtml.indexOf(CAPTCHA_KEY_POSTFIX, startOfCaptchaUrl);
 
 		this.captchaKey = capHtml.substring(startOfCaptchaUrl, endOfCaptchaUrl);
-		this.captchaUrl = "https://www.google.com/recaptcha/api/image?c=" + this.captchaKey;
+		this.captchaUrl = CAPTCHA_BASE_URL + this.captchaKey;
 	}
 
 	private void downloadCaptcha() {
