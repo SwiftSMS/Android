@@ -40,7 +40,6 @@ public class Vodafone extends Operator {
 
 	private static final String CHARS_URL = "https://www.vodafone.ie/javascript/section.myv.webtext.js";
 	private static final String TOKEN_URL = "https://www.vodafone.ie/myv/messaging/webtext/index.jsp";
-	private static final String CAPTCHA_URL = "https://www.vodafone.ie/myv/messaging/webtext/Challenge.shtml";
 
 	private static final String HTML_TOKEN_PRETEXT = "\"";
 	private static final String HTML_TOKEN_POSTTEXT = "org.apache.struts.taglib.html.TOKEN\" value=\"";
@@ -53,7 +52,7 @@ public class Vodafone extends Operator {
 	private static final String SMS_URL = "https://www.vodafone.ie/myv/dashboard/webtextdetails.shtml";
 
 	private static final String SEND_SUCCESS_STRING = "Message sent!";
-	private static final String SEND_POST_CAPTCHA = "jcaptcha_response";
+	private static final String SEND_POST_CAPTCHA = "recaptcha_response_field";
 	private static final String SEND_POST_MESSAGE = "message";
 	private static final String SEND_POST_X = "x";
 	private static final String SEND_POST_Y = "y";
@@ -75,6 +74,8 @@ public class Vodafone extends Operator {
 	private EditText verificationEditText;
 
 	private boolean isCaptchaRequired = true;
+	private String captchaUrl;
+	private String captchaKey;
 
 	public Vodafone(final Account account) {
 		super(account);
@@ -142,18 +143,21 @@ public class Vodafone extends Operator {
 
 	private OperationResult sendMessage(final List<String> recipients, final String message) {
 		final ConnectionManager manager = this.createSendManager(recipients, message);
+		String sendHtml = "the text you entered did not match the image.";
 
-		if (this.isCaptchaRequired) {
-			final String captcha = this.getCaptchaResponse();
-			if (captcha.isEmpty()) {
-				return new WarningResult(R.string.message_cancelled);
+		while (sendHtml.contains("the text you entered did not match the image.")) {
+			if (this.isCaptchaRequired) {
+				final String captcha = this.getCaptchaResponse();
+				if (captcha.isEmpty()) {
+					return new WarningResult(R.string.message_cancelled);
+				}
+				manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
+			} else {
+				this.fakeUserInput();
 			}
-			manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
-		} else {
-			this.fakeUserInput();
+			sendHtml = manager.connect();
 		}
 
-		final String sendHtml = manager.connect();
 		if (sendHtml.contains(VERIFICATION_CODE)) {
 			return this.handleVerificationCode(sendHtml);
 		}
@@ -169,6 +173,7 @@ public class Vodafone extends Operator {
 
 		final ConnectionManager manager = new ConnectionManager(SEND_URL);
 		manager.addPostHeader(SEND_POST_TOKEN, token);
+		manager.addPostHeader("recaptcha_challenge_field", this.captchaKey);
 		manager.addPostHeader(SEND_POST_X, Integer.toString(x));
 		manager.addPostHeader(SEND_POST_Y, Integer.toString(y));
 		manager.addPostHeader(SEND_POST_MESSAGE, message);
@@ -203,6 +208,7 @@ public class Vodafone extends Operator {
 	 */
 	private String getCaptchaResponse() {
 		this.displayCaptchaDialog();
+		this.getCaptchaUrl();
 		this.downloadCaptcha();
 		while (this.answerEditText.isShown()) {
 			this.waitFor(100);
@@ -231,9 +237,21 @@ public class Vodafone extends Operator {
 		});
 	}
 
+	private void getCaptchaUrl() {
+		final ConnectionManager manager = new ConnectionManager("https://www.google.com/recaptcha/api/challenge?k=6LfQQNsSAAAAAI4Y2jWlq1fJQhSztl3mqUuWW78D",
+				"GET", false);
+		final String capHtml = manager.connect();
+
+		final int startOfCaptchaUrl = capHtml.indexOf("challenge : '") + "challenge : '".length();
+		final int endOfCaptchaUrl = capHtml.indexOf("',", startOfCaptchaUrl);
+
+		this.captchaKey = capHtml.substring(startOfCaptchaUrl, endOfCaptchaUrl);
+		this.captchaUrl = "https://www.google.com/recaptcha/api/image?c=" + this.captchaKey;
+	}
+
 	private void downloadCaptcha() {
 		try {
-			final InputStream is = new URL(CAPTCHA_URL).openStream();
+			final InputStream is = new URL(this.captchaUrl).openStream();
 			final Bitmap image = BitmapFactory.decodeStream(is);
 
 			this.handler.post(new Runnable() {
