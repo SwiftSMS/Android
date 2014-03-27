@@ -105,12 +105,22 @@ public class ContactUtils {
 		final List<String> listOfRecip = new ArrayList<String>();
 		final String[] tokens = trimSeparators(recipients).split(SEPARATOR_PATTERN);
 		for (final String unformattedRecipient : tokens) {
-			final String recipient = unformattedRecipient.replaceAll(NON_NUMBER_PATTERN, EMPTY_STRING);
+			final String recipientNumber = stripRecipientName(unformattedRecipient);
+			final String recipient = recipientNumber.replaceAll(NON_NUMBER_PATTERN, EMPTY_STRING);
 			if (!recipient.isEmpty()) {
 				listOfRecip.add(recipient);
 			}
 		}
 		return removeIrishPrefixFromRecipients(listOfRecip);
+	}
+
+	private static String stripRecipientName(final String unformattedRecipient) {
+		final int startOfNumber = unformattedRecipient.lastIndexOf('(') + 1;
+		final int endOfNumber = unformattedRecipient.lastIndexOf(')');
+		if (startOfNumber != 0 && endOfNumber != -1) {
+			return unformattedRecipient.substring(startOfNumber, endOfNumber);
+		}
+		return unformattedRecipient;
 	}
 
 	/**
