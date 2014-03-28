@@ -40,6 +40,7 @@ public class Vodafone extends Operator {
 
 	private static final String CHARS_URL = "https://www.vodafone.ie/javascript/section.myv.webtext.js";
 	private static final String TOKEN_URL = "https://www.vodafone.ie/myv/messaging/webtext/index.jsp";
+	private static final String CAPTCHA_URL_OLD = "https://www.vodafone.ie/myv/messaging/webtext/Challenge.shtml";
 
 	private static final String HTML_TOKEN_PRETEXT = "\"";
 	private static final String HTML_TOKEN_POSTTEXT = "org.apache.struts.taglib.html.TOKEN\" value=\"";
@@ -52,6 +53,7 @@ public class Vodafone extends Operator {
 	private static final String SMS_URL = "https://www.vodafone.ie/myv/dashboard/webtextdetails.shtml";
 
 	private static final String SEND_SUCCESS_STRING = "Message sent!";
+	private static final String SEND_POST_CAPTCHA_OLD = "jcaptcha_response";
 	private static final String SEND_POST_CAPTCHA = "recaptcha_response_field";
 	private static final String SEND_POST_CAPTCHA_KEY = "recaptcha_challenge_field";
 	private static final String SEND_POST_MESSAGE = "message";
@@ -81,6 +83,7 @@ public class Vodafone extends Operator {
 	private EditText verificationEditText;
 
 	private boolean isCaptchaRequired = true;
+	private boolean isOldCaptcha;
 	private String captchaUrl;
 	private String captchaKey;
 
@@ -158,6 +161,7 @@ public class Vodafone extends Operator {
 				if (captcha.isEmpty()) {
 					return new WarningResult(R.string.message_cancelled);
 				}
+				manager.addPostHeader(SEND_POST_CAPTCHA_OLD, captcha);
 				manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 				manager.addPostHeader(SEND_POST_CAPTCHA_KEY, this.captchaKey);
 			} else {
@@ -197,14 +201,23 @@ public class Vodafone extends Operator {
 		final String html = manager.connect();
 
 		this.checkIsCaptchaRequired(html);
+		this.storeCaptchaType(html);
 		return HTMLParser.parseHtml(html, HTML_TOKEN_POSTTEXT, HTML_TOKEN_PRETEXT);
 	}
 
 	private void checkIsCaptchaRequired(final String html) {
-		if (html.contains(SEND_POST_CAPTCHA)) {
+		if (html.contains(SEND_POST_CAPTCHA_OLD) || html.contains(SEND_POST_CAPTCHA)) {
 			this.isCaptchaRequired = true;
 		} else {
 			this.isCaptchaRequired = false;
+		}
+	}
+	
+	private void storeCaptchaType(final String html) {
+		if (html.contains(SEND_POST_CAPTCHA_OLD)) {
+			this.isOldCaptcha = true;
+		} else {
+			this.isOldCaptcha = false;
 		}
 	}
 
@@ -245,14 +258,18 @@ public class Vodafone extends Operator {
 	}
 
 	private void getCaptchaUrl() {
-		final ConnectionManager manager = new ConnectionManager(CAPTCHA_URL, "GET", false);
-		final String capHtml = manager.connect();
-
-		final int startOfCaptchaUrl = capHtml.indexOf(CAPTCHA_KEY_PREFIX) + CAPTCHA_KEY_PREFIX.length();
-		final int endOfCaptchaUrl = capHtml.indexOf(CAPTCHA_KEY_POSTFIX, startOfCaptchaUrl);
-
-		this.captchaKey = capHtml.substring(startOfCaptchaUrl, endOfCaptchaUrl);
-		this.captchaUrl = CAPTCHA_BASE_URL + this.captchaKey;
+		if (this.isOldCaptcha) {
+			this.captchaUrl = CAPTCHA_URL_OLD;
+		} else {
+			final ConnectionManager manager = new ConnectionManager(CAPTCHA_URL, "GET", false);
+			final String capHtml = manager.connect();
+	
+			final int startOfCaptchaUrl = capHtml.indexOf(CAPTCHA_KEY_PREFIX) + CAPTCHA_KEY_PREFIX.length();
+			final int endOfCaptchaUrl = capHtml.indexOf(CAPTCHA_KEY_POSTFIX, startOfCaptchaUrl);
+	
+			this.captchaKey = capHtml.substring(startOfCaptchaUrl, endOfCaptchaUrl);
+			this.captchaUrl = CAPTCHA_BASE_URL + this.captchaKey;
+		}
 	}
 
 	private void downloadCaptcha() {

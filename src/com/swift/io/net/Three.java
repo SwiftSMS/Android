@@ -1,9 +1,8 @@
 package com.swift.io.net;
 
-import android.net.Uri;
-
-import java.util.Iterator;
 import java.util.List;
+
+import android.net.Uri;
 
 import com.swift.model.Account;
 import com.swift.tasks.results.Failure;
@@ -30,10 +29,6 @@ public class Three extends Operator {
 	private static final String SMS_REMAINING_END_TEXT = "(of 333)</p>";
 	private static final String SMS_REMAINING_CHARS_START_TEXT = "'characterNumber'>";
 
-	// contact/recipients
-	private static final String RECIPIENTS_SEPARATOR = ",";
-
-	//
 	private static final String GET_REQUEST_METHOD = "GET";
     private static final int MAX_MSG_RECIPIENTS = 3;
 
