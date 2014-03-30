@@ -28,6 +28,28 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/layout_compose_recent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_compose_recipient"
+        android:background="@android:color/background_light"
+        android:paddingEnd="@dimen/element_margin"
+        android:paddingStart="12dp" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recent_contacts" />
+
+        <org.lucasr.twowayview.TwoWayView
+            android:id="@+id/list_compose_recent"
+            style="@style/TwoWayView"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:paddingTop="@dimen/element_margin" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/layout_compose_notification_area"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

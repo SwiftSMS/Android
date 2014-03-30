@@ -47,5 +47,6 @@
 	<string name="operator_changed">Operator website changed</string>
 	<string name="enter_verification_code">Enter verification code:</string>
 	<string name="code">Code</string>
+	<string name="recent_contacts">Recent contacts:</string>
 		
 </resources>
