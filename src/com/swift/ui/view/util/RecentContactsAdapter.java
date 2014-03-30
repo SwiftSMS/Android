@@ -22,11 +22,11 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 	public RecentContactsAdapter(final Context context) {
 		this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		items.add(new Contact("Sean", null, "0857855532", "Mobile"));
-		items.add(new Contact("Colin", null, "0870696722", "Mobile"));
-		items.add(new Contact("Marguerite", null, "+447799411776", "Mobile"));
-		items.add(new Contact("Daddy", null, "+35387 212 8187", "Mobile"));
-		items.add(new Contact("Mammy", null, "0035387 202 0912", "Mobile"));
+		items.add(new Contact("Sean", null, "0871255832", "Mobile"));
+		items.add(new Contact("Colin", null, "0895856699", "Mobile"));
+		items.add(new Contact("Marguerite", null, "+447047821254", "Mobile"));
+		items.add(new Contact("Daddy", null, "+35387 124 5896", "Mobile"));
+		items.add(new Contact("Mammy", null, "0035383 101 0892", "Mobile"));
 	}
 	
 	@Override
