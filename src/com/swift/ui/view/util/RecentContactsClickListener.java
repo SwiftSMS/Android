@@ -1,5 +1,6 @@
 package com.swift.ui.view.util;
 
+import static com.swift.InternalString.DEFAULT_CONTACT_SEPARATOR;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -20,5 +21,7 @@ public class RecentContactsClickListener implements OnItemClickListener{
 		final Contact clickedItem = (Contact) adapter.getItemAtPosition(position);
 
 		this.editText.setText(clickedItem.toString());
+		this.editText.append(DEFAULT_CONTACT_SEPARATOR);
+		this.editText.setSelection(this.editText.length());
 	}
 }

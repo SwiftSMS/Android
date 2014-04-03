@@ -59,6 +59,9 @@ public class Contact {
 
 	@Override
 	public String toString() {
+		if (this.name == null) {
+			return this.getStrippedNumber();
+		}
 		return this.name + " (" + this.getStrippedNumber() + ")";
 	}
 }

@@ -1,5 +1,6 @@
 package com.swift;
 
+import android.content.ContentProvider;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -55,6 +56,21 @@ public class InternalString {
 	 * The key used to store the message body when an Intent is sending a message.
 	 */
 	public static final String SMS_BODY = "sms_body";
+	
+	/**
+	 * The Uri to query the SMS {@link ContentProvider}s Sent box.
+	 */
+	public static final Uri SMS_SENT_CONTENT_URI = Uri.parse("content://sms/sent");
+
+	/**
+	 * The column name of the senders number in the SMS {@link ContentProvider}s Sent box.
+	 */
+	public static final String SMS_ADDRESS = "address";
+
+	/**
+	 * The column name for the sent date in the SMS {@link ContentProvider}s Sent box.
+	 */
+	public static final String SMS_DATE = "date";
 
 	/**
 	 * A ': ' character

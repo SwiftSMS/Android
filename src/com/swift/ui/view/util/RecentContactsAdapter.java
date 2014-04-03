@@ -1,9 +1,17 @@
 package com.swift.ui.view.util;
 
+import static com.swift.InternalString.SMS_ADDRESS;
+import static com.swift.InternalString.SMS_DATE;
+import static com.swift.InternalString.SMS_SENT_CONTENT_URI;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract.PhoneLookup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +23,49 @@ import com.swift.R;
 import com.swift.model.Contact;
 
 public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
-	
+
+	private final Context context;
 	private final LayoutInflater layoutInflater;
 	private final List<Contact> items = new ArrayList<Contact>();
-	
+
 	public RecentContactsAdapter(final Context context) {
+		this.context = context;
 		this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
-		items.add(new Contact("Sean", null, "0871255832", "Mobile"));
-		items.add(new Contact("Colin", null, "0895856699", "Mobile"));
-		items.add(new Contact("Marguerite", null, "+447047821254", "Mobile"));
-		items.add(new Contact("Daddy", null, "+35387 124 5896", "Mobile"));
-		items.add(new Contact("Mammy", null, "0035383 101 0892", "Mobile"));
+		this.getRecentContacts();
 	}
-	
+
+	private void getRecentContacts() {
+		final String[] projection = new String[] { SMS_ADDRESS };
+		final String sortOrder = SMS_DATE + " DESC LIMIT 5";
+
+		final ContentResolver resolver = this.context.getContentResolver();
+		final Cursor cursor = resolver.query(SMS_SENT_CONTENT_URI, projection, null, null, sortOrder);
+
+		while (cursor.moveToNext()) {
+			final String cNumber = cursor.getString(0);
+			final String cName = this.getContactName(cNumber);
+
+			items.add(new Contact(cName, null, cNumber, null));
+		}
+	}
+
+	private String getContactName(final String number) {
+		String name = null;
+
+		final String[] projection = new String[] { PhoneLookup.DISPLAY_NAME };
+		final Uri contactUri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+
+		final ContentResolver resolver = this.context.getContentResolver();
+		final Cursor cursor = resolver.query(contactUri, projection, null, null, null);
+
+		if (cursor.moveToFirst()) {
+			final int columnIndex = cursor.getColumnIndex(PhoneLookup.DISPLAY_NAME);
+			name = cursor.getString(columnIndex);
+		}
+		return name;
+	}
+
 	@Override
 	public int getCount() {
 		return this.items.size();
