@@ -2,7 +2,7 @@ package com.swift.ui.view.util;
 
 import static com.swift.InternalString.SMS_ADDRESS;
 import static com.swift.InternalString.SMS_DATE;
-import static com.swift.InternalString.SMS_SENT_CONTENT_URI;
+import static com.swift.InternalString.SMS_THREADS_CONTENT_URI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 	public RecentContactsAdapter(final Context context) {
 		this.context = context;
 		this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		
+
 		this.getRecentContacts();
 	}
 
@@ -40,13 +40,13 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 		final String sortOrder = SMS_DATE + " DESC LIMIT 5";
 
 		final ContentResolver resolver = this.context.getContentResolver();
-		final Cursor cursor = resolver.query(SMS_SENT_CONTENT_URI, projection, null, null, sortOrder);
+		final Cursor cursor = resolver.query(SMS_THREADS_CONTENT_URI, projection, null, null, sortOrder);
 
 		while (cursor.moveToNext()) {
 			final String cNumber = cursor.getString(0);
 			final String cName = this.getContactName(cNumber);
 
-			items.add(new Contact(cName, null, cNumber, null));
+			this.items.add(new Contact(cName, null, cNumber, null));
 		}
 	}
 

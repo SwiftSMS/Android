@@ -56,11 +56,11 @@ public class InternalString {
 	 * The key used to store the message body when an Intent is sending a message.
 	 */
 	public static final String SMS_BODY = "sms_body";
-	
+
 	/**
-	 * The Uri to query the SMS {@link ContentProvider}s Sent box.
+	 * The Uri to query the SMS {@link ContentProvider}s Theads/Conversations.
 	 */
-	public static final Uri SMS_SENT_CONTENT_URI = Uri.parse("content://sms/sent");
+	public static final Uri SMS_THREADS_CONTENT_URI = Uri.parse("content://mms-sms/conversations");
 
 	/**
 	 * The column name of the senders number in the SMS {@link ContentProvider}s Sent box.
