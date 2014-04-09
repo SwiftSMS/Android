@@ -87,7 +87,9 @@ public class Meteor extends Operator {
 			sb.append(recipient);
 			sb.append(",");
 		}
-		sb.deleteCharAt(sb.length() - 1); // remove trailing comma
+		if (sb.length() > 0) {
+			sb.deleteCharAt(sb.length() - 1); // remove trailing comma
+		}
 
 		final ConnectionManager addManager = new ConnectionManager(Meteor.SMS_URL);
 		addManager.addPostHeader(Meteor.POST_AJAX_REQUEST, Meteor.POST_VALUE_ADD_RECIPIENT);
