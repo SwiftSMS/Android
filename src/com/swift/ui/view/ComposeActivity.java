@@ -127,29 +127,45 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		final Intent intent = this.getIntent();
 		final String iAction = intent.getAction();
 		final String iType = intent.getType();
-		final Uri iData = intent.getData();
 
+		if (iAction.equals(Intent.ACTION_SEND) && iType != null && iType.equals("text/plain")) {
+			handleShareIntent();
+		} else if (iAction.equals(Intent.ACTION_SEND) || iAction.equals(Intent.ACTION_SENDTO)) {
+			handleSendIntent();
+		} else if (iAction.equals(Intent.ACTION_MAIN)) {
+			handleMainIntent();
+		}
+	}
+
+	private void handleShareIntent() {
+		final Intent intent = this.getIntent();
+
+		this.messageEditText.setText(intent.getStringExtra(Intent.EXTRA_TEXT));
+	}
+
+	private void handleSendIntent() {
+		final Uri iData = this.getIntent().getData();
+		final String persistedMessage = this.preferences.getString(this.getMessagePrefKey(), null);
+
+		final String smsto = iData.getSchemeSpecificPart();
+		this.recipientEdittext.setText(smsto + DEFAULT_CONTACT_SEPARATOR);
+		this.messageEditText.setText(persistedMessage);
+
+		final String smsBody = this.getIntent().getStringExtra(SMS_BODY);
+		if (smsBody != null) {
+			this.messageEditText.setText(smsBody);
+		}
+		this.messageEditText.requestFocus();
+	}
+
+	private void handleMainIntent() {
 		final String persistedMessage = this.preferences.getString(this.getMessagePrefKey(), null);
 		final String persistedRecipient = this.preferences.getString(this.getRecipientPrefKey(), null);
 
-		if (iAction.equals(Intent.ACTION_SEND) && iType != null && iType.equals("text/plain")) {
-			this.messageEditText.setText(intent.getStringExtra(Intent.EXTRA_TEXT));
-		} else if (iAction.equals(Intent.ACTION_SEND) || iAction.equals(Intent.ACTION_SENDTO)) {
-			final String smsto = iData.getSchemeSpecificPart();
-			this.recipientEdittext.setText(smsto + DEFAULT_CONTACT_SEPARATOR);
-
-			final String smsBody = this.getIntent().getStringExtra(SMS_BODY);
-			this.messageEditText.setText(persistedMessage);
-			if (smsBody != null) {
-				this.messageEditText.setText(smsBody);
-			}
+		this.recipientEdittext.setText(persistedRecipient);
+		this.messageEditText.setText(persistedMessage);
+		if (persistedRecipient != null && !persistedRecipient.isEmpty()) {
 			this.messageEditText.requestFocus();
-		} else if (iAction.equals(Intent.ACTION_MAIN)) {
-			this.recipientEdittext.setText(persistedRecipient);
-			this.messageEditText.setText(persistedMessage);
-			if (persistedRecipient != null && !persistedRecipient.isEmpty()) {
-				this.messageEditText.requestFocus();
-			}
 		}
 	}
 
