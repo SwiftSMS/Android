@@ -6,12 +6,12 @@ import android.view.animation.Animation;
 /**
  * @author Rob Powell
  */
-public class AnimationRunner implements Runnable, Animation.AnimationListener{
+public class AnimationRunner implements Runnable, Animation.AnimationListener {
 
-    private View view;
-    private int duration;
-    private Animation animation;
-    private int endVisibility;
+    private final View view;
+    private final int duration;
+    private final Animation animation;
+    private final int endVisibility;
 
     /**
      *
@@ -24,16 +24,16 @@ public class AnimationRunner implements Runnable, Animation.AnimationListener{
      * @param endVisibility
      *          The View visibility after the animation has finished
      */
-    public AnimationRunner(View view, int duration, Animation animation, int endVisibility){
+    public AnimationRunner(final View view, final int duration, final Animation animation, final int endVisibility) {
         this.view = view;
         this.duration = duration;
         this.animation = animation;
         this.endVisibility = endVisibility;
-        this.animation.setAnimationListener(AnimationRunner.this);
+        this.animation.setAnimationListener(this);
     }
+
     @Override
     public void run() {
-
         animation.setDuration(duration);
         view.startAnimation(animation);
     }

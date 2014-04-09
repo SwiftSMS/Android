@@ -57,6 +57,10 @@ import com.swift.ui.view.util.RecentContactsClickListener;
 
 public class ComposeActivity extends Activity implements Observer, ActionBar.OnNavigationListener {
 
+	private static final int FADE_DURATION = 500;
+	private static final Animation FADE_IN = new AlphaAnimation(0, 1);
+	private static final Animation FADE_OUT = new AlphaAnimation(1, 0);
+
 	private static final String PERSISTED_RECIPIENT_BASE_KEY = "persisted_recipient_";
 	private static final String PERSISTED_MESSAGE_BASE_KEY = "persisted_message_";
 
@@ -341,9 +345,11 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	public void update(final Observable observable, final Object data) {
 		ComposeActivity.this.updateSendButton();
 		if (this.recipientEdittext.length() > 0) {
-			this.recentLayout.setVisibility(View.GONE);
+			if (this.recentLayout.getVisibility() == View.VISIBLE) {
+				runOnUiThread(new AnimationRunner(this.recentLayout, FADE_DURATION, FADE_OUT, View.GONE));
+			}
 		} else {
-			this.recentLayout.setVisibility(View.VISIBLE);
+			runOnUiThread(new AnimationRunner(this.recentLayout, FADE_DURATION, FADE_IN, View.VISIBLE));
 		}
 	}
 
@@ -372,18 +378,13 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	 */
 	public void addNotification(final OperationResult paramNotification) {
 
-		final int FADE_DURATION = 500;
-
 		final TextView notificationText = (TextView) this.findViewById(R.id.text_compose_notification);
-
-		final Animation fadeInAnim = new AlphaAnimation(0.0f, 1.0f);
-		final Animation fadeOutAnim = new AlphaAnimation(1.0f, 0.0f);
 
 		notificationText.setText(this.getResources().getString(paramNotification.getStringResource()));
 		this.notificationArea.setBackgroundColor(this.getResources().getColor(paramNotification.getColourResource()));
 
 		final Handler postAnimationHandler = new Handler();
-		postAnimationHandler.post(new AnimationRunner(this.notificationArea, FADE_DURATION, fadeInAnim, View.VISIBLE));
-		postAnimationHandler.postDelayed(new AnimationRunner(this.notificationArea, FADE_DURATION, fadeOutAnim, View.GONE), 2000);
+		postAnimationHandler.post(new AnimationRunner(this.notificationArea, FADE_DURATION, FADE_IN, View.VISIBLE));
+		postAnimationHandler.postDelayed(new AnimationRunner(this.notificationArea, FADE_DURATION, FADE_OUT, View.GONE), 2000);
 	}
 }
