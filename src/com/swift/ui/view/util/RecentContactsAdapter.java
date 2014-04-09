@@ -32,10 +32,10 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 		this.context = context;
 		this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		this.getRecentContacts();
+		this.populateRecentContacts();
 	}
 
-	private void getRecentContacts() {
+	private void populateRecentContacts() {
 		final String[] projection = new String[] { SMS_ADDRESS };
 		final String sortOrder = SMS_DATE + " DESC LIMIT 5";
 

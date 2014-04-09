@@ -115,7 +115,6 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.charCountWatcher.addObserver(this);
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
 		this.recentList.setHorizontalScrollBarEnabled(false);
-		this.recentList.setAdapter(new RecentContactsAdapter(this.themedContext));
 		this.recentList.setOnItemClickListener(new RecentContactsClickListener(this.recipientEdittext));
 
 		this.handleIntentData();
@@ -200,6 +199,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	protected void onResume() {
 		super.onResume();
 		CookieSyncManager.getInstance().startSync();
+		this.recentList.setAdapter(new RecentContactsAdapter(this.themedContext));
 
 		final int accountId = this.preferences.getInt(ACTIVE_ACCOUNT, -1);
 		if (accountId == -1) {
@@ -333,7 +333,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	@Override
 	public void update(final Observable observable, final Object data) {
 		ComposeActivity.this.updateSendButton();
-		if (this.recipientEdittext.getText().length() > 0) {
+		if (this.recipientEdittext.length() > 0) {
 			this.recentLayout.setVisibility(View.GONE);
 		} else {
 			this.recentLayout.setVisibility(View.VISIBLE);
