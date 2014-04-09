@@ -245,16 +245,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	/**
 	 * This method queries the Network provides web API for the users remaining SMS count.
 	 * <p>
-	 * This method <b>must</b> be called from both {@link #onResume()} and {@link #onCreateOptionsMenu(Menu)}.<br />
-	 * There is two prerequisites to execution for this method
-	 * <ol>
-	 * <li>An operator has been retrieved.</li>
-	 * <li>The {@link MenuItem} that displays the count has been created.</li>
-	 * </ol>
-	 * In normal operation this method will not execute it's task until {@link #onCreateOptionsMenu(Menu)} calls it as then both
-	 * prerequisites will be satisfied.<br />
-	 * However in the case of the App being run for the first time onResume needs to call this method as the prerequisites will
-	 * not be satisfied until the onResume has run after the {@link NetworkSelectionActivity} has completed successfully.
+	 * This method <b>must</b> be called from both {@link #onResume()} and {@link #onCreateOptionsMenu(Menu)}.
 	 * </p>
 	 */
 	public void retrieveRemainingSmsCount() {
