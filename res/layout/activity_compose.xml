@@ -32,13 +32,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_compose_recipient"
-        android:background="@android:color/background_light"
-        android:paddingEnd="@dimen/element_margin"
-        android:paddingStart="12dp" >
+        android:background="@android:color/background_light" >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/element_margin"
             android:text="@string/recent_contacts" />
 
         <org.lucasr.twowayview.TwoWayView

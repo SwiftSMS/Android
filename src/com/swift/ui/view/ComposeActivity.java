@@ -114,6 +114,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.recipientEdittext.setOnItemClickListener(itemClickTextWatcher);
 		this.charCountWatcher.addObserver(this);
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
+		this.recentList.setHorizontalScrollBarEnabled(false);
 		this.recentList.setAdapter(new RecentContactsAdapter(this.themedContext));
 		this.recentList.setOnItemClickListener(new RecentContactsClickListener(this.recipientEdittext));
 
