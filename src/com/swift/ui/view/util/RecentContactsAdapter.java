@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.swift.R;
 import com.swift.model.Contact;
+import com.swift.utils.ContactUtils;
 
 public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 
@@ -43,7 +44,7 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 		final Cursor cursor = resolver.query(SMS_THREADS_CONTENT_URI, projection, null, null, sortOrder);
 
 		while (cursor.moveToNext()) {
-			final String cNumber = cursor.getString(0);
+			final String cNumber = ContactUtils.removeIrishPrefix(cursor.getString(0));
 			final String cName = this.getContactName(cNumber);
 
 			this.items.add(new Contact(cName, null, cNumber, null));

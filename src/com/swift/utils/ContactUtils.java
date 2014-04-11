@@ -167,6 +167,17 @@ public class ContactUtils {
 	/**
 	 * This method is used to replace the Irish +353 prefix with a 0.
 	 * 
+	 * @param recipient
+	 *            A phone number to remove the Irish prefix from.
+	 * @return The String containing the number with the new prefix of zero.
+	 */
+	public static String removeIrishPrefix(final String recipient) {
+		return recipient.replaceAll(IRISH_PREFIXS, ZERO);
+	}
+
+	/**
+	 * This method is used to replace the Irish +353 prefix with a 0.
+	 * 
 	 * @param recipients
 	 *            Recipient List to remove Irish prefix from, '+353' to '0'.
 	 * @return A List containing the recipients with the new prefix of zero.
@@ -175,7 +186,7 @@ public class ContactUtils {
 		final List<String> newRecipients = new ArrayList<String>();
 
 		for (final String recipient : recipients) {
-			newRecipients.add(recipient.replaceAll(IRISH_PREFIXS, ZERO));
+			newRecipients.add(removeIrishPrefix(recipient));
 		}
 		return newRecipients;
 	}
