@@ -18,6 +18,8 @@ import static com.swift.tasks.Status.SUCCESS;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.lucasr.twowayview.TwoWayView;
+
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
 import android.app.Notification;
@@ -46,6 +48,7 @@ import com.swift.R;
 import com.swift.io.net.Operator;
 import com.swift.tasks.results.OperationResult;
 import com.swift.ui.view.ComposeActivity;
+import com.swift.ui.view.util.RecentContactsAdapter;
 import com.swift.utils.ContactUtils;
 
 /**
@@ -61,6 +64,7 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 	private final EditText recipientsEditText;
 	private final ProgressBar progressBar;
 	private final ImageButton sendButton;
+	private final RecentContactsAdapter recentAdapter;
 
 	private String recipients;
 	private String message;
@@ -85,7 +89,10 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 		this.progressBar = (ProgressBar) activity.findViewById(R.id.progressbar_compose);
 		this.recipientsEditText = (EditText) activity.findViewById(R.id.text_compose_recipients);
 		this.preferences = activity.getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE);
-		this.notificationService = (NotificationManager) this.activity.getSystemService(Context.NOTIFICATION_SERVICE);
+		this.notificationService = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		final TwoWayView recentList = (TwoWayView) activity.findViewById(R.id.list_compose_recent);
+		this.recentAdapter = (RecentContactsAdapter) recentList.getAdapter();
 	}
 
 	@Override
@@ -117,6 +124,7 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 			this.insertMessageInSmsDb();
 		}
 		this.sendNotification(result.getStatus());
+		this.recentAdapter.refresh();
 	}
 
 	/**

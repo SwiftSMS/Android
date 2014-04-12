@@ -65,6 +65,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private static final int ADD_ACCOUNT_REQUEST = 23;
 
 	private CharacterCountTextWatcher charCountWatcher;
+	private RecentContactsAdapter recentAdapter;
 	private EditText messageEditText;
 	private AutoCompleteTextView recipientEdittext;
 	private MenuItem remaingSmsMenuItem;
@@ -80,6 +81,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private CookieManager cookieMgr;
 	private RemainingSmsTask task;
 	private Context themedContext;
+
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -108,6 +110,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
 		final ContactSuggestionClickListener itemClickTextWatcher = new ContactSuggestionClickListener();
 		itemClickTextWatcher.addObserver(this);
+		this.recentAdapter = new RecentContactsAdapter(this.themedContext);
 
 		this.sendButton.setEnabled(false);
 		this.recipientEdittext.setAdapter(new ContactSuggestionAdapter(this.themedContext, null));
@@ -116,6 +119,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.recipientEdittext.setOnItemClickListener(itemClickTextWatcher);
 		this.charCountWatcher.addObserver(this);
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
+		this.recentList.setAdapter(this.recentAdapter);
 		this.recentList.setHorizontalScrollBarEnabled(false);
 		this.recentList.setOnItemClickListener(new RecentContactsClickListener(this.recipientEdittext));
 
@@ -216,8 +220,8 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	@Override
 	protected void onResume() {
 		super.onResume();
+		this.recentAdapter.refresh();
 		CookieSyncManager.getInstance().startSync();
-		this.recentList.setAdapter(new RecentContactsAdapter(this.themedContext));
 
 		final int accountId = this.preferences.getInt(ACTIVE_ACCOUNT, -1);
 		if (accountId == -1) {

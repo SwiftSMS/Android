@@ -35,6 +35,12 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 
 		this.populateRecentContacts();
 	}
+	
+	public void refresh() {
+		this.items.clear();
+		this.populateRecentContacts();
+		this.notifyDataSetChanged();
+	}
 
 	private void populateRecentContacts() {
 		final String[] projection = new String[] { SMS_ADDRESS };
