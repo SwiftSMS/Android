@@ -35,7 +35,7 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 
 		this.populateRecentContacts();
 	}
-	
+
 	public void refresh() {
 		this.items.clear();
 		this.populateRecentContacts();
