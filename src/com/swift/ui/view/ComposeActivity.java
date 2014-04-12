@@ -345,15 +345,21 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 
 	@Override
 	public void update(final Observable observable, final Object data) {
-		ComposeActivity.this.updateSendButton();
+		this.updateSendButton();
+		this.updateRecentList();
+	}
+
+	private void updateRecentList() {
 		if (this.recipientEdittext.length() > 0) {
 			if (this.recentLayout.getVisibility() == View.VISIBLE) {
 				final Animation fadeOutAnim = new AlphaAnimation(1, 0);
 				runOnUiThread(new AnimationRunner(this.recentLayout, FADE_DURATION, fadeOutAnim, View.GONE));
 			}
 		} else {
-			final Animation fadeInAnim = new AlphaAnimation(0, 1);
-			runOnUiThread(new AnimationRunner(this.recentLayout, FADE_DURATION, fadeInAnim, View.VISIBLE));
+			if (this.recentLayout.getVisibility() == View.GONE) {
+				final Animation fadeInAnim = new AlphaAnimation(0, 1);
+				runOnUiThread(new AnimationRunner(this.recentLayout, FADE_DURATION, fadeInAnim, View.VISIBLE));
+			}
 		}
 	}
 
