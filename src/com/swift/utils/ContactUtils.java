@@ -30,24 +30,24 @@ public class ContactUtils {
 		SEPARATOR_PATTERN = pattern.toString();
 	}
 
-    /**
-     * Method to break a {@link List} into multiple smaller lists.
-     *
-     * @param list
-     *            The larger list to be broken down.
-     * @param length
-     *            The max length of a returned {@link List}.
-     * @return A {@link List} containing the smaller broken down lists.
-     */
-    public static <T> List<List<T>> chopped(final List<T> list, final int length) {
-        final List<List<T>> parts = new ArrayList<List<T>>();
-        final int N = list.size();
-        for (int i = 0; i < N; i += length) {
-            final List<T> sublist = list.subList(i, Math.min(N, i + length));
-            parts.add(new ArrayList<T>(sublist));
-        }
-        return parts;
-    }
+	/**
+	 * Method to break a {@link List} into multiple smaller lists.
+	 * 
+	 * @param list
+	 *            The larger list to be broken down.
+	 * @param length
+	 *            The max length of a returned {@link List}.
+	 * @return A {@link List} containing the smaller broken down lists.
+	 */
+	public static <T> List<List<T>> chopped(final List<T> list, final int length) {
+		final List<List<T>> parts = new ArrayList<List<T>>();
+		final int N = list.size();
+		for (int i = 0; i < N; i += length) {
+			final List<T> sublist = list.subList(i, Math.min(N, i + length));
+			parts.add(new ArrayList<T>(sublist));
+		}
+		return parts;
+	}
 
 	/**
 	 * This method determines if there is more than one contact entered in a String. This is determined by the separator
@@ -189,5 +189,19 @@ public class ContactUtils {
 			newRecipients.add(removeIrishPrefix(recipient));
 		}
 		return newRecipients;
+	}
+
+	/**
+	 * Method to check if a String is a valid phone number.
+	 * <p>
+	 * A valid phone number contains only numbers and can optionally start with a +.
+	 * </p>
+	 * 
+	 * @param number
+	 *            The String to be tested.
+	 * @return <code>true</code> if the String is a valid phone number, otherwise <code>false</code>.
+	 */
+	public static boolean isNumber(final String number) {
+		return number.matches("\\+?\\d{7,}");
 	}
 }

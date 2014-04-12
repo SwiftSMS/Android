@@ -44,16 +44,18 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 
 	private void populateRecentContacts() {
 		final String[] projection = new String[] { SMS_ADDRESS };
-		final String sortOrder = SMS_DATE + " DESC LIMIT 5";
+		final String sortOrder = SMS_DATE + " DESC";
 
 		final ContentResolver resolver = this.context.getContentResolver();
 		final Cursor cursor = resolver.query(SMS_THREADS_CONTENT_URI, projection, null, null, sortOrder);
 
-		while (cursor.moveToNext()) {
+		while (cursor.moveToNext() && this.items.size() < 5) {
 			final String cNumber = ContactUtils.removeIrishPrefix(cursor.getString(0));
-			final String cName = this.getContactName(cNumber);
 
-			this.items.add(new Contact(cName, null, cNumber, null));
+			if (ContactUtils.isNumber(cNumber)) {
+				final String cName = this.getContactName(cNumber);
+				this.items.add(new Contact(cName, null, cNumber, null));
+			}
 		}
 	}
 
