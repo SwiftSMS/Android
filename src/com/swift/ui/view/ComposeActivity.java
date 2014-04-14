@@ -34,7 +34,6 @@ import android.webkit.CookieSyncManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.swift.R;
@@ -70,7 +69,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private AutoCompleteTextView recipientEdittext;
 	private MenuItem remaingSmsMenuItem;
 	private ImageButton sendButton;
-	private RelativeLayout notificationArea;
+	private TextView notificationArea;
 	private TwoWayView recentList;
 	private View recentLayout;
 
@@ -101,7 +100,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.accountDatabase = AccountDataSource.getInstance(this.themedContext);
 		this.messageEditText = (EditText) this.findViewById(R.id.text_compose_message);
 		this.sendButton = (ImageButton) this.findViewById(R.id.button_compose_send);
-		this.notificationArea = (RelativeLayout) this.findViewById(R.id.layout_compose_notification_area);
+		this.notificationArea = (TextView) this.findViewById(R.id.text_compose_notification);
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
 		this.recentList = (TwoWayView) this.findViewById(R.id.list_compose_recent);
 		this.recentLayout = this.findViewById(R.id.layout_compose_recent);
@@ -387,10 +386,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	 *            OperationResult objects for different event's
 	 */
 	public void addNotification(final OperationResult paramNotification) {
-
-		final TextView notificationText = (TextView) this.findViewById(R.id.text_compose_notification);
-
-		notificationText.setText(this.getResources().getString(paramNotification.getStringResource()));
+		this.notificationArea.setText(this.getResources().getString(paramNotification.getStringResource()));
 		this.notificationArea.setBackgroundColor(this.getResources().getColor(paramNotification.getColourResource()));
 
 		final Animation fadeInAnim = new AlphaAnimation(0, 1);

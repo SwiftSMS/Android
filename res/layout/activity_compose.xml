@@ -4,35 +4,29 @@
     android:layout_height="match_parent"
     tools:context=".ComposeActivity" >
 
-    <RelativeLayout
-        android:id="@+id/layout_compose_recipient"
+    <AutoCompleteTextView
+        android:id="@+id/text_compose_recipients"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:paddingLeft="@dimen/element_margin"
-        android:paddingRight="@dimen/element_margin"
-        android:paddingTop="@dimen/element_margin" >
+        android:layout_marginLeft="@dimen/element_margin_half"
+        android:layout_marginRight="@dimen/element_margin_half"
+        android:layout_marginTop="@dimen/element_margin"
+        android:ems="10"
+        android:hint="@string/to"
+        android:imeOptions="actionNext"
+        android:inputType="textPersonName" >
 
-        <AutoCompleteTextView
-            android:id="@+id/text_compose_recipients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:ems="10"
-            android:hint="@string/to"
-            android:imeOptions="actionNext"
-            android:inputType="textPersonName" >
+        <requestFocus />
+    </AutoCompleteTextView>
 
-            <requestFocus />
-        </AutoCompleteTextView>
-    </RelativeLayout>
-
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/layout_compose_recent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_compose_recipient"
-        android:background="@android:color/background_light" >
+        android:layout_below="@+id/text_compose_recipients"
+        android:background="@android:color/background_light"
+        android:orientation="vertical" >
 
         <TextView
             android:layout_width="wrap_content"
@@ -44,28 +38,21 @@
             android:id="@+id/list_compose_recent"
             style="@style/TwoWayView"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:listSelector="@android:color/transparent"
-            android:paddingTop="@dimen/element_margin" />
-    </RelativeLayout>
+            android:layout_height="60dp"
+            android:listSelector="@android:color/transparent" />
+    </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/layout_compose_notification_area"
+    <TextView
+        android:id="@+id/text_compose_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/layout_compose_bottom_scrollview"
+        android:gravity="center"
         android:paddingBottom="@dimen/element_margin_half"
         android:paddingTop="@dimen/element_margin_half"
+        android:textColor="@android:color/background_light"
         android:visibility="gone" >
-
-        <TextView
-            android:id="@+id/text_compose_notification"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@android:color/background_light" >
-        </TextView>
-    </RelativeLayout>
+    </TextView>
 
     <ScrollView
         android:id="@+id/layout_compose_bottom_scrollview"
@@ -73,20 +60,18 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" >
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/background_light"
-            android:paddingLeft="@dimen/element_margin"
-            android:paddingRight="@dimen/element_margin" >
+            android:gravity="bottom"
+            android:paddingLeft="@dimen/element_margin_half" >
 
             <EditText
                 android:id="@+id/text_compose_message"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@+id/layout_compose_bottom_right"
+                android:layout_weight="1.0"
                 android:ems="10"
                 android:hint="@string/type_message"
                 android:imeOptions="actionSend|flagNoEnterAction"
@@ -97,8 +82,6 @@
                 android:id="@+id/layout_compose_bottom_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
                 android:orientation="vertical" >
 
                 <TextView
@@ -113,14 +96,13 @@
                     style="?android:attr/borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="0dip"
-                    android:layout_marginLeft="4dip"
                     android:layout_weight="1.0"
                     android:contentDescription="@string/send"
                     android:drawablePadding="0dip"
                     android:onClick="sendMessage"
                     android:src="@drawable/send_button_selector" />
             </LinearLayout>
-        </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
 
     <ProgressBar
