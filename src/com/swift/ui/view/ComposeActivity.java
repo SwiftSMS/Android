@@ -76,11 +76,10 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private Operator operator;
 	private SharedPreferences preferences;
 	private IAccountDatabase accountDatabase;
-	
+
 	private CookieManager cookieMgr;
 	private RemainingSmsTask task;
 	private Context themedContext;
-
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
@@ -134,11 +133,11 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		final String iType = intent.getType();
 
 		if (iAction.equals(Intent.ACTION_SEND) && iType != null && iType.equals("text/plain")) {
-			handleShareIntent();
+			this.handleShareIntent();
 		} else if (iAction.equals(Intent.ACTION_SEND) || iAction.equals(Intent.ACTION_SENDTO)) {
-			handleSendIntent();
+			this.handleSendIntent();
 		} else if (iAction.equals(Intent.ACTION_MAIN)) {
-			handleMainIntent();
+			this.handleMainIntent();
 		}
 	}
 
@@ -220,6 +219,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	protected void onResume() {
 		super.onResume();
 		this.recentAdapter.refresh();
+		this.hideRecentList();
 		CookieSyncManager.getInstance().startSync();
 
 		final int accountId = this.preferences.getInt(ACTIVE_ACCOUNT, -1);
@@ -352,13 +352,21 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		if (this.recipientEdittext.length() > 0) {
 			if (this.recentLayout.getVisibility() == View.VISIBLE) {
 				final Animation fadeOutAnim = new AlphaAnimation(1, 0);
-				runOnUiThread(new AnimationRunner(this.recentLayout, FADE_DURATION, fadeOutAnim, View.GONE));
+				this.runOnUiThread(new AnimationRunner(this.recentLayout, FADE_DURATION, fadeOutAnim, View.GONE));
 			}
 		} else {
 			if (this.recentLayout.getVisibility() == View.GONE) {
-				final Animation fadeInAnim = new AlphaAnimation(0, 1);
-				runOnUiThread(new AnimationRunner(this.recentLayout, FADE_DURATION, fadeInAnim, View.VISIBLE));
+				if (this.recentAdapter.getCount() != 0) {
+					final Animation fadeInAnim = new AlphaAnimation(0, 1);
+					this.runOnUiThread(new AnimationRunner(this.recentLayout, FADE_DURATION, fadeInAnim, View.VISIBLE));
+				}
 			}
+		}
+	}
+
+	private void hideRecentList() {
+		if (this.recentAdapter.getCount() == 0) {
+			this.recentLayout.setVisibility(View.GONE);
 		}
 	}
 

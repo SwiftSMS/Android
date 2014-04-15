@@ -1,5 +1,6 @@
 package com.swift.ui.view.util;
 
+import static com.swift.InternalString.LOG_TAG;
 import static com.swift.InternalString.SMS_ADDRESS;
 import static com.swift.InternalString.SMS_DATE;
 import static com.swift.InternalString.SMS_THREADS_CONTENT_URI;
@@ -12,6 +13,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract.PhoneLookup;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +27,12 @@ import com.swift.utils.ContactUtils;
 
 public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 
-	private final Context context;
 	private final LayoutInflater layoutInflater;
 	private final List<Contact> items = new ArrayList<Contact>();
+	private final ContentResolver resolver;
 
 	public RecentContactsAdapter(final Context context) {
-		this.context = context;
+		this.resolver = context.getContentResolver();
 		this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		this.populateRecentContacts();
@@ -43,19 +45,22 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 	}
 
 	private void populateRecentContacts() {
-		final String[] projection = new String[] { SMS_ADDRESS };
-		final String sortOrder = SMS_DATE + " DESC";
+		try {
+			final String[] projection = new String[] { SMS_ADDRESS };
+			final String sortOrder = SMS_DATE + " DESC";
 
-		final ContentResolver resolver = this.context.getContentResolver();
-		final Cursor cursor = resolver.query(SMS_THREADS_CONTENT_URI, projection, null, null, sortOrder);
+			final Cursor cursor = this.resolver.query(SMS_THREADS_CONTENT_URI, projection, null, null, sortOrder);
 
-		while (cursor.moveToNext() && this.items.size() < 5) {
-			final String cNumber = ContactUtils.removeIrishPrefix(cursor.getString(0));
+			while (cursor.moveToNext() && this.items.size() < 5) {
+				final String cNumber = ContactUtils.removeIrishPrefix(cursor.getString(0));
 
-			if (ContactUtils.isNumber(cNumber)) {
-				final String cName = this.getContactName(cNumber);
-				this.items.add(new Contact(cName, null, cNumber, null));
+				if (ContactUtils.isNumber(cNumber)) {
+					final String cName = this.getContactName(cNumber);
+					this.items.add(new Contact(cName, null, cNumber, null));
+				}
 			}
+		} catch (final Exception e) {
+			Log.e(LOG_TAG, "", e);
 		}
 	}
 
@@ -65,8 +70,7 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 		final String[] projection = new String[] { PhoneLookup.DISPLAY_NAME };
 		final Uri contactUri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
 
-		final ContentResolver resolver = this.context.getContentResolver();
-		final Cursor cursor = resolver.query(contactUri, projection, null, null, null);
+		final Cursor cursor = this.resolver.query(contactUri, projection, null, null, null);
 
 		if (cursor.moveToFirst()) {
 			final int columnIndex = cursor.getColumnIndex(PhoneLookup.DISPLAY_NAME);
