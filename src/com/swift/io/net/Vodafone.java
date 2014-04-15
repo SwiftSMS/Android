@@ -31,7 +31,6 @@ import com.swift.tasks.results.OperationResult;
 import com.swift.tasks.results.Successful;
 import com.swift.tasks.results.WarningResult;
 import com.swift.utils.HTMLParser;
-import com.swift.utils.Logger;
 
 public class Vodafone extends Operator {
 
@@ -153,11 +152,6 @@ public class Vodafone extends Operator {
 		manager.addPostHeader(SEND_POST_CAPTCHA, captcha);
 
 		final String sendHtml = manager.connect();
-
-		final Logger logger = new Logger(this.context);
-		logger.log("Vodafone#handleVerificationCode - TOKEN = " + token);
-		logger.log("Vodafone#handleVerificationCode - HTML = " + sendHtml);
-		logger.showSendDialog();
 
 		if (sendHtml.contains(HTML_TOKEN_POSTTEXT)) {
 			return this.handleVerificationCode(sendHtml);

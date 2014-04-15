@@ -14,6 +14,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Handler;
 
+/**
+ * How to use this logger.
+ * <code>
+ * <pre>
+ * logger.log("Vodafone#handleVerificationCode - TOKEN = " + token);
+ * logger.log("Vodafone#handleVerificationCode - HTML = " + sendHtml);
+ * logger.showSendDialog();
+ * </pre>
+ * </code>
+ * @param context
+ */
 public class Logger {
 
 	private static final Semaphore lock = new Semaphore(1);
@@ -23,6 +34,17 @@ public class Logger {
 
 	private final File logFile;
 
+	/**
+	 * How to use this logger.
+	 * <code>
+	 * <pre>
+	 * logger.log("Vodafone#handleVerificationCode - TOKEN = " + token);
+	 * logger.log("Vodafone#handleVerificationCode - HTML = " + sendHtml);
+	 * logger.showSendDialog();
+	 * </pre>
+	 * </code>
+	 * @param context
+	 */
 	public Logger(final Context context) {
 		this.context = context;
 		this.handler = new Handler(context.getMainLooper());
