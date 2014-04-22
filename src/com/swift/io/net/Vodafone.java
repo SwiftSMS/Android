@@ -94,6 +94,7 @@ public class Vodafone extends Operator {
 	@Override
 	boolean doLogin() {
 		final ConnectionManager loginManager = new ConnectionManager(LOGIN_URL);
+		loginManager.setRequestHeader("Accept-Encoding", "identity");
 		loginManager.addPostHeader(LOGIN_POST_USERNAME, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(LOGIN_POST_PASSWORD, this.getAccount().getPassword());
 		final String loginHtml = loginManager.connect();
@@ -155,7 +156,7 @@ public class Vodafone extends Operator {
 		String sendHtml = SEND_CAPTCHA_TEXT_INCORRECT;
 		while (sendHtml.contains(SEND_CAPTCHA_TEXT_INCORRECT)) {
 			final ConnectionManager manager = this.createSendManager(recipients, message);
-			
+
 			if (this.isCaptchaRequired) {
 				final String captcha = this.getCaptchaResponse();
 				if (captcha.isEmpty()) {
@@ -212,7 +213,7 @@ public class Vodafone extends Operator {
 			this.isCaptchaRequired = false;
 		}
 	}
-	
+
 	private void storeCaptchaType(final String html) {
 		if (html.contains(SEND_POST_CAPTCHA_OLD)) {
 			this.isOldCaptcha = true;
@@ -263,10 +264,10 @@ public class Vodafone extends Operator {
 		} else {
 			final ConnectionManager manager = new ConnectionManager(CAPTCHA_URL, "GET", false);
 			final String capHtml = manager.connect();
-	
+
 			final int startOfCaptchaUrl = capHtml.indexOf(CAPTCHA_KEY_PREFIX) + CAPTCHA_KEY_PREFIX.length();
 			final int endOfCaptchaUrl = capHtml.indexOf(CAPTCHA_KEY_POSTFIX, startOfCaptchaUrl);
-	
+
 			this.captchaKey = capHtml.substring(startOfCaptchaUrl, endOfCaptchaUrl);
 			this.captchaUrl = CAPTCHA_BASE_URL + this.captchaKey;
 		}
