@@ -1,9 +1,9 @@
 package com.swift.ui.view.util;
 
-import static com.swift.InternalString.LOG_TAG;
 import static com.swift.InternalString.SMS_ADDRESS;
 import static com.swift.InternalString.SMS_DATE;
 import static com.swift.InternalString.SMS_THREADS_CONTENT_URI;
+import static com.swift.InternalString.THREAD_ID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract.PhoneLookup;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,29 +38,79 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 	}
 
 	public void refresh() {
-		this.items.clear();
 		this.populateRecentContacts();
 		this.notifyDataSetChanged();
 	}
 
 	private void populateRecentContacts() {
-		try {
-			final String[] projection = new String[] { SMS_ADDRESS };
-			final String sortOrder = SMS_DATE + " DESC";
+		this.items.clear();
+		final List<Contact> contacts = this.getRecentContacts();
+		this.items.addAll(contacts);
+	}
 
-			final Cursor cursor = this.resolver.query(SMS_THREADS_CONTENT_URI, projection, null, null, sortOrder);
+	private List<Contact> getRecentContacts() {
+		final String sortOrder = SMS_DATE + " DESC";
 
-			while (cursor.moveToNext() && this.items.size() < 5) {
-				final String cNumber = ContactUtils.removeIrishPrefix(cursor.getString(0));
+		final Cursor cursor = this.resolver.query(SMS_THREADS_CONTENT_URI, null, null, null, sortOrder);
+		return this.getRecentContacts(cursor);
+	}
 
-				if (ContactUtils.isNumber(cNumber)) {
-					final String cName = this.getContactName(cNumber);
-					this.items.add(new Contact(cName, null, cNumber, null));
-				}
+	private List<Contact> getRecentContacts(final Cursor cursor) {
+		final List<Contact> contacts = new ArrayList<Contact>();
+
+		while (cursor.moveToNext() && contacts.size() < 5) {
+			final String cNumber = this.getContactNumber(cursor);
+
+			if (ContactUtils.isNumber(cNumber)) {
+				final String cName = this.getContactName(cNumber);
+				contacts.add(new Contact(cName, null, cNumber, null));
 			}
-		} catch (final Exception e) {
-			Log.e(LOG_TAG, "", e);
 		}
+
+		return contacts;
+	}
+
+	private String getContactNumber(final Cursor cursor) {
+		if (this.isStockProvider(cursor)) {
+			return this.getContactNumberStock(cursor);
+		} else if (this.isSamsungProvider(cursor)) {
+			return this.getContactNumberSamsung(cursor);
+		}
+
+		return null;
+	}
+
+	private boolean isStockProvider(final Cursor cursor) {
+		return cursor.getColumnIndex(SMS_ADDRESS) != -1;
+	}
+
+	private String getContactNumberStock(final Cursor cursor) {
+		final String rawNumber = cursor.getString(cursor.getColumnIndex(SMS_ADDRESS));
+
+		return ContactUtils.removeIrishPrefix(rawNumber);
+	}
+
+	private boolean isSamsungProvider(final Cursor cursor) {
+		return cursor.getColumnIndex(THREAD_ID) != -1;
+	}
+
+	private String getContactNumberSamsung(final Cursor cursor) {
+		final String threadId = cursor.getString(cursor.getColumnIndex(THREAD_ID));
+		final String rawNumber = this.getContactNumberFromThread(threadId);
+
+		return ContactUtils.removeIrishPrefix(rawNumber);
+	}
+
+	private String getContactNumberFromThread(final String threadId) {
+		final String[] projection = new String[] { SMS_ADDRESS };
+
+		final Uri uri = Uri.withAppendedPath(SMS_THREADS_CONTENT_URI, threadId);
+		final Cursor cursor = this.resolver.query(uri, projection, null, null, null);
+
+		if (cursor.moveToFirst()) {
+			return cursor.getString(0);
+		}
+		return null;
 	}
 
 	private String getContactName(final String number) {
@@ -73,8 +122,7 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 		final Cursor cursor = this.resolver.query(contactUri, projection, null, null, null);
 
 		if (cursor.moveToFirst()) {
-			final int columnIndex = cursor.getColumnIndex(PhoneLookup.DISPLAY_NAME);
-			name = cursor.getString(columnIndex);
+			name = cursor.getString(0);
 		}
 		return name;
 	}

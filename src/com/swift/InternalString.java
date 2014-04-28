@@ -60,7 +60,7 @@ public class InternalString {
 	/**
 	 * The Uri to query the SMS {@link ContentProvider}s Theads/Conversations.
 	 */
-	public static final Uri SMS_THREADS_CONTENT_URI = Uri.parse("content://mms-sms/conversations");
+	public static final Uri SMS_THREADS_CONTENT_URI = Uri.parse("content://sms/conversations");
 
 	/**
 	 * The column name of the senders number in the SMS {@link ContentProvider}s Sent box.
@@ -71,6 +71,11 @@ public class InternalString {
 	 * The column name for the sent date in the SMS {@link ContentProvider}s Sent box.
 	 */
 	public static final String SMS_DATE = "date";
+
+	/**
+	 * The column name of the ID number of an SMS thread in the SMS {@link ContentProvider}s conversations box.
+	 */
+	public static final String THREAD_ID = "thread_id";
 
 	/**
 	 * A ': ' character
