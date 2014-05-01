@@ -172,6 +172,9 @@ public class ContactUtils {
 	 * @return The String containing the number with the new prefix of zero.
 	 */
 	public static String removeIrishPrefix(final String recipient) {
+		if (recipient == null) {
+			return null;
+		}
 		return recipient.replaceAll(IRISH_PREFIXS, ZERO);
 	}
 
@@ -202,6 +205,9 @@ public class ContactUtils {
 	 * @return <code>true</code> if the String is a valid phone number, otherwise <code>false</code>.
 	 */
 	public static boolean isNumber(final String number) {
+		if (number == null) {
+			return false;
+		}
 		return number.matches("\\+?\\d{7,}");
 	}
 }
