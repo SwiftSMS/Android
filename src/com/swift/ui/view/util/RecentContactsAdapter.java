@@ -50,9 +50,12 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 
 	private List<Contact> getRecentContacts() {
 		final String sortOrder = SMS_DATE + " DESC";
-
 		final Cursor cursor = this.resolver.query(SMS_THREADS_CONTENT_URI, null, null, null, sortOrder);
-		return this.getRecentContacts(cursor);
+
+		if (cursor != null) {
+			return this.getRecentContacts(cursor);
+		}
+		return null;
 	}
 
 	private List<Contact> getRecentContacts(final Cursor cursor) {
@@ -107,24 +110,22 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 		final Uri uri = Uri.withAppendedPath(SMS_THREADS_CONTENT_URI, threadId);
 		final Cursor cursor = this.resolver.query(uri, projection, null, null, null);
 
-		if (cursor.moveToFirst()) {
+		if (cursor != null && cursor.moveToFirst()) {
 			return cursor.getString(0);
 		}
 		return null;
 	}
 
 	private String getContactName(final String number) {
-		String name = null;
-
 		final String[] projection = new String[] { PhoneLookup.DISPLAY_NAME };
 		final Uri contactUri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
 
 		final Cursor cursor = this.resolver.query(contactUri, projection, null, null, null);
 
-		if (cursor.moveToFirst()) {
-			name = cursor.getString(0);
+		if (cursor != null && cursor.moveToFirst()) {
+			return cursor.getString(0);
 		}
-		return name;
+		return null;
 	}
 
 	@Override
