@@ -55,7 +55,7 @@ public class RecentContactsAdapter extends BaseAdapter implements ListAdapter {
 		if (cursor != null) {
 			return this.getRecentContacts(cursor);
 		}
-		return null;
+		return new ArrayList<Contact>();
 	}
 
 	private List<Contact> getRecentContacts(final Cursor cursor) {
