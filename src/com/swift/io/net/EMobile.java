@@ -49,13 +49,15 @@ public class EMobile extends Operator {
 	}
 
 	@Override
-	boolean doLogin() {
+	OperationResult doLogin() {
 
 		final ConnectionManager loginManager = new ConnectionManager(EMobile.HOST_URL + EMobile.LOGIN_URL);
 		loginManager.addPostHeader(EMobile.POST_USER, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(EMobile.POST_PASS, this.getAccount().getPassword());
 		final String loginHtml = loginManager.connect();
-		return loginHtml.contains(SUCCESS_LOGIN);
+
+		final boolean isSent = loginHtml.contains(SUCCESS_LOGIN);
+		return isSent ? new Successful() : new Failure();
 	}
 
 	@Override

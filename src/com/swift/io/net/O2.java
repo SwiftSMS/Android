@@ -57,7 +57,7 @@ public class O2 extends Operator {
 	}
 
 	@Override
-	boolean doLogin() {
+	OperationResult doLogin() {
 		final ConnectionManager preMgr = new ConnectionManager(LOGIN_PRE_URL, GET, false);
 		String html = preMgr.connect();
 
@@ -71,7 +71,9 @@ public class O2 extends Operator {
 			html = manager.connect();
 		}
 		this.prepareWebtextSession();
-		return html.contains(LOGIN_SUCCESS);
+
+		final boolean isSent = html.contains(LOGIN_SUCCESS);
+		return isSent ? new Successful() : new Failure();
 	}
 
 	private void prepareWebtextSession() {

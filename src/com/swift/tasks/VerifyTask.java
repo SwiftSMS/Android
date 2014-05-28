@@ -1,5 +1,6 @@
 package com.swift.tasks;
 
+import static com.swift.tasks.Status.SUCCESS;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
@@ -7,11 +8,12 @@ import android.widget.TextView;
 
 import com.swift.R;
 import com.swift.io.net.Operator;
+import com.swift.tasks.results.OperationResult;
 
 /**
  * This class is an {@link AsyncTask} responsible for testing if the login details provided by the user are valid.
  */
-public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
+public class VerifyTask extends AsyncTask<String, Integer, OperationResult> {
 
 	private final Operator operator;
 	private final TextView doneButton;
@@ -38,15 +40,15 @@ public class VerifyTask extends AsyncTask<String, Integer, Boolean> {
 	}
 
 	@Override
-	protected Boolean doInBackground(final String... params) {
+	protected OperationResult doInBackground(final String... params) {
 		return this.operator.login();
 	}
 
 	@Override
-	protected void onPostExecute(final Boolean result) {
+	protected void onPostExecute(final OperationResult result) {
 		this.verifyImage.clearAnimation();
 		final View layout = (View) this.verifyImage.getParent();
-		if (result) {
+		if (result.getStatus() == SUCCESS) {
 			this.doneButton.setEnabled(true);
 			layout.setBackgroundResource(R.drawable.green_highlight);
 		} else {

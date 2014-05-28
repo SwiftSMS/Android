@@ -21,13 +21,14 @@ public class NewMeteor extends Operator {
 	}
 
 	@Override
-	boolean doLogin() {
+	OperationResult doLogin() {
 		final ConnectionManager manager = new ConnectionManager("https://my.meteor.ie/meteor/transactional/login");
 		manager.addPostHeader("username", this.getAccount().getMobileNumber());
 		manager.addPostHeader("password", this.getAccount().getPassword());
 		final String html = manager.connect();
 
-		return html.contains("Logout");
+		final boolean isSent = html.contains("Logout");
+		return isSent ? new Successful() : new Failure();
 	}
 
 	@Override

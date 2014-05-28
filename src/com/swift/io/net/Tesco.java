@@ -49,13 +49,15 @@ public class Tesco extends Operator {
 	}
 
 	@Override
-	boolean doLogin() {
+	OperationResult doLogin() {
 		final ConnectionManager manager = new ConnectionManager(LOGIN_URL + this.getAccount().getMobileNumber(), GET, false);
 		manager.setRequestHeader(USER_AGENT, USER_AGENT_VALUE);
 		manager.setRequestHeader(ACCEPT, ACCEPT_VALUE);
 		manager.setRequestHeader(AUTHORIZATION, this.auth);
 		final String html = manager.connect();
-		return html.contains(JSON_MSISDN);
+
+		final boolean isSent = html.contains(JSON_MSISDN);
+		return isSent ? new Successful() : new Failure();
 	}
 
 	@Override

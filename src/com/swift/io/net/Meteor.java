@@ -43,13 +43,14 @@ public class Meteor extends Operator {
 	}
 
 	@Override
-	boolean doLogin() {
+	OperationResult doLogin() {
 		final ConnectionManager loginManager = new ConnectionManager(Meteor.LOGIN_URL);
 		loginManager.addPostHeader(Meteor.POST_USERNAME, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(Meteor.POST_PASSWORD, this.getAccount().getPassword());
 		final String loginHtml = loginManager.connect();
 
-		return loginHtml.contains(Meteor.LOGIN_SUCCESS_TEXT);
+		final boolean isSent = loginHtml.contains(LOGIN_SUCCESS_TEXT);
+		return isSent ? new Successful() : new Failure();
 	}
 
 	@Override

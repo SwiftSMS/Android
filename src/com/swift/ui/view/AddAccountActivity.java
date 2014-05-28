@@ -31,6 +31,7 @@ import com.swift.io.net.OperatorFactory;
 import com.swift.model.Account;
 import com.swift.model.Network;
 import com.swift.tasks.VerifyTask;
+import com.swift.tasks.results.OperationResult;
 
 /**
  * Activity to handle adding a new operator account to ICC
@@ -49,7 +50,7 @@ public class AddAccountActivity extends Activity {
 	private LinearLayout buttonVerify;
 	private ImageView buttonVerifyIcon;
 	private Network selectedNetwork;
-	private AsyncTask<String, Integer, Boolean> verifyTask;
+	private AsyncTask<String, Integer, OperationResult> verifyTask;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {

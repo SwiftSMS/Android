@@ -38,7 +38,7 @@ public abstract class Operator {
 	 * 
 	 * @return <code>true</code> if the login was successful else <code>false</code>
 	 */
-	public final boolean login() {
+	public final OperationResult login() {
 		CookieSyncManager.getInstance().sync();
 		return this.doLogin();
 	}
@@ -48,7 +48,7 @@ public abstract class Operator {
 	 * 
 	 * @return <code>true</code> if the login was successful else <code>false</code>
 	 */
-	abstract boolean doLogin();
+	abstract OperationResult doLogin();
 
 	/**
 	 * This method is used to get the users remaining SMS count from an operators website. This method will perform any

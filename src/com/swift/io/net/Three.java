@@ -30,59 +30,60 @@ public class Three extends Operator {
 	private static final String SMS_REMAINING_CHARS_START_TEXT = "'characterNumber'>";
 
 	private static final String GET_REQUEST_METHOD = "GET";
-    private static final int MAX_MSG_RECIPIENTS = 3;
+	private static final int MAX_MSG_RECIPIENTS = 3;
 
-    public Three(final Account account) {
+	public Three(final Account account) {
 		super(account);
 	}
 
 	@Override
-	boolean doLogin() {
+	OperationResult doLogin() {
 
 		final ConnectionManager loginManager = new ConnectionManager(Three.LOGIN_URL);
 		loginManager.addPostHeader(Three.POST_USER, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(Three.POST_PASS, this.getAccount().getPassword());
 		final String loginHtml = loginManager.connect();
 
-		return loginHtml.contains(SUCCESS_LOGIN);
+		final boolean isSent = loginHtml.contains(SUCCESS_LOGIN);
+		return isSent ? new Successful() : new Failure();
 	}
 
 	@Override
 	OperationResult doSend(final List<String> recipients, final String message) {
 
-        OperationResult isSent = new Failure();
+		OperationResult isSent = new Failure();
 
-        final List<List<String>> splitRecipients = ContactUtils.chopped(recipients, MAX_MSG_RECIPIENTS);
+		final List<List<String>> splitRecipients = ContactUtils.chopped(recipients, MAX_MSG_RECIPIENTS);
 
-        for (final List<String> sendableRecipients : splitRecipients) {
-            isSent = this.sendMessage(sendableRecipients, message);
-        }
+		for (final List<String> sendableRecipients : splitRecipients) {
+			isSent = this.sendMessage(sendableRecipients, message);
+		}
 
 		return isSent;
 	}
 
-    private OperationResult sendMessage(List<String> recipients, String message) {
-        final ConnectionManager sendMessageManager = this.createMessageManager(recipients, message);
+	private OperationResult sendMessage(final List<String> recipients, final String message) {
+		final ConnectionManager sendMessageManager = this.createMessageManager(recipients, message);
 
-        final boolean isSent = sendMessageManager.connect().contains(SMS_SEND_SUCCESS_TEXT);
+		final boolean isSent = sendMessageManager.connect().contains(SMS_SEND_SUCCESS_TEXT);
 
-        return isSent ? new Successful() : new Failure();
-    }
+		return isSent ? new Successful() : new Failure();
+	}
 
-    private ConnectionManager createMessageManager(List<String> recipients, String message){
+	private ConnectionManager createMessageManager(final List<String> recipients, final String message) {
 
-        final ConnectionManager manager = new ConnectionManager(SMS_URL);
+		final ConnectionManager manager = new ConnectionManager(SMS_URL);
 
-        manager.addPostHeader(POST_MESSAGE_TEXT, message);
+		manager.addPostHeader(POST_MESSAGE_TEXT, message);
 
-        for (int i = 0; i < recipients.size(); i++) {
-            final String key = Uri.encode(POST_RECIPIENT_INDIVIDUAL+"[" + i + "]");
-            final String value = Uri.encode(recipients.get(i));
-            manager.addPostHeader(key, value);
-        }
+		for (int i = 0; i < recipients.size(); i++) {
+			final String key = Uri.encode(POST_RECIPIENT_INDIVIDUAL + "[" + i + "]");
+			final String value = Uri.encode(recipients.get(i));
+			manager.addPostHeader(key, value);
+		}
 
-        return manager;
-    }
+		return manager;
+	}
 
 	@Override
 	int doGetRemainingSMS() {

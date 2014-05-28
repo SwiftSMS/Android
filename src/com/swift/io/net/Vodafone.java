@@ -92,14 +92,15 @@ public class Vodafone extends Operator {
 	}
 
 	@Override
-	boolean doLogin() {
+	OperationResult doLogin() {
 		final ConnectionManager loginManager = new ConnectionManager(LOGIN_URL);
 		loginManager.setRequestHeader("Accept-Encoding", "identity");
 		loginManager.addPostHeader(LOGIN_POST_USERNAME, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(LOGIN_POST_PASSWORD, this.getAccount().getPassword());
 		final String loginHtml = loginManager.connect();
 
-		return loginHtml.contains(LOGIN_SUCCESS_STRING);
+		final boolean isSent = loginHtml.contains(LOGIN_SUCCESS_STRING);
+		return isSent ? new Successful() : new Failure();
 	}
 
 	@Override
