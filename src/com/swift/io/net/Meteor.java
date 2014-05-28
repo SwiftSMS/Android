@@ -6,9 +6,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.swift.model.Account;
-import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.Fail;
 import com.swift.tasks.results.OperationResult;
-import com.swift.tasks.results.Successful;
+import com.swift.tasks.results.Success;
 
 public class Meteor extends Operator {
 
@@ -49,8 +49,8 @@ public class Meteor extends Operator {
 		loginManager.addPostHeader(Meteor.POST_PASSWORD, this.getAccount().getPassword());
 		final String loginHtml = loginManager.connect();
 
-		final boolean isSent = loginHtml.contains(LOGIN_SUCCESS_TEXT);
-		return isSent ? new Successful() : new Failure();
+		final boolean isSuccess = loginHtml.contains(LOGIN_SUCCESS_TEXT);
+		return isSuccess ? Success.LOGGED_IN : Fail.LOGIN_FAILED;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class Meteor extends Operator {
 		sendManager.addPostHeader(Meteor.POST_MESSAGE_TEXT, message);
 		final boolean isSent = sendManager.connect().contains(Meteor.SEND_SUCCESS_TEXT);
 
-		return isSent ? new Successful() : new Failure();
+		return isSent ? Success.MESSAGE_SENT : Fail.MESSAGE_FAILED;
 	}
 
 	private void addRecipients(final List<String> recipients) {

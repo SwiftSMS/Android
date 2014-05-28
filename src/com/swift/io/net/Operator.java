@@ -9,7 +9,7 @@ import android.webkit.CookieSyncManager;
 
 import com.swift.model.Account;
 import com.swift.tasks.Status;
-import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.Fail;
 import com.swift.tasks.results.OperationResult;
 
 /**
@@ -89,7 +89,7 @@ public abstract class Operator {
 	 */
 	public final OperationResult send(final List<String> list, final String message) {
 		final List<String> msgParts = this.getParts(message, this.getCharacterLimit());
-		OperationResult sendStatus = new Failure();
+		OperationResult sendStatus = Fail.MESSAGE_FAILED;
 		for (final String msgToSend : msgParts) {
 			final String encodedMsg = Uri.encode(msgToSend);
 			sendStatus = this.doSend(list, encodedMsg);

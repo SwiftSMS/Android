@@ -11,11 +11,10 @@ import org.json.JSONObject;
 import android.net.Uri;
 import android.util.Base64;
 
-import com.swift.R;
 import com.swift.model.Account;
-import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.Fail;
 import com.swift.tasks.results.OperationResult;
-import com.swift.tasks.results.Successful;
+import com.swift.tasks.results.Success;
 
 public class Tesco extends Operator {
 
@@ -56,8 +55,8 @@ public class Tesco extends Operator {
 		manager.setRequestHeader(AUTHORIZATION, this.auth);
 		final String html = manager.connect();
 
-		final boolean isSent = html.contains(JSON_MSISDN);
-		return isSent ? new Successful() : new Failure();
+		final boolean isSuccess = html.contains(JSON_MSISDN);
+		return isSuccess ? Success.LOGGED_IN : Fail.LOGIN_FAILED;
 	}
 
 	@Override
@@ -100,11 +99,11 @@ public class Tesco extends Operator {
 			final JSONObject json = new JSONObject(rawJson);
 			final boolean isSent = json.length() == 0;
 
-			return isSent ? new Successful() : new Failure();
+			return isSent ? Success.MESSAGE_SENT : Fail.MESSAGE_FAILED;
 		} catch (final JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return new Failure(R.string.operator_changed);
+			return Fail.OPERATOR_CHANGED;
 		}
 	}
 

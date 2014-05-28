@@ -9,9 +9,9 @@ import org.json.JSONObject;
 import android.net.Uri;
 
 import com.swift.model.Account;
-import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.Fail;
 import com.swift.tasks.results.OperationResult;
-import com.swift.tasks.results.Successful;
+import com.swift.tasks.results.Success;
 import com.swift.utils.HTMLParser;
 
 public class NewMeteor extends Operator {
@@ -27,8 +27,8 @@ public class NewMeteor extends Operator {
 		manager.addPostHeader("password", this.getAccount().getPassword());
 		final String html = manager.connect();
 
-		final boolean isSent = html.contains("Logout");
-		return isSent ? new Successful() : new Failure();
+		final boolean isSuccess = html.contains("Logout");
+		return isSuccess ? Success.LOGGED_IN : Fail.LOGIN_FAILED;
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class NewMeteor extends Operator {
 		final String rawResult = manager.connect();
 
 		final boolean isSent = rawResult.contains("\"S\":[true]");
-		return isSent ? new Successful() : new Failure();
+		return isSent ? Success.MESSAGE_SENT : Fail.MESSAGE_FAILED;
 	}
 
 	private JSONObject buildSendJson(final List<String> list, final String message) {

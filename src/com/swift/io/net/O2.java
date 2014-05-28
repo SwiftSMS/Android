@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.swift.model.Account;
-import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.Fail;
 import com.swift.tasks.results.OperationResult;
-import com.swift.tasks.results.Successful;
+import com.swift.tasks.results.Success;
 import com.swift.utils.HTMLParser;
 
 public class O2 extends Operator {
@@ -72,8 +72,8 @@ public class O2 extends Operator {
 		}
 		this.prepareWebtextSession();
 
-		final boolean isSent = html.contains(LOGIN_SUCCESS);
-		return isSent ? new Successful() : new Failure();
+		final boolean isSuccess = html.contains(LOGIN_SUCCESS);
+		return isSuccess ? Success.LOGGED_IN : Fail.LOGIN_FAILED;
 	}
 
 	private void prepareWebtextSession() {
@@ -118,7 +118,7 @@ public class O2 extends Operator {
 		final String rawJson = manager.connect();
 
 		final boolean isSent = rawJson.contains(SEND_SUCCESS);
-		return isSent ? new Successful() : new Failure();
+		return isSent ? Success.MESSAGE_SENT : Fail.MESSAGE_FAILED;
 	}
 
 	private ConnectionManager buildSendManager(final List<String> recipients, final String message) {

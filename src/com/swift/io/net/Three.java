@@ -5,9 +5,9 @@ import java.util.List;
 import android.net.Uri;
 
 import com.swift.model.Account;
-import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.Fail;
 import com.swift.tasks.results.OperationResult;
-import com.swift.tasks.results.Successful;
+import com.swift.tasks.results.Success;
 import com.swift.utils.ContactUtils;
 
 /**
@@ -44,14 +44,14 @@ public class Three extends Operator {
 		loginManager.addPostHeader(Three.POST_PASS, this.getAccount().getPassword());
 		final String loginHtml = loginManager.connect();
 
-		final boolean isSent = loginHtml.contains(SUCCESS_LOGIN);
-		return isSent ? new Successful() : new Failure();
+		final boolean isSuccess = loginHtml.contains(SUCCESS_LOGIN);
+		return isSuccess ? Success.LOGGED_IN : Fail.LOGIN_FAILED;
 	}
 
 	@Override
 	OperationResult doSend(final List<String> recipients, final String message) {
 
-		OperationResult isSent = new Failure();
+		OperationResult isSent = Fail.MESSAGE_FAILED;
 
 		final List<List<String>> splitRecipients = ContactUtils.chopped(recipients, MAX_MSG_RECIPIENTS);
 
@@ -67,7 +67,7 @@ public class Three extends Operator {
 
 		final boolean isSent = sendMessageManager.connect().contains(SMS_SEND_SUCCESS_TEXT);
 
-		return isSent ? new Successful() : new Failure();
+		return isSent ? Success.MESSAGE_SENT : Fail.MESSAGE_FAILED;
 	}
 
 	private ConnectionManager createMessageManager(final List<String> recipients, final String message) {

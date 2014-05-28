@@ -48,5 +48,7 @@
 	<string name="enter_verification_code">Enter verification code:</string>
 	<string name="code">Code</string>
 	<string name="recent_contacts">Recent contacts:</string>
-		
+	<string name="login_failed">Login failed</string>
+	<string name="logged_in">Login successful</string>
+				
 </resources>

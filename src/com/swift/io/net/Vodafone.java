@@ -25,9 +25,9 @@ import android.widget.ProgressBar;
 
 import com.swift.R;
 import com.swift.model.Account;
-import com.swift.tasks.results.Failure;
+import com.swift.tasks.results.Fail;
 import com.swift.tasks.results.OperationResult;
-import com.swift.tasks.results.Successful;
+import com.swift.tasks.results.Success;
 import com.swift.tasks.results.WarningResult;
 import com.swift.utils.ContactUtils;
 import com.swift.utils.HTMLParser;
@@ -99,8 +99,8 @@ public class Vodafone extends Operator {
 		loginManager.addPostHeader(LOGIN_POST_PASSWORD, this.getAccount().getPassword());
 		final String loginHtml = loginManager.connect();
 
-		final boolean isSent = loginHtml.contains(LOGIN_SUCCESS_STRING);
-		return isSent ? new Successful() : new Failure();
+		final boolean isSuccess = loginHtml.contains(LOGIN_SUCCESS_STRING);
+		return isSuccess ? Success.LOGGED_IN : Fail.LOGIN_FAILED;
 	}
 
 	@Override
@@ -112,7 +112,7 @@ public class Vodafone extends Operator {
 
 	@Override
 	OperationResult doSend(final List<String> recipients, final String message) {
-		OperationResult isSent = new Failure();
+		OperationResult isSent = Fail.MESSAGE_FAILED;
 		final List<List<String>> splitRecipients = ContactUtils.chopped(recipients, MAX_MSG_RECIPIENTS);
 		for (final List<String> sendableRecipients : splitRecipients) {
 			isSent = this.sendMessage(sendableRecipients, message);
@@ -177,7 +177,7 @@ public class Vodafone extends Operator {
 		}
 
 		final boolean isSent = sendHtml.contains(SEND_SUCCESS_STRING);
-		return isSent ? new Successful() : new Failure();
+		return isSent ? Success.MESSAGE_SENT : Fail.MESSAGE_FAILED;
 	}
 
 	private ConnectionManager createSendManager(final List<String> recipients, final String message) {
@@ -315,7 +315,7 @@ public class Vodafone extends Operator {
 		final String verifyHtml = manager.connect();
 
 		final boolean isSent = verifyHtml.contains(SEND_SUCCESS_STRING);
-		return isSent ? new Successful() : new Failure();
+		return isSent ? Success.MESSAGE_SENT : Fail.MESSAGE_FAILED;
 	}
 
 	private String getVerificationCode() {
