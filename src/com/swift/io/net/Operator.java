@@ -40,7 +40,11 @@ public abstract class Operator {
 	 */
 	public final OperationResult login() {
 		CookieSyncManager.getInstance().sync();
-		return this.doLogin();
+		try {
+			return this.doLogin();
+		} catch (final NoInternetAccessException e) {
+			return Fail.NO_INTERNET_CONNECTION;
+		}
 	}
 
 	/**
@@ -58,12 +62,16 @@ public abstract class Operator {
 	 * @return the number of remaining SMS messages the user has or <code>-1</code> if it can't be determined.
 	 */
 	public final int getRemainingSMS() {
-		final int smsCount = this.doGetRemainingSMS();
-		if (smsCount == -1) {
-			this.login();
-			return this.doGetRemainingSMS();
+		try {
+			final int smsCount = this.doGetRemainingSMS();
+			if (smsCount == -1) {
+				this.login();
+				return this.doGetRemainingSMS();
+			}
+			return smsCount;
+		} catch (final NoInternetAccessException e) {
+			return -1;
 		}
-		return smsCount;
 	}
 
 	/**
@@ -90,15 +98,19 @@ public abstract class Operator {
 	public final OperationResult send(final List<String> list, final String message) {
 		final List<String> msgParts = this.getParts(message, this.getCharacterLimit());
 		OperationResult sendStatus = Fail.MESSAGE_FAILED;
-		for (final String msgToSend : msgParts) {
-			final String encodedMsg = Uri.encode(msgToSend);
-			sendStatus = this.doSend(list, encodedMsg);
-			if (sendStatus.getStatus() == Status.FAILED) {
-				this.login();
+		try {
+			for (final String msgToSend : msgParts) {
+				final String encodedMsg = Uri.encode(msgToSend);
 				sendStatus = this.doSend(list, encodedMsg);
+				if (sendStatus.getStatus() == Status.FAILED) {
+					this.login();
+					sendStatus = this.doSend(list, encodedMsg);
+				}
 			}
+			return sendStatus;
+		} catch (final NoInternetAccessException e) {
+			return Fail.NO_INTERNET_CONNECTION;
 		}
-		return sendStatus;
 	}
 
 	/**
@@ -131,14 +143,18 @@ public abstract class Operator {
 	abstract OperationResult doSend(final List<String> list, final String message);
 
 	public final int getCharacterLimit() {
-		if (this.characterLimit == -1) {
-			this.characterLimit = this.doGetCharacterLimit();
+		try {
 			if (this.characterLimit == -1) {
-				this.login();
 				this.characterLimit = this.doGetCharacterLimit();
+				if (this.characterLimit == -1) {
+					this.login();
+					this.characterLimit = this.doGetCharacterLimit();
+				}
 			}
+			return this.characterLimit == -1 ? DEFAULT_CHAR_LIMIT : this.characterLimit;
+		} catch (final NoInternetAccessException e) {
+			return DEFAULT_CHAR_LIMIT;
 		}
-		return this.characterLimit == -1 ? DEFAULT_CHAR_LIMIT : this.characterLimit;
 	}
 
 	abstract int doGetCharacterLimit();

@@ -127,8 +127,7 @@ public class ConnectionManager {
 			}
 			result.append(this.readStream(this.connection.getInputStream()));
 		} catch (final IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new NoInternetAccessException();
 		}
 		return result.toString();
 	}
