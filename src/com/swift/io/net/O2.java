@@ -7,6 +7,16 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.Context;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.EditText;
+
+import com.swift.R;
 import com.swift.model.Account;
 import com.swift.tasks.results.Fail;
 import com.swift.tasks.results.OperationResult;
@@ -38,19 +48,30 @@ public class O2 extends Operator {
 	private static final String COOKIE_EQUALS = "=";
 	private static final String COOKIE_SEMI_COLON = "; ";
 
-	private static final String SESSION_URL = "http://messaging.o2online.ie/ssomanager.osp?APIID=AUTH-WEBSSO&TargetApp=o2om_smscenter_new.osp%3FMsgContentID%3D-1%26SID%3D_";
+	private static final String SESSION_URL = MESSAGING_BASE_URL + "ssomanager.osp?APIID=AUTH-WEBSSO&TargetApp=o2om_smscenter_new.osp%3FMsgContentID%3D-1%26SID%3D_";
 	private static final String SMS_BASE_URL = MESSAGING_BASE_URL + "o2om_smscenter_new.osp?MsgContentID=-1&SID=_&SID=";
 	private static final String SMS_PRE = "spn_WebtextFree\">";
 	private static final String SMS_POST = "</span>";
 
-	private static final String SEND_URL = "http://messaging.o2online.ie/smscenter_send.osp";
+	private static final String SEND_URL = MESSAGING_BASE_URL + "smscenter_send.osp";
 	private static final String SEND_POST_SID = "SID";
 	private static final String SEND_POST_TO = "SMSTo";
 	private static final String SEND_POST_TEXT = "SMSText";
 	private static final String SEND_SUCCESS = "isSuccess : true";
+	
+	private static final String VERIFY_TEXT = "Webtext Security Process";
+	private static final String VERIFY_SEND_URL = LOGIN_PRE_URL + "webtext-security-process/send-verification-handler.php";
+	private static final String VERIFY_POST_URL = LOGIN_PRE_URL + "webtext-security-process/security-code-verification-handler.php";
+	private static final String VERIFY_CODE = "SecurityCode";
 
 	private String remainingSMS;
 	private String sessionId;
+	private boolean isRoaming;
+
+	private Context context;
+	private Handler handler;
+	private LayoutInflater inflater;
+	private EditText verificationEditText;
 
 	public O2(final Account account) {
 		super(account);
@@ -79,12 +100,17 @@ public class O2 extends Operator {
 	private void prepareWebtextSession() {
 		ConnectionManager manager = new ConnectionManager(SESSION_URL, GET, false);
 		String html = manager.connect();
-		this.sessionId = HTMLParser.parseHtml(html, SESSION_SID_PRE, SESSION_SID_POST);
 
-		manager = new ConnectionManager(SMS_BASE_URL + this.sessionId, GET, false);
-		manager.setRequestHeader(HTTP_COOKIE, this.getCookieHeader());
-		html = manager.connect();
-		this.remainingSMS = HTMLParser.parseHtml(html, SMS_PRE, SMS_POST);
+		if (html.contains(VERIFY_TEXT)) {
+			this.isRoaming = true;
+		} else {
+			this.sessionId = HTMLParser.parseHtml(html, SESSION_SID_PRE, SESSION_SID_POST);
+	
+			manager = new ConnectionManager(SMS_BASE_URL + this.sessionId, GET, false);
+			manager.setRequestHeader(HTTP_COOKIE, this.getCookieHeader());
+			html = manager.connect();
+			this.remainingSMS = HTMLParser.parseHtml(html, SMS_PRE, SMS_POST);
+		}
 	}
 
 	private String getCookieHeader() {
@@ -113,12 +139,74 @@ public class O2 extends Operator {
 	}
 
 	@Override
+	public void preSend(final Context context) {
+		this.context = context;
+		this.handler = new Handler(context.getMainLooper());
+		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	}
+
+	@Override
 	OperationResult doSend(final List<String> recipients, final String message) {
+		this.handleRoaming();
 		final ConnectionManager manager = this.buildSendManager(recipients, message);
 		final String rawJson = manager.connect();
 
 		final boolean isSent = rawJson.contains(SEND_SUCCESS);
 		return isSent ? Success.MESSAGE_SENT : Fail.MESSAGE_FAILED;
+	}
+
+	private void handleRoaming() {
+		if (this.isRoaming) {
+			ConnectionManager manager = new ConnectionManager(VERIFY_SEND_URL, GET, false);
+			manager.setRequestHeader(HTTP_COOKIE, this.getCookieHeader());
+			manager.connect();
+
+			final String code = this.getVerificationCode();
+			manager = new ConnectionManager(VERIFY_POST_URL);
+			manager.setRequestHeader(HTTP_COOKIE, this.getCookieHeader());
+			manager.addPostHeader(VERIFY_CODE, code);
+			final String html = manager.connect();
+
+			prepareWebtextSession();
+		}
+	}
+
+	private String getVerificationCode() {
+		this.displayVerificationDialog();
+		while (this.verificationEditText == null || !this.verificationEditText.isShown()) { // wait until dialog appears
+			this.waitFor(100);
+		}
+		while (this.verificationEditText.isShown()) { // wait until dialog is dismissed
+			this.waitFor(100);
+		}
+		return this.verificationEditText.getText().toString();
+	}
+
+	private void displayVerificationDialog() {
+		this.handler.post(new Runnable() {
+			@Override
+			public void run() {
+				final View layout = O2.this.inflater.inflate(R.layout.verification_code_dialog, null);
+				O2.this.verificationEditText = (EditText) layout.findViewById(R.id.text_verification_code);
+
+				final Builder builder = new AlertDialog.Builder(O2.this.context);
+				builder.setTitle(R.string.enter_verification_code);
+				builder.setView(layout);
+				builder.setPositiveButton(R.string.ok, null);
+
+				final AlertDialog dialog = builder.create();
+				dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+				dialog.show();
+			}
+		});
+	}
+
+	private void waitFor(final long millis) {
+		try {
+			Thread.sleep(millis);
+		} catch (final InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private ConnectionManager buildSendManager(final List<String> recipients, final String message) {
