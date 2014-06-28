@@ -21,7 +21,7 @@
             android:paddingBottom="@dimen/element_margin"
             android:paddingTop="@dimen/element_margin"
             android:text="@string/text_add_operator"
-            android:textSize="18sp" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <View
             android:layout_width="fill_parent"
