@@ -38,7 +38,7 @@
             android:id="@+id/list_compose_recent"
             style="@style/TwoWayView"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:listSelector="@android:color/transparent" />
     </LinearLayout>
 
