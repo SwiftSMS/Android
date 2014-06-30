@@ -1,19 +1,7 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="android:Theme.Light">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
-    </style>
-
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
+    <!-- Application light theme -->
+    <style name="AppTheme" parent="android:Theme.Holo.Light">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <item name="android:textAppearance">@style/TextAppearance</item>
         <item name="android:textAppearanceInverse">@style/TextAppearance.Inverse</item>
@@ -24,7 +12,21 @@
         <item name="android:textAppearanceLarge">@style/TextAppearance.Large</item>
         <item name="android:textAppearanceLargeInverse">@style/TextAppearance.Large.Inverse</item>
         <item name="android:windowTitleStyle">@style/TextAppearance.DialogWindowTitle</item>
-    </style>
+	</style>
+
+    <!-- Application dark theme -->
+    <style name="AppThemeHolo" parent="android:Theme.Holo">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:textAppearance">@style/TextAppearance</item>
+        <item name="android:textAppearanceInverse">@style/TextAppearance.Inverse</item>
+        <item name="android:textAppearanceSmall">@style/TextAppearance.Small</item>
+        <item name="android:textAppearanceSmallInverse">@style/TextAppearance.Small.Inverse</item>
+        <item name="android:textAppearanceMedium">@style/TextAppearance.Medium</item>
+        <item name="android:textAppearanceMediumInverse">@style/TextAppearance.Medium.Inverse</item>
+        <item name="android:textAppearanceLarge">@style/TextAppearance.Large</item>
+        <item name="android:textAppearanceLargeInverse">@style/TextAppearance.Large.Inverse</item>
+        <item name="android:windowTitleStyle">@style/TextAppearance.DialogWindowTitle</item>
+	</style>
 
     <style name="TextAppearance" parent="android:TextAppearance">
         <item name="android:textSize">@dimen/text_size_normal</item>
