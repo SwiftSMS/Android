@@ -142,9 +142,9 @@ public class Vodafone extends Operator {
 		final ConnectionManager manager = new ConnectionManager(CHARS_URL, "GET", false);
 		final String html = manager.connect();
 
-		final String charsText = "var char_limit = ";
+		final String charsText = "char_limit=";
 		final int startPos = html.lastIndexOf(charsText) + charsText.length();
-		final int endPos = html.indexOf(";", startPos);
+		final int endPos = html.indexOf(",", startPos);
 		if (startPos > charsText.length()) {
 			final String characterCount = html.substring(startPos, endPos);
 			return Integer.valueOf(characterCount);
