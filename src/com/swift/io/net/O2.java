@@ -29,7 +29,7 @@ public class O2 extends Operator {
 	private static final String LOGIN_POST_USER = "username";
 	private static final String LOGIN_POST_PASS = "password";
 	private static final String LOGIN_POST_REQUEST_ID = "request_id";
-	private static final String LOGIN_SUCCESS = "Welcome to My O2";
+	private static final String LOGIN_SUCCESS = "my-o2-dashboard-user";
 	private static final String SESSION_SID_PRE = "var GLOBAL_SESSION_ID = '";
 	private static final String SESSION_SID_POST = "';";
 
