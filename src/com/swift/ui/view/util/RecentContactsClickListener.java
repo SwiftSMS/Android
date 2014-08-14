@@ -22,6 +22,8 @@ public class RecentContactsClickListener implements OnItemClickListener{
 
 		this.editText.setText(clickedItem.toString());
 		this.editText.append(DEFAULT_CONTACT_SEPARATOR);
-		this.editText.setSelection(this.editText.length());
+
+		final View nextView = this.editText.focusSearch(View.FOCUS_DOWN);
+		nextView.requestFocus();
 	}
 }

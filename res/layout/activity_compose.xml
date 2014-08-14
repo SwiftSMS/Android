@@ -8,6 +8,7 @@
         android:id="@+id/text_compose_recipients"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:nextFocusDown="@+id/text_compose_message"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="@dimen/element_margin_half"
         android:layout_marginRight="@dimen/element_margin_half"
