@@ -16,11 +16,11 @@ gen/
 local.properties
 
 # Eclipse project files
-#.classpath
-#.project
+.classpath
+.project
 
-# Intellij project files
+# Android Studio and Gradle specific entries
+.gradle
+.idea
 *.iml
-.idea/
-out/
-
+build

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="holo_light_blue">#ff16a1b5</color>
+    <color name="green">#ff00e111</color>
+    <color name="green_faded">#2200e111</color>
+    <color name="red">#ffce0001</color>
+    <color name="red_faded">#22ce0001</color>
+    
+</resources>
