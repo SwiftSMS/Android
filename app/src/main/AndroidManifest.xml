@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.swift"
-    android:versionCode="25"
-    android:versionName="1.4.7" >
+    android:versionCode="26"
+    android:versionName="1.4.8" >
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="21" />
 
     <uses-feature
         android:name="android.hardware.telephony"
