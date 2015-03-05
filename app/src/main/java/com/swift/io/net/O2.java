@@ -15,35 +15,34 @@ import com.swift.utils.HTMLParser;
 
 public class O2 extends Operator {
 
-	private static final String MESSAGING_BASE_URL = "http://messaging.o2online.ie/";
+	private static final String MESSAGING_BASE_URL = "http://messaging.three.ie";
 
 	private static final String HTTP_REFERER = "Referer";
 	private static final String HTTP_COOKIE = "Cookie";
 	private static final String GET = "GET";
 
-	private static final String LOGIN_PRE_URL = "https://www.o2online.ie/o2/my-o2/";
+	private static final String LOGIN_PRE_URL = "https://www.three.ie/web/my-3/";
 	private static final String PRE_REQUEST_ID = "request_id\" value=\"";
 	private static final String POST_REQUEST_ID = "\">";
 
-	private static final String LOGIN_URL = "https://www.o2online.ie/oam/server/auth_cred_submit";
+	private static final String LOGIN_URL = "https://www.three.ie/oam/server/auth_cred_submit";
 	private static final String LOGIN_POST_USER = "username";
 	private static final String LOGIN_POST_PASS = "password";
 	private static final String LOGIN_POST_REQUEST_ID = "request_id";
-	private static final String LOGIN_SUCCESS = "my-o2-dashboard-user";
+	private static final String LOGIN_SUCCESS = "my-3-dashboard-user";
 	private static final String SESSION_SID_PRE = "var GLOBAL_SESSION_ID = '";
 	private static final String SESSION_SID_POST = "';";
 
-	private static final String COOKIE_O2_DOMAIN = "http://www.o2online.ie";
-	private static final String COOKIE_MESSAGING_DOMAIN = "http://messaging.o2online.ie";
+	private static final String COOKIE_O2_DOMAIN = "http://www.three.ie";
 	private static final String COOKIE_EQUALS = "=";
 	private static final String COOKIE_SEMI_COLON = "; ";
 
-	private static final String SESSION_URL = "http://messaging.o2online.ie/ssomanager.osp?APIID=AUTH-WEBSSO&TargetApp=o2om_smscenter_new.osp%3FMsgContentID%3D-1%26SID%3D_";
-	private static final String SMS_BASE_URL = MESSAGING_BASE_URL + "o2om_smscenter_new.osp?MsgContentID=-1&SID=_&SID=";
+	private static final String SESSION_URL = MESSAGING_BASE_URL + "/ssomanager.osp?APIID=AUTH-WEBSSO&TargetApp=o2om_smscenter_new.osp%3FMsgContentID%3D-1%26SID%3D_";
+	private static final String SMS_BASE_URL = MESSAGING_BASE_URL + "/o2om_smscenter_new.osp?MsgContentID=-1&SID=_&SID=";
 	private static final String SMS_PRE = "spn_WebtextFree\">";
 	private static final String SMS_POST = "</span>";
 
-	private static final String SEND_URL = "http://messaging.o2online.ie/smscenter_send.osp";
+	private static final String SEND_URL = MESSAGING_BASE_URL + "/smscenter_send.osp";
 	private static final String SEND_POST_SID = "SID";
 	private static final String SEND_POST_TO = "SMSTo";
 	private static final String SEND_POST_TEXT = "SMSText";
@@ -89,11 +88,11 @@ public class O2 extends Operator {
 
 	private String getCookieHeader() {
 		final URI oUri = URI.create(COOKIE_O2_DOMAIN);
-		final URI mUri = URI.create(COOKIE_MESSAGING_DOMAIN);
+		final URI mUri = URI.create(MESSAGING_BASE_URL);
 		final StringBuilder cookieHeader = new StringBuilder();
 		final CookieManager cookieMgr = (CookieManager) CookieHandler.getDefault();
 
-		final List<HttpCookie> cookies = new ArrayList<HttpCookie>(cookieMgr.getCookieStore().get(oUri));
+		final List<HttpCookie> cookies = new ArrayList<>(cookieMgr.getCookieStore().get(oUri));
 		cookies.addAll(cookieMgr.getCookieStore().get(mUri));
 		for (int i = 0; i < cookies.size(); i++) {
 			if (i != 0) {
