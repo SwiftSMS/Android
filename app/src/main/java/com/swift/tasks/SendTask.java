@@ -10,6 +10,8 @@ import static com.swift.InternalString.SMS_BODY;
 import static com.swift.InternalString.SMS_PROVIDER_FAILURE;
 import static com.swift.InternalString.SMS_PROVIDER_MESSAGE_ADDRESS;
 import static com.swift.InternalString.SMS_PROVIDER_MESSAGE_BODY;
+import static com.swift.InternalString.SMS_PROVIDER_MESSAGE_STATUS;
+import static com.swift.InternalString.SMS_PROVIDER_MESSAGE_STATUS_DELIVERED;
 import static com.swift.InternalString.SMS_PROVIDER_SENTBOX_URI;
 import static com.swift.InternalString.WRITE_SMS_ENABLED;
 import static com.swift.tasks.Status.FAILED;
@@ -138,6 +140,7 @@ public class SendTask extends AsyncTask<String, Integer, OperationResult> {
 				final ContentValues values = new ContentValues();
 				values.put(SMS_PROVIDER_MESSAGE_ADDRESS, recipient);
 				values.put(SMS_PROVIDER_MESSAGE_BODY, this.message);
+				values.put(SMS_PROVIDER_MESSAGE_STATUS, SMS_PROVIDER_MESSAGE_STATUS_DELIVERED);
 				final ContentResolver resolver = this.activity.getContentResolver();
 				final Uri smsUri = Uri.parse(SMS_PROVIDER_SENTBOX_URI);
 				resolver.insert(smsUri, values);
