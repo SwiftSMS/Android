@@ -12,13 +12,16 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,7 +46,8 @@ public class AddAccountActivity extends Activity {
 
 	private static int FAILED_DB_ADD = -1;
 	private IAccountDatabase accountDatabase;
-	private TextView textAccNumber, textAccName, textAccPassword;
+	private EditText textAccNumber, textAccName, textAccPassword;
+	private ImageView imageShowPassword;
 	private CheckBox checkActiveAccount;
 	private SharedPreferences preferences;
 	private TextView buttonDone;
@@ -51,6 +55,8 @@ public class AddAccountActivity extends Activity {
 	private ImageView buttonVerifyIcon;
 	private Network selectedNetwork;
 	private AsyncTask<String, Integer, OperationResult> verifyTask;
+
+	private boolean isPasswordVisible = false;
 
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
@@ -60,9 +66,10 @@ public class AddAccountActivity extends Activity {
 
 		this.setupCustomActionBar();
 
-		this.textAccName = (TextView) this.findViewById(R.id.text_acc_name);
-		this.textAccNumber = (TextView) this.findViewById(R.id.text_acc_number);
-		this.textAccPassword = (TextView) this.findViewById(R.id.text_acc_password);
+		this.textAccName = (EditText) this.findViewById(R.id.text_acc_name);
+		this.textAccNumber = (EditText) this.findViewById(R.id.text_acc_number);
+		this.textAccPassword = (EditText) this.findViewById(R.id.text_acc_password);
+		this.imageShowPassword = (ImageView) this.findViewById(R.id.image_acc_show_password);
 		this.checkActiveAccount = (CheckBox) this.findViewById(R.id.checkBox_active_acc);
 		this.buttonVerify = (LinearLayout) this.findViewById(R.id.actionbar_verify);
 		this.buttonVerifyIcon = (ImageView) this.findViewById(R.id.actionbar_verify_icon);
@@ -154,6 +161,22 @@ public class AddAccountActivity extends Activity {
 		final String defaultAccName = this.selectedNetwork + " (" + numberLast4Digits + ")";
 
 		return enteredAccName.isEmpty() ? defaultAccName : enteredAccName;
+	}
+
+	public void showPassword(final View view) {
+		int start = textAccPassword.getSelectionStart();
+		int end = textAccPassword.getSelectionEnd();
+
+		if (isPasswordVisible) {
+			textAccPassword.setTransformationMethod(new PasswordTransformationMethod());
+			imageShowPassword.setImageResource(R.drawable.show_password);
+		} else {
+			imageShowPassword.setImageResource(R.drawable.hide_password);
+			textAccPassword.setTransformationMethod(null);
+		}
+
+		textAccPassword.setSelection(start, end);
+		isPasswordVisible ^= true;
 	}
 
 	public void verifyAccount(final View view) {

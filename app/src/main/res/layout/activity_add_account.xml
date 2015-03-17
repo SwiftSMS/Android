@@ -78,6 +78,16 @@
             android:paddingBottom="@dimen/element_margin"
             android:paddingTop="@dimen/element_margin" />
 
+        <ImageView
+            android:id="@+id/image_acc_show_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/text_acc_password"
+            android:layout_alignRight="@+id/text_acc_password"
+            android:layout_marginRight="@dimen/element_margin"
+            android:onClick="showPassword"
+            android:src="@drawable/show_password"/>
+
         <CheckBox
             android:id="@+id/checkBox_active_acc"
             android:layout_width="wrap_content"
