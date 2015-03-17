@@ -98,6 +98,16 @@ public class InternalString {
 	public static final String SMS_PROVIDER_MESSAGE_ADDRESS = "address";
 
 	/**
+	 * This is the key used to store the status of an SMS message in the SMS Content Provider. It is used for delivery reports.
+	 */
+	public static final String SMS_PROVIDER_MESSAGE_STATUS = "status";
+
+	/**
+	 * This is the value used to indicate that an SMS message is delivered in the SMS Content Provider.
+	 */
+	public static final int SMS_PROVIDER_MESSAGE_STATUS_DELIVERED = 0;
+
+	/**
 	 * The message to enter in the logs when inserting a sent SMS to the SMS provider fails.
 	 */
 	public static final String SMS_PROVIDER_FAILURE = "Could not insert message to SMS provider";
