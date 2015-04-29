@@ -31,9 +31,11 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.webkit.CookieSyncManager;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.swift.R;
@@ -72,6 +74,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	private TextView notificationArea;
 	private TwoWayView recentList;
 	private View recentLayout;
+	private ListView messageHistory;
 
 	private Operator operator;
 	private SharedPreferences preferences;
@@ -103,6 +106,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.recipientEdittext = (AutoCompleteTextView) this.findViewById(R.id.text_compose_recipients);
 		this.recentList = (TwoWayView) this.findViewById(R.id.list_compose_recent);
 		this.recentLayout = this.findViewById(R.id.layout_compose_recent);
+		this.messageHistory = (ListView) this.findViewById(R.id.list_compose_message_history);
 
 		final TextView characterCountTextView = (TextView) this.findViewById(R.id.label_compose_character_count);
 		this.charCountWatcher = new CharacterCountTextWatcher(characterCountTextView);
@@ -117,11 +121,15 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.recipientEdittext.setOnItemClickListener(itemClickTextWatcher);
 		this.charCountWatcher.addObserver(this);
 		this.messageEditText.addTextChangedListener(this.charCountWatcher);
+		this.messageEditText.setOnFocusChangeListener(this.charCountWatcher);
 		this.recentList.setAdapter(this.recentAdapter);
 		this.recentList.setHorizontalScrollBarEnabled(false);
 		this.recentList.setOnItemClickListener(new RecentContactsClickListener(this.recipientEdittext));
 
 		this.handleIntentData();
+
+
+        messageHistory.setAdapter(new ArrayAdapter<String>(this.themedContext, android.R.layout.simple_list_item_1, new String[] {"One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"}));
 	}
 
 	/**
@@ -346,6 +354,7 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 	public void update(final Observable observable, final Object data) {
 		this.updateSendButton();
 		this.updateRecentList();
+		this.updateMessageHistory();
 	}
 
 	private void updateRecentList() {
@@ -360,6 +369,20 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 					final Animation fadeInAnim = new AlphaAnimation(0, 1);
 					this.runOnUiThread(new AnimationRunner(this.recentLayout, FADE_DURATION, fadeInAnim, View.VISIBLE));
 				}
+			}
+		}
+	}
+
+	private void updateMessageHistory() {
+		if (this.recipientEdittext.length() > 0 && !this.recipientEdittext.isFocused()) {
+			if (this.messageHistory.getVisibility() == View.GONE) {
+				final Animation fadeInAnim = new AlphaAnimation(0, 1);
+				this.runOnUiThread(new AnimationRunner(this.messageHistory, FADE_DURATION, fadeInAnim, View.VISIBLE));
+			}
+		} else {
+			if (this.messageHistory.getVisibility() == View.VISIBLE) {
+				final Animation fadeOutAnim = new AlphaAnimation(1, 0);
+				this.runOnUiThread(new AnimationRunner(this.messageHistory, FADE_DURATION, fadeOutAnim, View.GONE));
 			}
 		}
 	}

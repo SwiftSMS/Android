@@ -5,13 +5,14 @@ import java.util.Observable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
 /**
  * This class is responsible for counting the characters in an {@link EditText} and display that count in a {@link TextView}.
  */
-public class CharacterCountTextWatcher extends Observable implements TextWatcher {
+public class CharacterCountTextWatcher extends Observable implements TextWatcher, OnFocusChangeListener {
 
 	private final TextView characterCountTextView;
 	private int maxCharCount = 0;
@@ -63,5 +64,11 @@ public class CharacterCountTextWatcher extends Observable implements TextWatcher
 
 	public void setCharacterLimit(final int result) {
 		this.maxCharCount = result;
+	}
+
+	@Override
+	public void onFocusChange(final View v, final boolean hasFocus) {
+		this.setChanged();
+		this.notifyObservers();
 	}
 }
