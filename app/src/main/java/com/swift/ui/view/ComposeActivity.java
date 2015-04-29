@@ -53,6 +53,7 @@ import com.swift.ui.view.util.AccountSpinnerAdapter;
 import com.swift.ui.view.util.CharacterCountTextWatcher;
 import com.swift.ui.view.util.ContactSuggestionAdapter;
 import com.swift.ui.view.util.ContactSuggestionClickListener;
+import com.swift.ui.view.util.MessageHistoryAdapter;
 import com.swift.ui.view.util.RecentContactsAdapter;
 import com.swift.ui.view.util.RecentContactsClickListener;
 
@@ -125,11 +126,9 @@ public class ComposeActivity extends Activity implements Observer, ActionBar.OnN
 		this.recentList.setAdapter(this.recentAdapter);
 		this.recentList.setHorizontalScrollBarEnabled(false);
 		this.recentList.setOnItemClickListener(new RecentContactsClickListener(this.recipientEdittext));
+		this.messageHistory.setAdapter(new MessageHistoryAdapter(this.themedContext));
 
 		this.handleIntentData();
-
-
-        messageHistory.setAdapter(new ArrayAdapter<String>(this.themedContext, android.R.layout.simple_list_item_1, new String[] {"One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"}));
 	}
 
 	/**
