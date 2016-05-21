@@ -6,8 +6,6 @@ public class OperatorFactory {
 
 	public static Operator getOperator(final Account account) {
 		switch (account.getOperator()) {
-		case EMOBILE:
-			return new EMobile(account);
 		case METEOR:
 			if (account.getMobileNumber().contains("@")) {
 				return new NewMeteor(account);
