@@ -1,8 +1,5 @@
 package com.swift.ui.view.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -16,6 +13,11 @@ import android.widget.Filterable;
 
 import com.swift.model.Contact;
 import com.swift.utils.ContactUtils;
+
+import org.apache.commons.lang3.ObjectUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContactSuggestionAdapter extends BaseContactAdapter implements Filterable {
 
@@ -49,7 +51,7 @@ public class ContactSuggestionAdapter extends BaseContactAdapter implements Filt
 				final String[] selectionArgs = new String[] { Phone.CONTENT_ITEM_TYPE };
 				final String sortOrder = Contacts.SORT_KEY_PRIMARY;
 
-				final String searchText = ContactUtils.getLastContact(constraint.toString());
+				final String searchText = ContactUtils.getLastContact(ObjectUtils.toString(constraint));
 				final Uri contentUri = Uri.withAppendedPath(Phone.CONTENT_FILTER_URI, Uri.encode(searchText));
 
 				final ContentResolver resolver = ContactSuggestionAdapter.this.context.getContentResolver();

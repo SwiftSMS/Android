@@ -52,7 +52,7 @@ public class Vodafone extends Operator {
 	private static final String SMS_JSON_TOTAL = "total";
 	private static final String SMS_URL = "https://www.vodafone.ie/myv/dashboard/webtextdetails.shtml";
 
-	private static final String SEND_SUCCESS_STRING = "Message sent!";
+	private static final String SEND_SUCCESS_STRING = "Your webtext has been sent";
 	private static final String SEND_POST_CAPTCHA_OLD = "jcaptcha_response";
 	private static final String SEND_POST_CAPTCHA = "recaptcha_response_field";
 	private static final String SEND_POST_CAPTCHA_KEY = "recaptcha_challenge_field";
@@ -61,7 +61,7 @@ public class Vodafone extends Operator {
 	private static final String SEND_POST_Y = "y";
 	private static final String SEND_POST_TOKEN = "org.apache.struts.taglib.html.TOKEN";
 	private static final String SEND_URL = "https://www.vodafone.ie/myv/messaging/webtext/Process.shtml";
-	private static final String SEND_CAPTCHA_TEXT_INCORRECT = "the text you entered did not match the image.";
+	private static final String SEND_CAPTCHA_TEXT_INCORRECT = "The security code you entered did not match. Please try again.";
 
 	private static final String LOGIN_SUCCESS_STRING = "Sign out";
 	private static final String LOGIN_POST_PASSWORD = "password";

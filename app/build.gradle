@@ -24,4 +24,5 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:22.2.0'
     compile files('libs/twoway-view.jar')
+    compile 'org.apache.commons:commons-lang3:3.4'
 }
