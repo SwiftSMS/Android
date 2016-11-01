@@ -27,7 +27,7 @@ public class NewMeteor extends Operator {
 		manager.addPostHeader("password", this.getAccount().getPassword());
 		final String html = manager.connect();
 
-		final boolean isSuccess = html.contains("Logout");
+		final boolean isSuccess = html.contains("One moment...");
 		return isSuccess ? Success.LOGGED_IN : Fail.LOGIN_FAILED;
 	}
 
