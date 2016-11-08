@@ -9,6 +9,7 @@ import com.swift.tasks.results.Fail;
 import com.swift.tasks.results.OperationResult;
 import com.swift.tasks.results.Success;
 import com.swift.utils.ContactUtils;
+import com.swift.utils.HTMLParser;
 
 /**
  * Created by Rob Powell on 04/10/13.
@@ -16,18 +17,20 @@ import com.swift.utils.ContactUtils;
 public class Three extends Operator {
 
 	// login strings/ values
-	private static final String LOGIN_URL = "https://webtexts.three.ie/webtext/users/login";
-	private static final String POST_USER = "data[User][telephoneNo]";
-	private static final String POST_PASS = "data[User][pin]";
-	private static final String SUCCESS_LOGIN = "Logout";
+	private static final String LOGIN_URL = "https://webtexts.three.ie/users/login";
+	private static final String POST_USER = "msisdn";
+	private static final String POST_PASS = "pin";
+	private static final String SUCCESS_LOGIN = "Logged in as";
 
 	// sms related strings values
-	private static final String SMS_URL = "https://webtexts.three.ie/webtext/messages/send";
-	private static final String POST_MESSAGE_TEXT = "data[Message][message]";
-	private static final String POST_RECIPIENT_INDIVIDUAL = "data[Message][recipients_individual]";
-	private static final String SMS_SEND_SUCCESS_TEXT = "Message sent!";
-	private static final String SMS_REMAINING_END_TEXT = "(of 333)</p>";
+	private static final String SMS_URL = "https://webtexts.three.ie/messages/send";
+	private static final String POST_MESSAGE_TEXT = "message";
+	private static final String POST_RECIPIENT_INDIVIDUAL = "recipients_contacts[]";
+	private static final String SMS_SEND_SUCCESS_TEXT = "Message sent";
+	private static final String SMS_REMAINING_START_TEXT = "user-crumb-1\"><b>";
+	private static final String SMS_REMAINING_END_TEXT = "/333";
 	private static final String SMS_REMAINING_CHARS_START_TEXT = "'characterNumber'>";
+	private static final String SMS_REMAINING_CHARS_END_TEXT = "</span>";
 
 	private static final String GET_REQUEST_METHOD = "GET";
 	private static final int MAX_MSG_RECIPIENTS = 3;
@@ -38,7 +41,6 @@ public class Three extends Operator {
 
 	@Override
 	OperationResult doLogin() {
-
 		final ConnectionManager loginManager = new ConnectionManager(Three.LOGIN_URL);
 		loginManager.addPostHeader(Three.POST_USER, this.getAccount().getMobileNumber());
 		loginManager.addPostHeader(Three.POST_PASS, this.getAccount().getPassword());
@@ -77,7 +79,7 @@ public class Three extends Operator {
 		manager.addPostHeader(POST_MESSAGE_TEXT, message);
 
 		for (int i = 0; i < recipients.size(); i++) {
-			final String key = Uri.encode(POST_RECIPIENT_INDIVIDUAL + "[" + i + "]");
+			final String key = Uri.encode(POST_RECIPIENT_INDIVIDUAL);
 			final String value = Uri.encode(recipients.get(i));
 			manager.addPostHeader(key, value);
 		}
@@ -97,7 +99,6 @@ public class Three extends Operator {
 
 	@Override
 	int doGetCharacterLimit() {
-
 		final ConnectionManager manager = new ConnectionManager(SMS_URL, Three.GET_REQUEST_METHOD, false);
 
 		final String html = manager.connect();
@@ -106,42 +107,10 @@ public class Three extends Operator {
 	}
 
 	private int getRemainingCharactersHTML(final String html) {
-
-		int remainingChars = -1;
-		final String startText = Three.SMS_REMAINING_CHARS_START_TEXT;
-
-		final int index = html.indexOf(startText);
-
-		final int startPos = index;
-		final int endPos = index + 5;
-
-		try {
-			final String remainingCharsStr = html.substring(startPos, endPos).replaceAll("[</span>]", "");
-			remainingChars = Integer.parseInt(remainingCharsStr.trim());
-		} catch (final Exception ex) {
-		}
-
-		return remainingChars;
+		return HTMLParser.parseIntFromHtml(html, SMS_REMAINING_CHARS_START_TEXT, SMS_REMAINING_CHARS_END_TEXT);
 	}
 
 	private int getRemainingSmsFromHTML(final String html) {
-
-		int remainingTexts = -1;
-		final String endText = Three.SMS_REMAINING_END_TEXT;
-
-		final int index = html.indexOf(endText);
-
-		final int startPos = index - 4;
-		final int endPos = index;
-
-		if (startPos > endText.length()) {
-			try {
-				final String remainingSmsString = html.substring(startPos, endPos).replaceAll("[<p>]", "");
-				remainingTexts = Integer.parseInt(remainingSmsString.trim());
-			} catch (final Exception ex) {
-			}
-		}
-
-		return remainingTexts;
+		return HTMLParser.parseIntFromHtml(html, SMS_REMAINING_START_TEXT, SMS_REMAINING_END_TEXT);
 	}
 }

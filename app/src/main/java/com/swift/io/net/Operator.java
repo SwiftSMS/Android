@@ -42,6 +42,8 @@ public abstract class Operator {
 		CookieSyncManager.getInstance().sync();
 		try {
 			return this.doLogin();
+		} catch (final OperatorChangedException e) {
+			return Fail.OPERATOR_CHANGED;
 		} catch (final NoInternetAccessException e) {
 			return Fail.NO_INTERNET_CONNECTION;
 		}
@@ -69,7 +71,7 @@ public abstract class Operator {
 				return this.doGetRemainingSMS();
 			}
 			return smsCount;
-		} catch (final NoInternetAccessException e) {
+		} catch (final NoInternetAccessException | OperatorChangedException e) {
 			return -1;
 		}
 	}
@@ -87,7 +89,7 @@ public abstract class Operator {
 	/**
 	 * This method is responsible for sending an SMS message through the operators website. This method will perform any
 	 * non-network-specific send actions. Each sub-class of {@link Operator} will implement the specific send algorithm in the
-	 * {@link #doSend(String, String)} method.
+	 * {@link #doSend(List, String)} method.
 	 * 
 	 * @param list
 	 *            A list of phone numbers the message will be sent to.
@@ -108,6 +110,8 @@ public abstract class Operator {
 				}
 			}
 			return sendStatus;
+		} catch (final OperatorChangedException e) {
+			return Fail.OPERATOR_CHANGED;
 		} catch (final NoInternetAccessException e) {
 			return Fail.NO_INTERNET_CONNECTION;
 		}
@@ -152,7 +156,7 @@ public abstract class Operator {
 				}
 			}
 			return this.characterLimit == -1 ? DEFAULT_CHAR_LIMIT : this.characterLimit;
-		} catch (final NoInternetAccessException e) {
+		} catch (final NoInternetAccessException | OperatorChangedException e) {
 			return DEFAULT_CHAR_LIMIT;
 		}
 	}

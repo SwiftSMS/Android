@@ -23,4 +23,25 @@ public class HTMLParser {
 		}
 		return targetStr;
 	}
+
+	/**
+	 * This method is used to extract an integer from a String.
+	 *
+	 * @param html
+	 *            The larger String containing the integer to be extracted.
+	 * @param prefix
+	 *            A unique String that occurs directly before the sought integer.
+	 * @param postfix
+	 *            The String that occurs directly after the sought integer.
+	 * @return The integer between the pre & post fix.
+	 * @throws NumberFormatException If the text between the pre & post fix isn't a number.
+	 */
+	public static int parseIntFromHtml(final String html, final String prefix, final String postfix) {
+		final String targetStr = parseHtml(html, prefix, postfix);
+
+		if (targetStr != null) {
+			return Integer.parseInt(targetStr);
+		}
+		return -1;
+	}
 }
