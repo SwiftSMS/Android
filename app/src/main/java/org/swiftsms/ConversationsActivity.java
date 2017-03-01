@@ -6,18 +6,15 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.telephony.SmsManager;
-import android.telephony.TelephonyManager;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -25,6 +22,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static android.provider.Telephony.Sms.ADDRESS;
+import static android.provider.Telephony.Sms.BODY;
+import static android.provider.Telephony.Sms.CONTENT_URI;
+import static android.provider.Telephony.Sms.DATE;
+import static android.provider.Telephony.Sms.THREAD_ID;
 
 public class ConversationsActivity extends AppCompatActivity {
 
@@ -77,41 +80,26 @@ public class ConversationsActivity extends AppCompatActivity {
     private void showConversationsInList() {
         final ListView listView = (ListView) findViewById(R.id.content_conversations);
 
-        final ArrayAdapter<Conversation> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, getAllSms(this));
+        final ArrayAdapter<Conversation> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, getAllConversations(this));
 
         listView.setAdapter(adapter);
     }
 
-    public List<Conversation> getAllSms(Context context) {
+    public List<Conversation> getAllConversations(final Context context) {
         final List<Conversation> conversations = new ArrayList<>();
 
         final ContentResolver cr = context.getContentResolver();
-        final Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null, null, null);
-        int totalSMS = 0;
+        final Cursor c = cr.query(CONTENT_URI, new String[]{"DISTINCT thread_id", ADDRESS, BODY, DATE}, "address IS NOT NULL) GROUP BY (address", null, null);
         if (c != null) {
-            totalSMS = c.getCount();
+            int totalSMS = c.getCount();
             if (c.moveToFirst()) {
                 for (int j = 0; j < totalSMS; j++) {
-                    final String smsDate = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.DATE));
-                    final String number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
-                    final String body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
-                    final Date dateFormat= new Date(Long.valueOf(smsDate));
-                    String type = null;
-                    switch (Integer.parseInt(c.getString(c.getColumnIndexOrThrow(Telephony.Sms.TYPE)))) {
-                        case Telephony.Sms.MESSAGE_TYPE_INBOX:
-                            type = "inbox";
-                            break;
-                        case Telephony.Sms.MESSAGE_TYPE_SENT:
-                            type = "sent";
-                            break;
-                        case Telephony.Sms.MESSAGE_TYPE_OUTBOX:
-                            type = "outbox";
-                            break;
-                        default:
-                            break;
-                    }
+                    final String count = c.getString(c.getColumnIndexOrThrow(ADDRESS));
+                    final String snippet = c.getString(c.getColumnIndexOrThrow(BODY));
+                    final Date date = new Date(c.getLong(c.getColumnIndexOrThrow(DATE)));
+                    final String threadId = c.getString(c.getColumnIndexOrThrow(THREAD_ID));
 
-                    conversations.add(new Conversation(number, body, dateFormat, type));
+                    conversations.add(new Conversation(count, snippet, date, threadId));
 
                     c.moveToNext();
                 }
