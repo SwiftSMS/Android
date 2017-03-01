@@ -80,7 +80,7 @@ public class ConversationsActivity extends AppCompatActivity {
     private void showConversationsInList() {
         final ListView listView = (ListView) findViewById(R.id.content_conversations);
 
-        final ArrayAdapter<Conversation> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, getAllConversations(this));
+        final ConversationAdapter adapter = new ConversationAdapter(this, getAllConversations(this));
 
         listView.setAdapter(adapter);
     }
@@ -94,12 +94,12 @@ public class ConversationsActivity extends AppCompatActivity {
             int totalSMS = c.getCount();
             if (c.moveToFirst()) {
                 for (int j = 0; j < totalSMS; j++) {
-                    final String count = c.getString(c.getColumnIndexOrThrow(ADDRESS));
-                    final String snippet = c.getString(c.getColumnIndexOrThrow(BODY));
+                    final String number = c.getString(c.getColumnIndexOrThrow(ADDRESS));
+                    final String message = c.getString(c.getColumnIndexOrThrow(BODY));
                     final Date date = new Date(c.getLong(c.getColumnIndexOrThrow(DATE)));
                     final String threadId = c.getString(c.getColumnIndexOrThrow(THREAD_ID));
 
-                    conversations.add(new Conversation(count, snippet, date, threadId));
+                    conversations.add(new Conversation(number, message, date, threadId));
 
                     c.moveToNext();
                 }

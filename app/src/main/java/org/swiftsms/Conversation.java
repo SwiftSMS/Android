@@ -4,10 +4,10 @@ import java.util.Date;
 
 class Conversation {
 
-    private final String number;
-    private final String body;
-    private final Date dateFormat;
-    private final String type;
+    final String number;
+    final String body;
+    final Date dateFormat;
+    final String type;
 
     Conversation(String number, String body, Date dateFormat, String type) {
         this.number = number;
@@ -16,13 +16,4 @@ class Conversation {
         this.type = type;
     }
 
-    @Override
-    public String toString() {
-        return "Conversation{" +
-                "number='" + number + '\'' +
-                ", body='" + body + '\'' +
-                ", dateFormat=" + dateFormat +
-                ", type='" + type + '\'' +
-                '}';
-    }
 }
