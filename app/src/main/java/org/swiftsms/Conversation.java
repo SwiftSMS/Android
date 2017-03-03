@@ -7,13 +7,13 @@ class Conversation {
     final String number;
     final String body;
     final Date dateFormat;
-    final String type;
+    final String threadId;
 
-    Conversation(String number, String body, Date dateFormat, String type) {
+    Conversation(final String number, final String body, final Date dateFormat, final String threadId) {
         this.number = number;
         this.body = body;
         this.dateFormat = dateFormat;
-        this.type = type;
+        this.threadId = threadId;
     }
 
 }

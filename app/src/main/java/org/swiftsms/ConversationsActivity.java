@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,11 +36,13 @@ public class ConversationsActivity extends AppCompatActivity {
             Manifest.permission.READ_SMS
     };
 
+    private ListView listView;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversations);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -53,6 +54,8 @@ public class ConversationsActivity extends AppCompatActivity {
             }
         });
 
+        listView = (ListView) findViewById(R.id.content_conversations);
+        listView.setOnItemClickListener(new ConversationItemClickListener(this));
 
         if (verifyPermissions()) {
             showConversationsInList();
@@ -78,8 +81,6 @@ public class ConversationsActivity extends AppCompatActivity {
     }
 
     private void showConversationsInList() {
-        final ListView listView = (ListView) findViewById(R.id.content_conversations);
-
         final ConversationAdapter adapter = new ConversationAdapter(this, getAllConversations(this));
 
         listView.setAdapter(adapter);
