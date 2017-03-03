@@ -72,6 +72,7 @@ public class ConversationsActivity extends AppCompatActivity {
             }
         }
     }
+
     private boolean verifyPermissions() {
         final int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
         if (permission != PackageManager.PERMISSION_GRANTED) {
