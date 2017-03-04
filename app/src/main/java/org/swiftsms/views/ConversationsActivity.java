@@ -38,7 +38,9 @@ public class ConversationsActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 135;
 
     private static final String[] permissions = {
-            Manifest.permission.READ_SMS
+            Manifest.permission.READ_SMS,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.RECEIVE_SMS
     };
 
     private ListView listView;
@@ -61,7 +63,11 @@ public class ConversationsActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.content_conversations);
         listView.setOnItemClickListener(new ConversationItemClickListener(this));
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (verifyPermissions()) {
             showConversationsInList();
         }

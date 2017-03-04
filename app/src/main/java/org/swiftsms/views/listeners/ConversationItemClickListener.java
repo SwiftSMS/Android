@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import org.swiftsms.models.Conversation;
 import org.swiftsms.views.ThreadActivity;
 
+import static android.provider.Telephony.TextBasedSmsColumns.ADDRESS;
 import static android.provider.Telephony.TextBasedSmsColumns.THREAD_ID;
 
 /**
@@ -27,6 +28,7 @@ public class ConversationItemClickListener implements AdapterView.OnItemClickLis
 
         final Intent intent = new Intent(context, ThreadActivity.class);
         intent.putExtra(THREAD_ID, conversation.threadId);
+        intent.putExtra(ADDRESS, conversation.number);
         context.startActivity(intent);
     }
 }

@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import org.swiftsms.views.adapters.MessageAdapter;
 import org.swiftsms.R;
+import org.swiftsms.views.listeners.SendButtonListener;
 import org.swiftsms.views.listeners.SendButtonTextWatcher;
 import org.swiftsms.models.Message;
 
@@ -24,13 +25,18 @@ import static android.provider.Telephony.Sms.CONTENT_URI;
 import static android.provider.Telephony.Sms.DATE;
 import static android.provider.Telephony.Sms.THREAD_ID;
 import static android.provider.Telephony.Sms.TYPE;
+import static android.provider.Telephony.TextBasedSmsColumns.ADDRESS;
 
 public class ThreadActivity extends AppCompatActivity {
+
+    private String address;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thread);
+
+        address = getIntent().getExtras().getString(ADDRESS);
 
         setupMessageHistory();
         setupSendButton();
@@ -46,10 +52,11 @@ public class ThreadActivity extends AppCompatActivity {
 
     private void setupSendButton() {
         final ImageButton button = (ImageButton) findViewById(R.id.send_button);
+        final EditText message = (EditText) findViewById(R.id.compose_message_edit);
+
         button.setEnabled(false);
         button.setClickable(false);
-
-        final EditText message = (EditText) findViewById(R.id.compose_message_edit);
+        button.setOnClickListener(new SendButtonListener(this, message, address));
         message.addTextChangedListener(new SendButtonTextWatcher(button));
     }
 
