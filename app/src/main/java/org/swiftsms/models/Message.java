@@ -1,4 +1,4 @@
-package org.swiftsms;
+package org.swiftsms.models;
 
 import java.util.Date;
 
@@ -8,9 +8,9 @@ import java.util.Date;
 
 public class Message {
 
-    final String message;
-    final Date date;
-    final int type;
+    public final String message;
+    public final Date date;
+    public final int type;
 
     public Message(final String message, final Date date, final int type) {
         this.message = message;

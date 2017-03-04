@@ -1,9 +1,12 @@
-package org.swiftsms;
+package org.swiftsms.views.listeners;
 
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
+
+import org.swiftsms.models.Conversation;
+import org.swiftsms.views.ThreadActivity;
 
 import static android.provider.Telephony.TextBasedSmsColumns.THREAD_ID;
 

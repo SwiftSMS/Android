@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ConversationsActivity"
+            android:name=".views.ConversationsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -21,8 +21,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ThreadActivity"
-            android:parentActivityName=".ConversationsActivity">
+            android:name=".views.ThreadActivity"
+            android:parentActivityName=".views.ConversationsActivity">
         </activity>
     </application>
 

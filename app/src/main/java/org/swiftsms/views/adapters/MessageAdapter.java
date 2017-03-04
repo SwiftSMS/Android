@@ -1,4 +1,4 @@
-package org.swiftsms;
+package org.swiftsms.views.adapters;
 
 import android.content.Context;
 import android.text.format.DateFormat;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import org.swiftsms.R;
+import org.swiftsms.models.Message;
 
 import java.util.List;
 

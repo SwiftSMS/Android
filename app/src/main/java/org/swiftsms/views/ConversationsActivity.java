@@ -1,4 +1,4 @@
-package org.swiftsms;
+package org.swiftsms.views;
 
 import android.Manifest;
 import android.content.ContentResolver;
@@ -17,6 +17,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.swiftsms.views.adapters.ConversationAdapter;
+import org.swiftsms.views.listeners.ConversationItemClickListener;
+import org.swiftsms.R;
+import org.swiftsms.models.Conversation;
 
 import java.util.ArrayList;
 import java.util.Date;

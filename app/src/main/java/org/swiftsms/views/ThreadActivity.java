@@ -1,4 +1,4 @@
-package org.swiftsms;
+package org.swiftsms.views;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -9,6 +9,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.swiftsms.views.adapters.MessageAdapter;
+import org.swiftsms.R;
+import org.swiftsms.views.listeners.SendButtonTextWatcher;
+import org.swiftsms.models.Message;
 
 import java.util.ArrayList;
 import java.util.Date;

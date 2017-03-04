@@ -8,6 +8,6 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_conversations"
-    tools:context="org.swiftsms.ConversationsActivity">
+    tools:context="org.swiftsms.views.ConversationsActivity">
 
 </ListView>

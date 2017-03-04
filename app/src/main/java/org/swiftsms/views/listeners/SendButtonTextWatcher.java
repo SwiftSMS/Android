@@ -1,4 +1,4 @@
-package org.swiftsms;
+package org.swiftsms.views.listeners;
 
 import android.text.Editable;
 import android.text.TextWatcher;
