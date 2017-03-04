@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1.0"
+        android:background="@color/message_history_background"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:stackFromBottom="true"

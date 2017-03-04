@@ -12,12 +12,10 @@ import java.util.List;
 
 public class MessageAdapter extends BaseAdapter {
 
-    private final Context context;
     private final List<Message> messages;
     private final LayoutInflater inflater;
 
     public MessageAdapter(final Context context, final List<Message> messages) {
-        this.context = context;
         this.messages = messages;
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -52,18 +50,21 @@ public class MessageAdapter extends BaseAdapter {
 
     private View getView(final View convertView, final int type) {
         View layout = convertView;
-
         if (layout == null) {
             layout = inflater.inflate(R.layout.message_list_item, null);
         }
 
+        setViewDirection(layout, type);
+        return layout;
+    }
+
+    private void setViewDirection(final View layout, final int type) {
         if (type == 1) {
             layout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         } else {
             layout.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
         }
-
-        return layout;
+        layout.findViewById(R.id.message_container).getBackground().setLevel(type);
     }
 
 }

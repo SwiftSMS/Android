@@ -4,7 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="bottom"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/element_padding_smallest"
+    android:paddingEnd="@dimen/element_padding"
+    android:paddingStart="@dimen/element_padding">
 
     <EditText
         android:id="@+id/compose_message_edit"
@@ -12,17 +15,17 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:hint="@string/type_your_message"
-        android:inputType="textMultiLine"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:inputType="textMultiLine" />
 
     <ImageButton
         android:id="@+id/send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="@dimen/element_padding_small"
+        android:layout_marginStart="@dimen/element_padding"
+        android:layout_marginTop="@dimen/element_padding"
+        android:background="@drawable/send_button"
+        android:contentDescription="@string/send_message"
         app:srcCompat="@android:drawable/ic_menu_send" />
 
 </LinearLayout>
