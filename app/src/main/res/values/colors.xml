@@ -7,9 +7,9 @@
     <color name="colorForeground">#FFFFFF</color>
     <color name="colorBackground">#eaeaea</color>
 
-    <color name="textPrimary">#57000000</color>
-    <color name="textSecondary">#36000000</color>
-    <color name="textDisabled">#26000000</color>
+    <color name="textPrimary">#DE000000</color>
+    <color name="textSecondary">#8A000000</color>
+    <color name="textDisabled">#61000000</color>
 
     <color name="message_sent">@color/colorForeground</color>
     <color name="message_received">@color/colorPrimaryLight</color>
