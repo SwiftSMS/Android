@@ -33,6 +33,7 @@ public class ThreadActivity extends AppCompatActivity implements LoaderCallbacks
         address = getIntent().getExtras().getString(ADDRESS);
         listView = (ListView) findViewById(R.id.thread_messages);
 
+        setTitle(address);
         setupMessageHistory();
         setupSendButton();
     }

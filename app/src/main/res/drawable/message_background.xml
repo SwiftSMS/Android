@@ -3,14 +3,14 @@
 
     <item android:maxLevel="1">
         <shape android:shape="rectangle">
-            <corners android:radius="@dimen/element_padding" />
+            <corners android:radius="@dimen/element_padding_small" />
             <solid android:color="@color/message_received" />
         </shape>
     </item>
 
     <item android:maxLevel="2">
         <shape android:shape="rectangle">
-            <corners android:radius="@dimen/element_padding" />
+            <corners android:radius="@dimen/element_padding_small" />
             <solid android:color="@color/message_sent" />
         </shape>
     </item>

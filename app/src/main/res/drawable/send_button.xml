@@ -3,15 +3,15 @@
 
     <item android:state_enabled="true">
         <shape android:shape="oval">
-            <padding android:bottom="@dimen/element_padding_smallest" android:left="@dimen/element_padding_smallest" android:right="@dimen/element_padding_smallest" android:top="@dimen/element_padding_smallest" />
+            <padding android:bottom="@dimen/element_padding" android:left="@dimen/element_padding" android:right="@dimen/element_padding" android:top="@dimen/element_padding" />
             <solid android:color="@color/colorAccent" />
         </shape>
     </item>
 
     <item>
         <shape android:shape="oval">
-            <padding android:bottom="@dimen/element_padding_smallest" android:left="@dimen/element_padding_smallest" android:right="@dimen/element_padding_smallest" android:top="@dimen/element_padding_smallest" />
-            <solid android:color="@android:color/darker_gray" />
+            <padding android:bottom="@dimen/element_padding" android:left="@dimen/element_padding" android:right="@dimen/element_padding" android:top="@dimen/element_padding" />
+            <solid android:color="@color/textDisabled" />
         </shape>
     </item>
 

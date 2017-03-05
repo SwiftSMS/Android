@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#03a9f4</color>
+    <color name="colorPrimaryLight">#e1f5fe</color>
+    <color name="colorPrimaryDark">#0288d1</color>
+    <color name="colorAccent">#9c27b0</color>
+    <color name="colorForeground">#FFFFFF</color>
+    <color name="colorBackground">#eaeaea</color>
 
-    <color name="message_history_background">#eeeeee</color>
-    <color name="message_sent">#cdcdcd</color>
-    <color name="message_received">#ffffff</color>
+    <color name="textPrimary">#57000000</color>
+    <color name="textSecondary">#36000000</color>
+    <color name="textDisabled">#26000000</color>
+
+    <color name="message_sent">@color/colorForeground</color>
+    <color name="message_received">@color/colorPrimaryLight</color>
 </resources>
