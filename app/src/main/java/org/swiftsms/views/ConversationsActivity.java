@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +18,7 @@ import android.widget.ListView;
 
 import org.swiftsms.R;
 import org.swiftsms.models.Conversation;
-import org.swiftsms.sms.ConversationLoader;
+import org.swiftsms.sms.loaders.ConversationLoader;
 import org.swiftsms.views.adapters.ConversationAdapter;
 import org.swiftsms.views.listeners.ConversationItemClickListener;
 
@@ -81,7 +80,6 @@ public class ConversationsActivity extends AppCompatActivity implements LoaderCa
     }
 
     private void showConversationsInList() {
-        Log.i("TAG", "Creating initLoader");
         getLoaderManager().initLoader(9835, null, this);
     }
 
@@ -109,19 +107,16 @@ public class ConversationsActivity extends AppCompatActivity implements LoaderCa
 
     @Override
     public Loader<List<Conversation>> onCreateLoader(final int id, final Bundle args) {
-        Log.i("TAG", "Creating onCreateLoader");
         return new ConversationLoader(this);
     }
 
     @Override
     public void onLoadFinished(final Loader<List<Conversation>> loader, final List<Conversation> conversations) {
-        Log.i("TAG", "Loader onLoadFinished");
         listView.setAdapter(new ConversationAdapter(this, conversations));
     }
 
     @Override
     public void onLoaderReset(final Loader<List<Conversation>> loader) {
-        Log.i("TAG", "Loader onLoaderReset");
         listView.setAdapter(null);
     }
 }
