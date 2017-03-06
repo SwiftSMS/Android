@@ -114,6 +114,8 @@ public abstract class ContentResolverLoader<T> extends AsyncTaskLoader<List<T>> 
     }
 
     private void releaseResources(final List<T> data) {
-        data.clear();
+        if (data != null) {
+            data.clear();
+        }
     }
 }
