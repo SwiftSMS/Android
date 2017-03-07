@@ -1,13 +1,19 @@
 package org.swiftsms.views;
 
 import android.app.LoaderManager.LoaderCallbacks;
+import android.app.NotificationManager;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Loader;
 import android.os.Bundle;
+import android.provider.Telephony;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.swiftsms.R;
 import org.swiftsms.models.Message;
 import org.swiftsms.sms.loaders.MessageLoader;
@@ -17,7 +23,6 @@ import org.swiftsms.views.listeners.SendButtonTextWatcher;
 
 import java.util.List;
 
-import static android.provider.Telephony.Sms.THREAD_ID;
 import static android.provider.Telephony.TextBasedSmsColumns.ADDRESS;
 
 public class ThreadActivity extends AppCompatActivity implements LoaderCallbacks<List<Message>> {
@@ -34,8 +39,16 @@ public class ThreadActivity extends AppCompatActivity implements LoaderCallbacks
         listView = (ListView) findViewById(R.id.thread_messages);
 
         setTitle(address);
+        markThreadAsRead();
         setupMessageHistory();
         setupSendButton();
+    }
+
+    private void markThreadAsRead() {
+        final ContentResolver cr = this.getContentResolver();
+        final ContentValues values = new ContentValues();
+        values.put("read", 1);
+        cr.update(Telephony.Sms.CONTENT_URI, values, "address=? and read!=?", new String[]{address, "1"});
     }
 
     private void setupMessageHistory() {
@@ -54,8 +67,7 @@ public class ThreadActivity extends AppCompatActivity implements LoaderCallbacks
 
     @Override
     public Loader<List<Message>> onCreateLoader(int id, Bundle args) {
-        final String threadId = getIntent().getExtras().getString(THREAD_ID);
-        return new MessageLoader(this, threadId);
+        return new MessageLoader(this, address);
     }
 
     @Override

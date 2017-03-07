@@ -17,15 +17,15 @@ public class MessageLoader extends ContentResolverLoader<Message> {
 
     private static final Uri CONTENT_URI = Telephony.Sms.CONTENT_URI;
     private static final String[] PROJECTION = {BODY, DATE, TYPE};
-    private static final String SELECTION = "thread_id=?";
+    private static final String SELECTION = "address=?";
     private static final String SORT_ORDER = "date ASC";
 
-    public MessageLoader(final Context context, final String threadId) {
-        super(context, CONTENT_URI, PROJECTION, SELECTION, new String[]{threadId}, SORT_ORDER);
+    public MessageLoader(final Context context, final String address) {
+        super(context, CONTENT_URI, PROJECTION, SELECTION, new String[]{address}, SORT_ORDER);
     }
 
     @Override
-    protected Message parseCursor(Cursor c) {
+    protected Message parseCursor(final Cursor c) {
         final String message = c.getString(c.getColumnIndexOrThrow(BODY));
         final Date date = new Date(c.getLong(c.getColumnIndexOrThrow(DATE)));
         final int type = c.getInt(c.getColumnIndexOrThrow(TYPE));
