@@ -13,6 +13,8 @@ import android.widget.EditText;
 import org.swiftsms.sms.DeliveredIntentReceiver;
 import org.swiftsms.sms.SentIntentReceiver;
 
+import java.util.ArrayList;
+
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.provider.Telephony.Sms.CONTENT_URI;
 import static android.provider.Telephony.TextBasedSmsColumns.ADDRESS;
@@ -47,7 +49,7 @@ public class SendButtonListener implements OnClickListener {
         editText.setText(null);
 
         final Uri uri = writeSmsToProvider(message);
-        SmsManager.getDefault().sendTextMessage(address, null, message, buildSentIntent(uri), buildDeliveredIntent(uri));
+        sendMessage(uri, message);
     }
 
     private Uri writeSmsToProvider(final String message) {
@@ -58,6 +60,21 @@ public class SendButtonListener implements OnClickListener {
         values.put(STATUS, STATUS_PENDING);
 
         return context.getContentResolver().insert(CONTENT_URI, values);
+    }
+
+    private void sendMessage(final Uri uri, final String message) {
+        final SmsManager manager = SmsManager.getDefault();
+
+        final ArrayList<String> split = manager.divideMessage(message);
+        final ArrayList<PendingIntent> sent = new ArrayList<>();
+        final ArrayList<PendingIntent> delivered = new ArrayList<>();
+
+        for (final String ignored : split) {
+            sent.add(buildSentIntent(uri));
+            delivered.add(buildDeliveredIntent(uri));
+        }
+
+        manager.sendMultipartTextMessage(address, null, split, sent, delivered);
     }
 
     private PendingIntent buildSentIntent(final Uri uri) {

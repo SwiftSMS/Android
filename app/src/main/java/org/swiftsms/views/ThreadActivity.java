@@ -1,7 +1,6 @@
 package org.swiftsms.views;
 
 import android.app.LoaderManager.LoaderCallbacks;
-import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Loader;
@@ -73,6 +72,12 @@ public class ThreadActivity extends AppCompatActivity implements LoaderCallbacks
     @Override
     public void onLoadFinished(Loader<List<Message>> loader, List<Message> data) {
         listView.setAdapter(new MessageAdapter(this, data));
+        dismissNotificationsForAddress(address);
+    }
+
+    private void dismissNotificationsForAddress(final String address) {
+        final int id = Integer.parseInt(StringUtils.substring(String.valueOf(address), -9));
+        NotificationManagerCompat.from(this).cancel(id);
     }
 
     @Override
