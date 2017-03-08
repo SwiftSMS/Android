@@ -1,6 +1,8 @@
 package org.swiftsms.views.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,9 @@ import org.swiftsms.R;
 import org.swiftsms.models.Conversation;
 
 import java.util.List;
+
+import static org.swiftsms.sms.SmsReceiver.SMS_READ;
+import static org.swiftsms.sms.SmsReceiver.SMS_UNREAD;
 
 public class ConversationAdapter extends BaseAdapter {
 
@@ -40,12 +45,18 @@ public class ConversationAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, final View convertView, final ViewGroup parent) {
         final View layout = getView(convertView);
-        final Conversation file = getItem(position);
+        final Conversation conversation = getItem(position);
         final TextView title = (TextView) layout.findViewById(R.id.contact_name);
         final TextView snippet = (TextView) layout.findViewById(R.id.message_snippet);
 
-        title.setText(file.number);
-        snippet.setText(file.body);
+        title.setText(conversation.number);
+        snippet.setText(conversation.body);
+
+        if (conversation.read == SMS_UNREAD) {
+            title.setTypeface(Typeface.DEFAULT_BOLD);
+        } else {
+            title.setTypeface(Typeface.DEFAULT);
+        }
 
 //        final ImageView image = (ImageView) layout.findViewById(R.id.contact_thumb);
 //        image.setImageBitmap(meta.mThumb);

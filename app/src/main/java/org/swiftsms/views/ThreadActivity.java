@@ -23,6 +23,9 @@ import org.swiftsms.views.listeners.SendButtonTextWatcher;
 import java.util.List;
 
 import static android.provider.Telephony.TextBasedSmsColumns.ADDRESS;
+import static android.provider.Telephony.TextBasedSmsColumns.READ;
+import static org.swiftsms.sms.SmsReceiver.SMS_READ;
+import static org.swiftsms.sms.SmsReceiver.SMS_UNREAD;
 
 public class ThreadActivity extends AppCompatActivity implements LoaderCallbacks<List<Message>> {
 
@@ -46,8 +49,8 @@ public class ThreadActivity extends AppCompatActivity implements LoaderCallbacks
     private void markThreadAsRead() {
         final ContentResolver cr = this.getContentResolver();
         final ContentValues values = new ContentValues();
-        values.put("read", 1);
-        cr.update(Telephony.Sms.CONTENT_URI, values, "address=? and read!=?", new String[]{address, "1"});
+        values.put(READ, SMS_READ);
+        cr.update(Telephony.Sms.CONTENT_URI, values, "address=? and read=?", new String[]{address, String.valueOf(SMS_UNREAD)});
     }
 
     private void setupMessageHistory() {

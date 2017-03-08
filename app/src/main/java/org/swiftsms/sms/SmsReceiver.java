@@ -37,6 +37,9 @@ import static android.support.v4.app.NotificationCompat.MessagingStyle;
 
 public class SmsReceiver extends BroadcastReceiver {
 
+    public static final int SMS_READ = 1;
+    public static final int SMS_UNREAD = 0;
+
     @Override
     public void onReceive(final Context context, final Intent intent) {
         final SmsMessage[] messages = Telephony.Sms.Intents.getMessagesFromIntent(intent);
@@ -112,7 +115,7 @@ public class SmsReceiver extends BroadcastReceiver {
     private List<Message> getUnreadMessages(final Context context, final String address) {
         final List<Message> unreadMessages = new ArrayList<>();
         final ContentResolver cr = context.getContentResolver();
-        final Cursor cursor = cr.query(CONTENT_URI, new String[]{BODY, DATE}, "address=? and read!=?", new String[]{address, "1"}, "date_sent DESC LIMIT 5");
+        final Cursor cursor = cr.query(CONTENT_URI, new String[]{BODY, DATE}, "address=? and read=?", new String[]{address, String.valueOf(SMS_UNREAD)}, "date_sent DESC LIMIT 5");
 
         if (cursor != null) {
             while (cursor.moveToNext()) {

@@ -5,17 +5,14 @@ import android.database.Cursor;
 
 import org.swiftsms.models.Conversation;
 
-import java.util.Date;
-
 import static android.provider.Telephony.Sms.CONTENT_URI;
 import static android.provider.Telephony.TextBasedSmsColumns.ADDRESS;
 import static android.provider.Telephony.TextBasedSmsColumns.BODY;
-import static android.provider.Telephony.TextBasedSmsColumns.DATE;
-import static android.provider.Telephony.TextBasedSmsColumns.THREAD_ID;
+import static android.provider.Telephony.TextBasedSmsColumns.READ;
 
 public class ConversationLoader extends ContentResolverLoader<Conversation> {
 
-    private static final String[] PROJECTION = {"DISTINCT thread_id", ADDRESS, BODY, DATE};
+    private static final String[] PROJECTION = {"DISTINCT thread_id", ADDRESS, BODY, READ};
     private static final String SELECTION = "address IS NOT NULL) GROUP BY (address";
 
     public ConversationLoader(final Context context) {
@@ -26,9 +23,8 @@ public class ConversationLoader extends ContentResolverLoader<Conversation> {
     protected Conversation parseCursor(final Cursor c) {
         final String number = c.getString(c.getColumnIndexOrThrow(ADDRESS));
         final String message = c.getString(c.getColumnIndexOrThrow(BODY));
-        final Date date = new Date(c.getLong(c.getColumnIndexOrThrow(DATE)));
-        final String threadId = c.getString(c.getColumnIndexOrThrow(THREAD_ID));
+        final int read = c.getInt(c.getColumnIndexOrThrow(READ));
 
-        return new Conversation(number, message, date, threadId);
+        return new Conversation(number, message, read);
     }
 }
