@@ -2,6 +2,7 @@ package org.swiftsms.views;
 
 import android.Manifest;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import org.swiftsms.NetworkSelectionActivity;
 import org.swiftsms.R;
 import org.swiftsms.models.Conversation;
 import org.swiftsms.sms.loaders.ConversationLoader;
@@ -91,18 +93,26 @@ public class ConversationsActivity extends AppCompatActivity implements LoaderCa
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         final int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_add_account:
+                openAddAccountActivity();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openAddAccountActivity() {
+        final Intent intent = new Intent(this, NetworkSelectionActivity.class);
+        startActivity(intent);
     }
 
     @Override
