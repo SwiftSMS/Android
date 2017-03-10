@@ -28,6 +28,11 @@
         <activity
             android:name=".NetworkSelectionActivity"
             android:parentActivityName=".views.ConversationsActivity" />
+        <activity
+            android:name=".AddAccountActivity"
+            android:label="@string/add_account"
+            android:parentActivityName=".NetworkSelectionActivity" />
+
 
         <!-- Configuration for capturing send SMS responses -->
         <receiver

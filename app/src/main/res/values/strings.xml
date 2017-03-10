@@ -4,5 +4,12 @@
     <string name="type_your_message">Type your message…</string>
     <string name="send_message">Send Message</string>
     <string name="contact_photo">Contact Photo</string>
-    <string name="add_account">Add Account</string>
+    <string name="add_account">Add account</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="error_login_failed">Login failed</string>
+    <string name="error_field_required">This field is required</string>
 </resources>
