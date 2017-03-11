@@ -11,10 +11,11 @@ import android.widget.GridView;
 import org.swiftsms.models.Network;
 import org.swiftsms.views.adapters.NetworkSelectionAdapter;
 
+import static org.swiftsms.InternalString.OPERATOR;
+
 public class NetworkSelectionActivity extends AppCompatActivity {
 
     private static final int ADD_ACCOUNT_REQUEST_CODE = 456;
-    private static final String OPERATOR = "operator";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
